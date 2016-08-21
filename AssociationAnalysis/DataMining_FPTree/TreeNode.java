@@ -3,19 +3,19 @@ package DataMining_FPTree;
 import java.util.ArrayList;
 
 /**
- * FPÊ÷½Úµã
+ * FPæ ‘èŠ‚ç‚¹
  * 
  * @author lyq
  * 
  */
 public class TreeNode implements Comparable<TreeNode>, Cloneable{
-	// ½ÚµãÀà±ğÃû³Æ
+	// èŠ‚ç‚¹ç±»åˆ«åç§°
 	private String name;
-	// ¼ÆÊıÊıÁ¿
+	// è®¡æ•°æ•°é‡
 	private Integer count;
-	// ¸¸Ç×½Úµã
+	// çˆ¶äº²èŠ‚ç‚¹
 	private TreeNode parentNode;
-	// º¢×Ó½Úµã£¬¿ÉÒÔÎª¶à¸ö
+	// å­©å­èŠ‚ç‚¹ï¼Œå¯ä»¥ä¸ºå¤šä¸ª
 	private ArrayList<TreeNode> childNodes;
 	
 	public TreeNode(String name, int count){
@@ -64,7 +64,7 @@ public class TreeNode implements Comparable<TreeNode>, Cloneable{
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		//ÒòÎª¶ÔÏóÄÚ²¿ÓĞÒıÓÃ£¬ĞèÒª²ÉÓÃÉî¿½±´
+		//å› ä¸ºå¯¹è±¡å†…éƒ¨æœ‰å¼•ç”¨ï¼Œéœ€è¦é‡‡ç”¨æ·±æ‹·è´
 		TreeNode node = (TreeNode)super.clone(); 
 		if(this.getParentNode() != null){
 			node.setParentNode((TreeNode) this.getParentNode().clone());

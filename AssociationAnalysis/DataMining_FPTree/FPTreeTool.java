@@ -10,19 +10,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * FPTreeËã·¨¹¤¾ßÀà
+ * FPTreeç®—æ³•å·¥å…·ç±»
  * 
  * @author lyq
  * 
  */
 public class FPTreeTool {
-	// ÊäÈëÊı¾İÎÄ¼şÎ»ÖÃ
+	// è¾“å…¥æ•°æ®æ–‡ä»¶ä½ç½®
 	private String filePath;
-	// ×îĞ¡Ö§³Ö¶ÈãĞÖµ
+	// æœ€å°æ”¯æŒåº¦é˜ˆå€¼
 	private int minSupportCount;
-	// ËùÓĞÊÂÎïID¼ÇÂ¼
+	// æ‰€æœ‰äº‹ç‰©IDè®°å½•
 	private ArrayList<String[]> totalGoodsID;
-	// ¸÷¸öIDµÄÍ³¼ÆÊıÄ¿Ó³Éä±íÏî£¬¼ÆÊıÓÃÓÚÅÅĞòÊ¹ÓÃ
+	// å„ä¸ªIDçš„ç»Ÿè®¡æ•°ç›®æ˜ å°„è¡¨é¡¹ï¼Œè®¡æ•°ç”¨äºæ’åºä½¿ç”¨
 	private HashMap<String, Integer> itemCountMap;
 
 	public FPTreeTool(String filePath, int minSupportCount) {
@@ -32,7 +32,7 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ´ÓÎÄ¼şÖĞ¶ÁÈ¡Êı¾İ
+	 * ä»æ–‡ä»¶ä¸­è¯»å–æ•°æ®
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -64,31 +64,31 @@ public class FPTreeTool {
 					count = 1;
 				} else {
 					count = ((int) itemCountMap.get(s));
-					// Ö§³Ö¶È¼ÆÊı¼Ó1
+					// æ”¯æŒåº¦è®¡æ•°åŠ 1
 					count++;
 				}
-				// ¸üĞÂ±íÏî
+				// æ›´æ–°è¡¨é¡¹
 				itemCountMap.put(s, count);
 			}
 		}
 	}
 
 	/**
-	 * ¸ù¾İÊÂÎï¼ÇÂ¼¹¹ÔìFPÊ÷
+	 * æ ¹æ®äº‹ç‰©è®°å½•æ„é€ FPæ ‘
 	 */
 	private void buildFPTree(ArrayList<String> suffixPattern,
 			ArrayList<ArrayList<TreeNode>> transctionList) {
-		// ÉèÖÃÒ»¸ö¿Õ¸ù½Úµã
+		// è®¾ç½®ä¸€ä¸ªç©ºæ ¹èŠ‚ç‚¹
 		TreeNode rootNode = new TreeNode(null, 0);
 		int count = 0;
-		// ½ÚµãÊÇ·ñ´æÔÚ
+		// èŠ‚ç‚¹æ˜¯å¦å­˜åœ¨
 		boolean isExist = false;
 		ArrayList<TreeNode> childNodes;
 		ArrayList<TreeNode> pathList;
-		// ÏàÍ¬ÀàĞÍ½ÚµãÁ´±í£¬ÓÃÓÚ¹¹ÔìµÄĞÂµÄFPÊ÷
+		// ç›¸åŒç±»å‹èŠ‚ç‚¹é“¾è¡¨ï¼Œç”¨äºæ„é€ çš„æ–°çš„FPæ ‘
 		HashMap<String, ArrayList<TreeNode>> linkedNode = new HashMap<>();
 		HashMap<String, Integer> countNode = new HashMap<>();
-		// ¸ù¾İÊÂÎï¼ÇÂ¼£¬Ò»²½²½¹¹½¨FPÊ÷
+		// æ ¹æ®äº‹ç‰©è®°å½•ï¼Œä¸€æ­¥æ­¥æ„å»ºFPæ ‘
 		for (ArrayList<TreeNode> array : transctionList) {
 			TreeNode searchedNode;
 			pathList = new ArrayList<>();
@@ -107,18 +107,18 @@ public class FPTreeTool {
 				} else {
 					isExist = false;
 					for (TreeNode node2 : childNodes) {
-						// Èç¹ûÕÒµ½Ãû³ÆÏàÍ¬£¬Ôò¸üĞÂÖ§³Ö¶È¼ÆÊı
+						// å¦‚æœæ‰¾åˆ°åç§°ç›¸åŒï¼Œåˆ™æ›´æ–°æ”¯æŒåº¦è®¡æ•°
 						if (node.getName().equals(node2.getName())) {
 							count = node2.getCount() + node.getCount();
 							node2.setCount(count);
-							// ±êÊ¶ÒÑÕÒµ½½ÚµãÎ»ÖÃ
+							// æ ‡è¯†å·²æ‰¾åˆ°èŠ‚ç‚¹ä½ç½®
 							isExist = true;
 							break;
 						}
 					}
 
 					if (!isExist) {
-						// Èç¹ûÃ»ÓĞÕÒµ½£¬ĞèÌí¼Ó×Ó½Úµã
+						// å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œéœ€æ·»åŠ å­èŠ‚ç‚¹
 						childNodes.add(node);
 						node.setParentNode(searchedNode);
 						nodeAddToLinkedList(node, linkedNode);
@@ -128,7 +128,7 @@ public class FPTreeTool {
 			}
 		}
 
-		// Èç¹ûFPÊ÷ÒÑ¾­ÊÇµ¥ÌõÂ·¾¶£¬ÔòÊä³ö´ËÊ±µÄÆµ·±Ä£Ê½
+		// å¦‚æœFPæ ‘å·²ç»æ˜¯å•æ¡è·¯å¾„ï¼Œåˆ™è¾“å‡ºæ­¤æ—¶çš„é¢‘ç¹æ¨¡å¼
 		if (isSinglePath(rootNode)) {
 			printFrequentPattern(suffixPattern, rootNode);
 			System.out.println("-------");
@@ -138,22 +138,22 @@ public class FPTreeTool {
 			if (suffixPattern == null) {
 				sPattern = new ArrayList<>();
 			} else {
-				// ½øĞĞÒ»¸ö¿½±´£¬±ÜÃâ»¥ÏàÒıÓÃµÄÓ°Ïì
+				// è¿›è¡Œä¸€ä¸ªæ‹·è´ï¼Œé¿å…äº’ç›¸å¼•ç”¨çš„å½±å“
 				sPattern = (ArrayList<String>) suffixPattern.clone();
 			}
 
-			// ÀûÓÃ½ÚµãÁ´±í¹¹ÔìĞÂµÄÊÂÎñ
+			// åˆ©ç”¨èŠ‚ç‚¹é“¾è¡¨æ„é€ æ–°çš„äº‹åŠ¡
 			for (Map.Entry entry : countNode.entrySet()) {
-				// Ìí¼Óµ½ºó×ºÄ£Ê½ÖĞ
+				// æ·»åŠ åˆ°åç¼€æ¨¡å¼ä¸­
 				sPattern.add((String) entry.getKey());
-				//»ñÈ¡µ½ÁËÌõ¼şÄ£Ê½»ú£¬×÷ÎªĞÂµÄÊÂÎñ
+				//è·å–åˆ°äº†æ¡ä»¶æ¨¡å¼æœºï¼Œä½œä¸ºæ–°çš„äº‹åŠ¡
 				tList = getTransactionList((String) entry.getKey(), linkedNode);
 				
-				System.out.print("[ºó×ºÄ£Ê½]£º{");
+				System.out.print("[åç¼€æ¨¡å¼]ï¼š{");
 				for(String s: sPattern){
 					System.out.print(s + ", ");
 				}
-				System.out.print("}, ´ËÊ±µÄÌõ¼şÄ£Ê½»ù£º");
+				System.out.print("}, æ­¤æ—¶çš„æ¡ä»¶æ¨¡å¼åŸºï¼š");
 				for(ArrayList<TreeNode> tnList: tList){
 					System.out.print("{");
 					for(TreeNode n: tnList){
@@ -162,21 +162,21 @@ public class FPTreeTool {
 					System.out.print("}, ");
 				}
 				System.out.println();
-				// µİ¹é¹¹ÔìFPÊ÷
+				// é€’å½’æ„é€ FPæ ‘
 				buildFPTree(sPattern, tList);
-				// ÔÙ´ÎÒÆ³ı´ËÏî£¬¹¹Ôì²»Í¬µÄºó×ºÄ£Ê½£¬·ÀÖ¹¶ÔºóÃæÔì³É¸ÉÈÅ
+				// å†æ¬¡ç§»é™¤æ­¤é¡¹ï¼Œæ„é€ ä¸åŒçš„åç¼€æ¨¡å¼ï¼Œé˜²æ­¢å¯¹åé¢é€ æˆå¹²æ‰°
 				sPattern.remove((String) entry.getKey());
 			}
 		}
 	}
 
 	/**
-	 * ½«½Úµã¼ÓÈëµ½Í¬ÀàĞÍ½ÚµãµÄÁ´±íÖĞ
+	 * å°†èŠ‚ç‚¹åŠ å…¥åˆ°åŒç±»å‹èŠ‚ç‚¹çš„é“¾è¡¨ä¸­
 	 * 
 	 * @param node
-	 *            ´ı¼ÓÈë½Úµã
+	 *            å¾…åŠ å…¥èŠ‚ç‚¹
 	 * @param linkedList
-	 *            Á´±íÍ¼
+	 *            é“¾è¡¨å›¾
 	 */
 	private void nodeAddToLinkedList(TreeNode node,
 			HashMap<String, ArrayList<TreeNode>> linkedList) {
@@ -185,7 +185,7 @@ public class FPTreeTool {
 
 		if (linkedList.containsKey(name)) {
 			list = linkedList.get(name);
-			// ½«nodeÌí¼Óµ½´Ë¶ÓÁĞÖĞ
+			// å°†nodeæ·»åŠ åˆ°æ­¤é˜Ÿåˆ—ä¸­
 			list.add(node);
 		} else {
 			list = new ArrayList<>();
@@ -195,12 +195,12 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ¸ù¾İÁ´±í¹¹Ôì³öĞÂµÄÊÂÎñ
+	 * æ ¹æ®é“¾è¡¨æ„é€ å‡ºæ–°çš„äº‹åŠ¡
 	 * 
 	 * @param name
-	 *            ½ÚµãÃû³Æ
+	 *            èŠ‚ç‚¹åç§°
 	 * @param linkedList
-	 *            Á´±í
+	 *            é“¾è¡¨
 	 * @return
 	 */
 	private ArrayList<ArrayList<TreeNode>> getTransactionList(String name,
@@ -219,11 +219,11 @@ public class FPTreeTool {
 				singleTansaction.add(new TreeNode(temp.getName(), 1));
 			}
 
-			// °´ÕÕÖ§³Ö¶È¼ÆÊıµÃ·´×ªÒ»ÏÂ
+			// æŒ‰ç…§æ”¯æŒåº¦è®¡æ•°å¾—åè½¬ä¸€ä¸‹
 			Collections.reverse(singleTansaction);
 
 			for (TreeNode node2 : singleTansaction) {
-				// Ö§³Ö¶È¼ÆÊıµ÷³ÉÓëÄ£Ê½ºó×ºÒ»Ñù
+				// æ”¯æŒåº¦è®¡æ•°è°ƒæˆä¸æ¨¡å¼åç¼€ä¸€æ ·
 				node2.setCount(node.getCount());
 			}
 
@@ -236,12 +236,12 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ½Úµã¼ÆÊı
+	 * èŠ‚ç‚¹è®¡æ•°
 	 * 
 	 * @param node
-	 *            ´ı¼ÓÈë½Úµã
+	 *            å¾…åŠ å…¥èŠ‚ç‚¹
 	 * @param nodeCount
-	 *            ¼ÆÊıÓ³ÉäÍ¼
+	 *            è®¡æ•°æ˜ å°„å›¾
 	 */
 	private void nodeCounted(TreeNode node, HashMap<String, Integer> nodeCount) {
 		int count = 0;
@@ -258,12 +258,12 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ÏÔÊ¾¾ö²ßÊ÷
+	 * æ˜¾ç¤ºå†³ç­–æ ‘
 	 * 
 	 * @param node
-	 *            ´ıÏÔÊ¾µÄ½Úµã
+	 *            å¾…æ˜¾ç¤ºçš„èŠ‚ç‚¹
 	 * @param blankNum
-	 *            ĞĞ¿Õ¸ñ·û£¬ÓÃÓÚÏÔÊ¾Ê÷ĞÍ½á¹¹
+	 *            è¡Œç©ºæ ¼ç¬¦ï¼Œç”¨äºæ˜¾ç¤ºæ ‘å‹ç»“æ„
 	 */
 	private void showFPTree(TreeNode node, int blankNum) {
 		System.out.println();
@@ -278,8 +278,8 @@ public class FPTreeTool {
 			System.out.print("I" + node.getName() + ":" + node.getCount());
 			System.out.print("]");
 		} else {
-			// µİ¹éÏÔÊ¾×Ó½Úµã
-			// System.out.print("¡¾" + node.getName() + "¡¿");
+			// é€’å½’æ˜¾ç¤ºå­èŠ‚ç‚¹
+			// System.out.print("ã€" + node.getName() + "ã€‘");
 			for (TreeNode childNode : node.getChildNodes()) {
 				showFPTree(childNode, 2 * blankNum);
 			}
@@ -288,7 +288,7 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ´ı²åÈë½ÚµãµÄµÖ´ïÎ»ÖÃ½Úµã£¬´Ó¸ù½Úµã¿ªÊ¼ÏòÏÂÑ°ÕÒ´ı²åÈë½ÚµãµÄÎ»ÖÃ
+	 * å¾…æ’å…¥èŠ‚ç‚¹çš„æŠµè¾¾ä½ç½®èŠ‚ç‚¹ï¼Œä»æ ¹èŠ‚ç‚¹å¼€å§‹å‘ä¸‹å¯»æ‰¾å¾…æ’å…¥èŠ‚ç‚¹çš„ä½ç½®
 	 * 
 	 * @param root
 	 * @param list
@@ -299,12 +299,12 @@ public class FPTreeTool {
 		TreeNode tempNode = null;
 		TreeNode firstNode = list.get(0);
 		boolean isExist = false;
-		// ÖØĞÂ×ªÒ»±é£¬±ÜÃâ³öÏÖÍ¬Ò»ÒıÓÃ
+		// é‡æ–°è½¬ä¸€éï¼Œé¿å…å‡ºç°åŒä¸€å¼•ç”¨
 		for (TreeNode node2 : list) {
 			pathList.add(node2);
 		}
 
-		// Èç¹ûÃ»ÓĞº¢×Ó½Úµã£¬ÔòÖ±½Ó·µ»Ø£¬ÔÚ´Ë½ÚµãÏÂÌí¼Ó×Ó½Úµã
+		// å¦‚æœæ²¡æœ‰å­©å­èŠ‚ç‚¹ï¼Œåˆ™ç›´æ¥è¿”å›ï¼Œåœ¨æ­¤èŠ‚ç‚¹ä¸‹æ·»åŠ å­èŠ‚ç‚¹
 		if (node.getChildNodes() == null) {
 			return node;
 		}
@@ -315,14 +315,14 @@ public class FPTreeTool {
 				isExist = true;
 				break;
 			} else if (n.getName().equals(firstNode.getName())) {
-				// »¹Ã»ÓĞÕÒµ½×îºóµÄÎ»ÖÃ£¬¼ÌĞøÕÒ
+				// è¿˜æ²¡æœ‰æ‰¾åˆ°æœ€åçš„ä½ç½®ï¼Œç»§ç»­æ‰¾
 				pathList.remove(firstNode);
 				tempNode = searchNode(n, pathList);
 				return tempNode;
 			}
 		}
 
-		// Èç¹ûÃ»ÓĞÕÒµ½£¬ÔòĞÂÌí¼Óµ½º¢×Ó½ÚµãÖĞ
+		// å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™æ–°æ·»åŠ åˆ°å­©å­èŠ‚ç‚¹ä¸­
 		if (!isExist) {
 			tempNode = node;
 		}
@@ -331,14 +331,14 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ÅĞ¶ÏÄ¿Ç°¹¹ÔìµÄFPÊ÷ÊÇ·ñÊÇµ¥ÌõÂ·¾¶µÄ
+	 * åˆ¤æ–­ç›®å‰æ„é€ çš„FPæ ‘æ˜¯å¦æ˜¯å•æ¡è·¯å¾„çš„
 	 * 
 	 * @param rootNode
-	 *            µ±Ç°FPÊ÷µÄ¸ù½Úµã
+	 *            å½“å‰FPæ ‘çš„æ ¹èŠ‚ç‚¹
 	 * @return
 	 */
 	private boolean isSinglePath(TreeNode rootNode) {
-		// Ä¬ÈÏÊÇµ¥ÌõÂ·¾¶
+		// é»˜è®¤æ˜¯å•æ¡è·¯å¾„
 		boolean isSinglePath = true;
 		ArrayList<TreeNode> childList;
 		TreeNode node;
@@ -358,7 +358,7 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * ¿ªÊ¼¹¹½¨FPÊ÷
+	 * å¼€å§‹æ„å»ºFPæ ‘
 	 */
 	public void startBuildingTree() {
 		ArrayList<TreeNode> singleTransaction;
@@ -374,10 +374,10 @@ public class FPTreeTool {
 				singleTransaction.add(tempNode);
 			}
 
-			// ¸ù¾İÖ§³Ö¶ÈÊıµÄ¶àÉÙ½øĞĞÅÅĞò
+			// æ ¹æ®æ”¯æŒåº¦æ•°çš„å¤šå°‘è¿›è¡Œæ’åº
 			Collections.sort(singleTransaction);
 			for (TreeNode node : singleTransaction) {
-				// Ö§³Ö¶È¼ÆÊıÖØĞÂ¹éÎª1
+				// æ”¯æŒåº¦è®¡æ•°é‡æ–°å½’ä¸º1
 				node.setCount(1);
 			}
 			transactionList.add(singleTransaction);
@@ -387,19 +387,19 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * Êä³ö´Ëµ¥ÌõÂ·¾¶ÏÂµÄÆµ·±Ä£Ê½
+	 * è¾“å‡ºæ­¤å•æ¡è·¯å¾„ä¸‹çš„é¢‘ç¹æ¨¡å¼
 	 * 
 	 * @param suffixPattern
-	 *            ºó×ºÄ£Ê½
+	 *            åç¼€æ¨¡å¼
 	 * @param rootNode
-	 *            µ¥ÌõÂ·¾¶FPÊ÷¸ù½Úµã
+	 *            å•æ¡è·¯å¾„FPæ ‘æ ¹èŠ‚ç‚¹
 	 */
 	private void printFrequentPattern(ArrayList<String> suffixPattern,
 			TreeNode rootNode) {
 		ArrayList<String> idArray = new ArrayList<>();
 		TreeNode temp;
 		temp = rootNode;
-		// ÓÃÓÚÊä³ö×éºÏÄ£Ê½
+		// ç”¨äºè¾“å‡ºç»„åˆæ¨¡å¼
 		int length = 0;
 		int num = 0;
 		int[] binaryArray;
@@ -407,7 +407,7 @@ public class FPTreeTool {
 		while (temp.getChildNodes() != null) {
 			temp = temp.getChildNodes().get(0);
 
-			// É¸Ñ¡Ö§³Ö¶ÈÏµÊı´óÓÚ×îĞ¡ãĞÖµµÄÖµ
+			// ç­›é€‰æ”¯æŒåº¦ç³»æ•°å¤§äºæœ€å°é˜ˆå€¼çš„å€¼
 			if (temp.getCount() >= minSupportCount) {
 				idArray.add(temp.getName());
 			}
@@ -419,21 +419,21 @@ public class FPTreeTool {
 			binaryArray = new int[length];
 			numToBinaryArray(binaryArray, i);
 
-			// Èç¹ûºó×ºÄ£Ê½Ö»ÓĞ1¸ö£¬²»ÄÜÊä³ö×ÔÉí
+			// å¦‚æœåç¼€æ¨¡å¼åªæœ‰1ä¸ªï¼Œä¸èƒ½è¾“å‡ºè‡ªèº«
 			if (suffixPattern.size() == 1 && i == 0) {
 				continue;
 			}
 
-			System.out.print("Æµ·±Ä£Ê½£º{¡¾ºó×ºÄ£Ê½£º");
-			// ÏÈÊä³ö¹ÌÓĞµÄºó×ºÄ£Ê½
+			System.out.print("é¢‘ç¹æ¨¡å¼ï¼š{ã€åç¼€æ¨¡å¼ï¼š");
+			// å…ˆè¾“å‡ºå›ºæœ‰çš„åç¼€æ¨¡å¼
 			if (suffixPattern.size() > 1
 					|| (suffixPattern.size() == 1 && idArray.size() > 0)) {
 				for (String s : suffixPattern) {
 					System.out.print(s + ", ");
 				}
 			}
-			System.out.print("¡¿");
-			// Êä³öÂ·¾¶ÉÏµÄ×éºÏÄ£Ê½
+			System.out.print("ã€‘");
+			// è¾“å‡ºè·¯å¾„ä¸Šçš„ç»„åˆæ¨¡å¼
 			for (int j = 0; j < length; j++) {
 				if (binaryArray[j] == 1) {
 					System.out.print(idArray.get(j) + ", ");
@@ -444,12 +444,12 @@ public class FPTreeTool {
 	}
 
 	/**
-	 * Êı×Ö×ªÎª¶ş½øÖÆĞÎÊ½
+	 * æ•°å­—è½¬ä¸ºäºŒè¿›åˆ¶å½¢å¼
 	 * 
 	 * @param binaryArray
-	 *            ×ª»¯ºóµÄ¶ş½øÖÆÊı×éĞÎÊ½
+	 *            è½¬åŒ–åçš„äºŒè¿›åˆ¶æ•°ç»„å½¢å¼
 	 * @param num
-	 *            ´ı×ª»¯Êı×Ö
+	 *            å¾…è½¬åŒ–æ•°å­—
 	 */
 	private void numToBinaryArray(int[] binaryArray, int num) {
 		int index = 0;
