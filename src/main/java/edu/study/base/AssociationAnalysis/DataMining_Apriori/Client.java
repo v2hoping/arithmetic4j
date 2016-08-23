@@ -1,9 +1,9 @@
-package DataMining_Apriori;
+package edu.study.base.AssociationAnalysis.DataMining_Apriori；
 
 /**
  * apriori关联规则挖掘算法调用类
  * @author lyq
- *
+ * @modify gwd
  */
 public class Client {
 	public static void main(String[] args){

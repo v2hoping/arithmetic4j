@@ -1,10 +1,9 @@
-package DataMining_Apriori;
-
+package edu.study.base.AssociationAnalysis.DataMining_Apriori;
 /**
  * 频繁项集
  * 
  * @author lyq
- * 
+ * @modify gwd
  */
 public class FrequentItem implements Comparable<FrequentItem>{
 	// 频繁项集的集合ID
