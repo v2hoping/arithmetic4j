@@ -1,4 +1,4 @@
-package edu.study.base.AssociationAnalysis.DataMining_Apriori；
+package edu.study.base.AssociationAnalysis.DataMining_Apriori;
 
 /**
  * apriori关联规则挖掘算法调用类

@@ -1,4 +1,5 @@
 package edu.study.base.AssociationAnalysis.DataMining_Apriori;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,9 +12,9 @@ import java.util.Map;
 
 /**
  * apriori算法工具类
- * 
+ *
  * @author lyq
- * @modify gwd
+ *
  */
 public class AprioriTool {
 	// 最小支持度计数
@@ -54,7 +55,7 @@ public class AprioriTool {
 		}
 
 		String[] temp = null;
-		totalGoodsIDs = new ArrayList<String[]>();
+		totalGoodsIDs = new ArrayList<>();
 		for (String[] array : dataArray) {
 			temp = new String[array.length - 1];
 			System.arraycopy(array, 1, temp, 0, array.length - 1);
@@ -66,7 +67,7 @@ public class AprioriTool {
 
 	/**
 	 * 判读字符数组array2是否包含于数组array1中
-	 * 
+	 *
 	 * @param array1
 	 * @param array2
 	 * @return
@@ -106,15 +107,15 @@ public class AprioriTool {
 		// 当前已经进行连接运算到几项集,开始时就是1项集
 		int currentNum = 1;
 		// 商品，1频繁项集映射图
-		HashMap<String, FrequentItem> itemMap = new HashMap<String,FrequentItem>();
+		HashMap<String, FrequentItem> itemMap = new HashMap<>();
 		FrequentItem tempItem;
 		// 初始列表
-		ArrayList<FrequentItem> list = new ArrayList<FrequentItem>();
+		ArrayList<FrequentItem> list = new ArrayList<>();
 		// 经过连接运算后产生的结果项集
-		resultItem = new ArrayList<FrequentItem>();
-		resultItemID = new ArrayList<String[]>();
+		resultItem = new ArrayList<>();
+		resultItemID = new ArrayList<>();
 		// 商品ID的种类
-		ArrayList<String> idType = new ArrayList<String>();
+		ArrayList<String> idType = new ArrayList<>();
 		for (String[] a : totalGoodsIDs) {
 			for (String s : a) {
 				if (!idType.contains(s)) {
@@ -146,12 +147,12 @@ public class AprioriTool {
 		endNum = list.size() - 1;
 
 		while (currentNum < endNum) {
-			resultContainer = new ArrayList<String[]>();
+			resultContainer = new ArrayList<>();
 			for (int i = 0; i < list.size() - 1; i++) {
 				tempItem = list.get(i);
 				array1 = tempItem.getIdArray();
 				for (int j = i + 1; j < list.size(); j++) {
-					tempIds = new ArrayList<String>();
+					tempIds = new ArrayList<>();
 					array2 = list.get(j).getIdArray();
 					for (int k = 0; k < array1.length; k++) {
 						// 如果对应位置上的值相等的时候，只取其中一个值，做了一个连接删除操作
@@ -200,7 +201,7 @@ public class AprioriTool {
 
 	/**
 	 * 判断列表结果中是否已经包含此数组
-	 * 
+	 *
 	 * @param container
 	 *            ID数组容器
 	 * @param array
@@ -208,7 +209,7 @@ public class AprioriTool {
 	 * @return
 	 */
 	private boolean isIDArrayContains(ArrayList<String[]> container,
-			String[] array) {
+									  String[] array) {
 		boolean isContain = true;
 		if (container.size() == 0) {
 			isContain = false;
@@ -248,9 +249,9 @@ public class AprioriTool {
 		int igNoreIndex = 0;
 		FrequentItem tempItem;
 		// 剪枝生成新的频繁项集
-		ArrayList<FrequentItem> newItem = new ArrayList<FrequentItem>();
+		ArrayList<FrequentItem> newItem = new ArrayList<>();
 		// 不符合要求的id
-		ArrayList<String[]> deleteIdArray = new ArrayList<String[]>();
+		ArrayList<String[]> deleteIdArray = new ArrayList<>();
 		// 子项集是否也为频繁子项集
 		boolean isContain = true;
 
@@ -304,7 +305,7 @@ public class AprioriTool {
 
 	/**
 	 * 数组array2是否包含于array1中，不需要完全一样
-	 * 
+	 *
 	 * @param array1
 	 * @param array2
 	 * @return
@@ -332,7 +333,7 @@ public class AprioriTool {
 
 	/**
 	 * 根据产生的频繁项集输出关联规则
-	 * 
+	 *
 	 * @param minConf
 	 *            最小置信度阈值
 	 */
@@ -358,8 +359,8 @@ public class AprioriTool {
 			binaryArray = new int[array.length];
 			numToBinaryArray(binaryArray, i);
 
-			childGroup1 = new ArrayList<String>();
-			childGroup2 = new ArrayList<String>();
+			childGroup1 = new ArrayList<>();
+			childGroup2 = new ArrayList<>();
 			count1 = 0;
 			count2 = 0;
 			// 按照二进制位关系取出子集
@@ -413,7 +414,7 @@ public class AprioriTool {
 
 	/**
 	 * 数字转为二进制形式
-	 * 
+	 *
 	 * @param binaryArray
 	 *            转化后的二进制数组形式
 	 * @param num
