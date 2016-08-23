@@ -1,16 +1,16 @@
-package GraphMining.DataMining_GSpan;
+package DataMining_GSpan;
 
 import java.util.ArrayList;
 
 /**
- * ͼ������
+ * 图编码类
  * @author lyq
  *
  */
 public class GraphCode {
-	//�ߵļ��ϣ��ߵ���������űߵ���Ӵ���
+	//边的集合，边的排序代表着边的添加次序
 	ArrayList<Edge> edgeSeq;
-	//ӵ����Щ�ߵ�ͼ��id
+	//拥有这些边的图的id
 	ArrayList<Integer> gs;
 	
 	public GraphCode() {

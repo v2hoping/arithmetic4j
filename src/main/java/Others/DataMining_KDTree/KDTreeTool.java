@@ -1,4 +1,4 @@
-package Others.DataMining_KDTree;
+package DataMining_KDTree;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,21 +10,21 @@ import java.util.Comparator;
 import java.util.Stack;
 
 /**
- * KD��-kά�ռ�ؼ����ݼ����㷨������
+ * KD树-k维空间关键数据检索算法工具类
  * 
  * @author lyq
  * 
  */
 public class KDTreeTool {
-	// �ռ�ƽ��ķ���
+	// 空间平面的方向
 	public static final int DIRECTION_X = 0;
 	public static final int DIRECTION_Y = 1;
 
-	// ����Ĳ�������������ļ�
+	// 输入的测试数据坐标点文件
 	private String filePath;
-	// ԭʼ�������ݵ�����
+	// 原始所有数据点数据
 	private ArrayList<Point> totalDatas;
-	// KD�����ڵ�
+	// KD树根节点
 	private TreeNode rootNode;
 
 	public KDTreeTool(String filePath) {
@@ -34,7 +34,7 @@ public class KDTreeTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -62,7 +62,7 @@ public class KDTreeTool {
 	}
 
 	/**
-	 * ����KD��
+	 * 创建KD树
 	 * 
 	 * @return
 	 */
@@ -70,7 +70,7 @@ public class KDTreeTool {
 		ArrayList<Point> copyDatas;
 
 		rootNode = new TreeNode();
-		// ���ݽڵ㿪ʼʱ����ʾ�Ŀռ�ʱ���޴��
+		// 根据节点开始时所表示的空间时无限大的
 		rootNode.range = new Range();
 		copyDatas = (ArrayList<Point>) totalDatas.clone();
 		recusiveConstructNode(rootNode, copyDatas);
@@ -79,12 +79,12 @@ public class KDTreeTool {
 	}
 
 	/**
-	 * �ݹ����KD���Ĺ���
+	 * 递归进行KD树的构造
 	 * 
 	 * @param node
-	 *            ��ǰ���ڹ���Ľڵ�
+	 *            当前正在构造的节点
 	 * @param datas
-	 *            �ýڵ��Ӧ�����ڴ��������
+	 *            该节点对应的正在处理的数据
 	 * @return
 	 */
 	private void recusiveConstructNode(TreeNode node, ArrayList<Point> datas) {
@@ -97,15 +97,15 @@ public class KDTreeTool {
 		Range range;
 		Range range2;
 
-		// ������ֵ����ݵ㼯��ֻ��1�����ݣ����ٻ���
+		// 如果划分的数据点集合只有1个数据，则不再划分
 		if (datas.size() == 1) {
 			node.nodeData = datas.get(0);
 			return;
 		}
 
-		// �����ڵ�ǰ�����ݵ㼯���н��зָ���ѡ��
+		// 首先在当前的数据点集合中进行分割方向的选择
 		direction = selectSplitDrc(datas);
-		// ���ݷ���ȡ����λ������Ϊ����ʸ��
+		// 根据方向取出中位数点作为数据矢量
 		p = getMiddlePoint(datas, direction);
 
 		node.spilt = direction;
@@ -113,7 +113,7 @@ public class KDTreeTool {
 
 		leftSideDatas = getLeftSideDatas(datas, p, direction);
 		datas.removeAll(leftSideDatas);
-		// ��Ҫȥ������
+		// 还要去掉自身
 		datas.remove(p);
 		rightSideDatas = datas;
 
@@ -121,7 +121,7 @@ public class KDTreeTool {
 			leftNode = new TreeNode();
 			leftNode.parentNode = node;
 			range2 = Range.initLeftRange(p, direction);
-			// ��ȡ���ڵ�Ŀռ�ʸ�������н�����������Χ���
+			// 获取父节点的空间矢量，进行交集运算做范围拆分
 			range = node.range.crossOperation(range2);
 			leftNode.range = range;
 
@@ -133,7 +133,7 @@ public class KDTreeTool {
 			rightNode = new TreeNode();
 			rightNode.parentNode = node;
 			range2 = Range.initRightRange(p, direction);
-			// ��ȡ���ڵ�Ŀռ�ʸ�������н�����������Χ���
+			// 获取父节点的空间矢量，进行交集运算做范围拆分
 			range = node.range.crossOperation(range2);
 			rightNode.range = range;
 
@@ -143,21 +143,21 @@ public class KDTreeTool {
 	}
 
 	/**
-	 * �������������ݵ�������
+	 * 搜索出给定数据点的最近点
 	 * 
 	 * @param p
-	 *            ���Ƚ������
+	 *            待比较坐标点
 	 */
 	public Point searchNearestData(Point p) {
-		// �ڵ����������ݵ�ľ���
+		// 节点距离给定数据点的距离
 		TreeNode nearestNode = null;
-		// ��ջ��¼�������Ľڵ�
+		// 用栈记录遍历过的节点
 		Stack<TreeNode> stackNodes;
 
 		stackNodes = new Stack<>();
 		findedNearestLeafNode(p, rootNode, stackNodes);
 
-		// ȡ��Ҷ�ӽڵ㣬��Ϊ��ǰ�ҵ�������ڵ�
+		// 取出叶子节点，作为当前找到的最近节点
 		nearestNode = stackNodes.pop();
 		nearestNode = dfsSearchNodes(stackNodes, p, nearestNode);
 
@@ -165,44 +165,44 @@ public class KDTreeTool {
 	}
 
 	/**
-	 * ������ȵķ�ʽ���������Ĳ���
+	 * 深度优先的方式进行最近点的查找
 	 * 
 	 * @param stack
-	 *            KD���ڵ�ջ
+	 *            KD树节点栈
 	 * @param desPoint
-	 *            ���������ݵ�
+	 *            给定的数据点
 	 * @param nearestNode
-	 *            ��ǰ�ҵ�������ڵ�
+	 *            当前找到的最近节点
 	 * @return
 	 */
 	private TreeNode dfsSearchNodes(Stack<TreeNode> stack, Point desPoint,
 			TreeNode nearestNode) {
-		// �Ƿ��������ڵ�߽�
+		// 是否碰到父节点边界
 		boolean isCollision;
 		double minDis;
 		double dis;
 		TreeNode parentNode;
 
-		// ���ջ�ڽڵ��Ѿ�ȫ�����������������
+		// 如果栈内节点已经全部弹出，则遍历结束
 		if (stack.isEmpty()) {
 			return nearestNode;
 		}
 
-		// ��ȡ���ڵ�
+		// 获取父节点
 		parentNode = stack.pop();
 
 		minDis = desPoint.ouDistance(nearestNode.nodeData);
 		dis = desPoint.ouDistance(parentNode.nodeData);
 
-		// ����뵱ǰ���ݵ��ĸ��ڵ������̣����������Ľڵ���и���
+		// 如果与当前回溯到的父节点距离更短，则搜索到的节点进行更新
 		if (dis < minDis) {
 			minDis = dis;
 			nearestNode = parentNode;
 		}
 
-		// Ĭ��û����ײ��
+		// 默认没有碰撞到
 		isCollision = false;
-		// �ж��Ƿ������˸��ڵ�Ŀռ�ָ���
+		// 判断是否触碰到了父节点的空间分割线
 		if (parentNode.spilt == DIRECTION_X) {
 			if (parentNode.nodeData.x > desPoint.x - minDis
 					&& parentNode.nodeData.x < desPoint.x + minDis) {
@@ -215,13 +215,13 @@ public class KDTreeTool {
 			}
 		}
 
-		// ������������߽��ˣ����Ҵ˽ڵ�ĺ��ӽڵ㻹δ��ȫ�����꣬����Լ�������
+		// 如果触碰到父边界了，并且此节点的孩子节点还未完全遍历完，则可以继续遍历
 		if (isCollision
 				&& (!parentNode.leftNode.isVisited || !parentNode.rightNode.isVisited)) {
 			TreeNode newNode;
-			// �½���ǰ��С�ֲ��ڵ�ջ
+			// 新建当前的小局部节点栈
 			Stack<TreeNode> otherStack = new Stack<>();
-			// ��parentNode�������¼���Ѱ��
+			// 从parentNode的树以下继续寻找
 			findedNearestLeafNode(desPoint, parentNode, otherStack);
 			newNode = dfsSearchNodes(otherStack, desPoint, otherStack.pop());
 
@@ -231,44 +231,44 @@ public class KDTreeTool {
 			}
 		}
 
-		// �������ϻ���
+		// 继续往上回溯
 		nearestNode = dfsSearchNodes(stack, desPoint, nearestNode);
 
 		return nearestNode;
 	}
 
 	/**
-	 * �ҵ����������ڵ�������Ҷ�ӽڵ�
+	 * 找到与所给定节点的最近的叶子节点
 	 * 
 	 * @param p
-	 *            ���ȽϽڵ�
+	 *            待比较节点
 	 * @param node
-	 *            ��ǰ�������Ľڵ�
+	 *            当前搜索到的节点
 	 * @param stack
-	 *            �������Ľڵ�ջ
+	 *            遍历过的节点栈
 	 */
 	private void findedNearestLeafNode(Point p, TreeNode node,
 			Stack<TreeNode> stack) {
-		// �ָ��
+		// 分割方向
 		int splitDic;
 
-		// ���������Ľڵ����ջ��
+		// 将遍历过的节点加入栈中
 		stack.push(node);
-		// ���Ϊ���ʹ�
+		// 标记为访问过
 		node.isVisited = true;
-		// ����˽ڵ�û�����Һ��ӽڵ�˵���Ѿ���Ҷ�ӽڵ���
+		// 如果此节点没有左右孩子节点说明已经是叶子节点了
 		if (node.leftNode == null && node.rightNode == null) {
 			return;
 		}
 
 		splitDic = node.spilt;
-		// ѡ��һ�����ϷָΧ�Ľڵ�����ݹ���Ѱ
+		// 选择一个符合分割范围的节点继续递归搜寻
 		if ((splitDic == DIRECTION_X && p.x < node.nodeData.x)
 				|| (splitDic == DIRECTION_Y && p.y < node.nodeData.y)) {
 			if (!node.leftNode.isVisited) {
 				findedNearestLeafNode(p, node.leftNode, stack);
 			} else {
-				// ������ӽڵ��Ѿ����ʹ����������һ��
+				// 如果左孩子节点已经访问过，则访问另一边
 				findedNearestLeafNode(p, node.rightNode, stack);
 			}
 		} else if ((splitDic == DIRECTION_X && p.x > node.nodeData.x)
@@ -276,17 +276,17 @@ public class KDTreeTool {
 			if (!node.rightNode.isVisited) {
 				findedNearestLeafNode(p, node.rightNode, stack);
 			} else {
-				// ����Һ��ӽڵ��Ѿ����ʹ����������һ��
+				// 如果右孩子节点已经访问过，则访问另一边
 				findedNearestLeafNode(p, node.leftNode, stack);
 			}
 		}
 	}
 
 	/**
-	 * ���ݸ��������ݵ�ͨ�����㷴��ѡ��ķָ��
+	 * 根据给定的数据点通过计算反差选择的分割点
 	 * 
 	 * @param datas
-	 *            ���ֵļ��ϵ㼯��
+	 *            部分的集合点集合
 	 * @return
 	 */
 	private int selectSplitDrc(ArrayList<Point> datas) {
@@ -309,23 +309,23 @@ public class KDTreeTool {
 			varianceY += (p.y - avgY) * (p.y - avgY);
 		}
 
-		// �����ķ���
+		// 求最后的方差
 		varianceX /= datas.size();
 		varianceY /= datas.size();
 
-		// ͨ���ȽϷ���Ĵ�С�����ָ��ѡ�񲨶��ϴ�Ľ��л���
+		// 通过比较方差的大小决定分割方向，选择波动较大的进行划分
 		direction = varianceX > varianceY ? DIRECTION_X : DIRECTION_Y;
 
 		return direction;
 	}
 
 	/**
-	 * ��������㷽λ��������ѡ���м�����������
+	 * 根据坐标点方位进行排序，选出中间点的坐标数据
 	 * 
 	 * @param datas
-	 *            ���ݵ㼯��
+	 *            数据点集合
 	 * @param dir
-	 *            ��������귽��
+	 *            排序的坐标方向
 	 */
 	private Point getMiddlePoint(ArrayList<Point> datas, int dir) {
 		int index = 0;
@@ -352,21 +352,21 @@ public class KDTreeTool {
 			});
 		}
 
-		// ȡ����λ��
+		// 取出中位数
 		middlePoint = datas.get(index);
 
 		return middlePoint;
 	}
 
 	/**
-	 * ���ݷ���õ�ԭ���ֽڵ㼯���������ݵ�
+	 * 根据方向得到原部分节点集合左侧的数据点
 	 * 
 	 * @param datas
-	 *            ԭʼ���ݵ㼯��
+	 *            原始数据点集合
 	 * @param nodeData
-	 *            ����ʸ��
+	 *            数据矢量
 	 * @param dir
-	 *            �ָ��
+	 *            分割方向
 	 * @return
 	 */
 	private ArrayList<Point> getLeftSideDatas(ArrayList<Point> datas,

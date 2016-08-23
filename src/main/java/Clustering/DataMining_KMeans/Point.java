@@ -1,19 +1,19 @@
-package Clustering.DataMining_KMeans;
+package DataMining_KMeans;
 
 /**
- * �������
+ * 坐标点类
  * 
  * @author lyq
  * 
  */
 public class Point implements Comparable<Point>{
-	// ����������
+	// 坐标点横坐标
 	private double x;
-	// �����������
+	// 坐标点纵坐标
 	private double y;
-	//�Դ˵���Ϊ�������ĵ����������
+	//以此点作为聚类中心的类的类名称
 	private String className;
-	// �����֮���ŷʽ����
+	// 坐标点之间的欧式距离
 	private Double distance;
 
 	public Point(double x, double y) {
@@ -33,7 +33,7 @@ public class Point implements Comparable<Point>{
 	}
 
 	/**
-	 * ����Ŀ���p��ŷ����þ���
+	 * 距离目标点p的欧几里得距离
 	 * 
 	 * @param p
 	 */

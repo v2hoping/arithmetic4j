@@ -1,19 +1,19 @@
-package StatisticalLearning.DataMining_EM;
+package DataMining_EM;
 
 /**
- * �������
+ * 坐标点类
  * 
  * @author lyq
  * 
  */
 public class Point {
-	// ����������
+	// 坐标点横坐标
 	private double x;
-	// �����������
+	// 坐标点纵坐标
 	private double y;
-	// ��������P1��������
+	// 坐标点对于P1的隶属度
 	private double memberShip1;
-	// ��������P2��������
+	// 坐标点对于P2的隶属度
 	private double memberShip2;
 
 	public Point(double d, double e) {

@@ -1,4 +1,4 @@
-package SequentialPatterns.DataMining_PrefixSpan;
+package DataMining_PrefixSpan;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,23 +10,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * PrefixSpanTool����ģʽ�����㷨������
+ * PrefixSpanTool序列模式分析算法工具类
  * 
  * @author lyq
  * 
  */
 public class PrefixSpanTool {
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// ��С֧�ֶ���ֵ����
+	// 最小支持度阈值比例
 	private double minSupportRate;
-	// ��С֧�ֶȣ�ͨ����������������ֵ��������
+	// 最小支持度，通过序列总数乘以阈值比例计算
 	private int minSupport;
-	// ԭʼ������
+	// 原始序列组
 	private ArrayList<Sequence> totalSeqs;
-	// �ھ������������Ƶ��ģʽ
+	// 挖掘出的所有序列频繁模式
 	private ArrayList<Sequence> totalFrequentSeqs;
-	// ���еĵ�һ����ڵݹ�ö��
+	// 所有的单一项，用于递归枚举
 	private ArrayList<String> singleItems;
 
 	public PrefixSpanTool(String filePath, double minSupportRate) {
@@ -36,7 +36,7 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -69,15 +69,15 @@ public class PrefixSpanTool {
 			totalSeqs.add(tempSeq);
 		}
 
-		System.out.println("ԭʼ�������ݣ�");
+		System.out.println("原始序列数据：");
 		outputSeqence(totalSeqs);
 	}
 
 	/**
-	 * ��������б�����
+	 * 输出序列列表内容
 	 * 
 	 * @param seqList
-	 *            ����������б�
+	 *            待输出序列列表
 	 */
 	private void outputSeqence(ArrayList<Sequence> seqList) {
 		for (Sequence seq : seqList) {
@@ -100,7 +100,7 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * �Ƴ���ʼ�����в�������С֧�ֶ���ֵ�ĵ���
+	 * 移除初始序列中不满足最小支持度阈值的单项
 	 */
 	private void removeInitSeqsItem() {
 		int count = 0;
@@ -136,7 +136,7 @@ public class PrefixSpanTool {
 			count = (int) entry.getValue();
 
 			if (count < minSupport) {
-				// ���֧�ֶ���ֵС�����õ���С֧�ֶ���ֵ����ɾ������
+				// 如果支持度阈值小于所得的最小支持度阈值，则删除该项
 				for (Sequence seq : totalSeqs) {
 					seq.deleteSingleItem(key);
 				}
@@ -149,12 +149,12 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * �ݹ�������������������ģʽ
+	 * 递归搜索满足条件的序列模式
 	 * 
 	 * @param beforeSeq
-	 *            ǰ׺����
+	 *            前缀序列
 	 * @param afterSeqList
-	 *            ��׺�����б�
+	 *            后缀序列列表
 	 */
 	private void recursiveSearchSeqs(Sequence beforeSeq,
 			ArrayList<Sequence> afterSeqList) {
@@ -164,7 +164,7 @@ public class PrefixSpanTool {
 		ArrayList<Sequence> tempSeqList = new ArrayList<>();
 
 		for (String s : singleItems) {
-			// �ֳ�2����ʽ�ݹ飬��<a>Ϊ��ʼ���һ��ֱ�Ӽ�����������<a,a>,<a,b> <a,c>..
+			// 分成2种形式递归，以<a>为起始项，第一种直接加入独立项集遍历<a,a>,<a,b> <a,c>..
 			if (isLargerThanMinSupport(s, afterSeqList)) {
 				tempSeq = beforeSeq.copySeqence();
 				tempItemSet = new ItemSet(s);
@@ -183,8 +183,8 @@ public class PrefixSpanTool {
 				recursiveSearchSeqs(tempSeq, tempSeqList);
 			}
 
-			// �ڶ��ֵݹ�Ϊ��Ԫ�ص���ݼ������������aΪ��<(aa)>,<(ab)>,<(ac)>...
-			// a������������Ϊһ��ǰ׺���У���������ǵ���Ԫ�ػ����Ѿ��Ƕ�Ԫ�ص��
+			// 第二种递归为以元素的身份加入最后的项集内以a为例<(aa)>,<(ab)>,<(ac)>...
+			// a在这里可以理解为一个前缀序列，里面可能是单个元素或者已经是多元素的项集
 			tempSeq = beforeSeq.copySeqence();
 			int size = tempSeq.getItemSetList().size();
 			tempItemSet = tempSeq.getItemSetList().get(size - 1);
@@ -207,12 +207,12 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * �������������������������е�֧�ֶ��Ƿ񳬹���ֵ
+	 * 所传入的项组合在所给定序列中的支持度是否超过阈值
 	 * 
 	 * @param s
-	 *            ����ƥ�����
+	 *            所需匹配的项
 	 * @param seqList
-	 *            �Ƚ���������
+	 *            比较序列数据
 	 * @return
 	 */
 	private boolean isLargerThanMinSupport(String s, ArrayList<Sequence> seqList) {
@@ -233,12 +233,12 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * ������������������е�֧�ֶ��Ƿ������ֵ
+	 * 所传入的组合项集在序列中的支持度是否大于阈值
 	 * 
 	 * @param itemSet
-	 *            ���Ԫ���
+	 *            组合元素项集
 	 * @param seqList
-	 *            �Ƚϵ������б�
+	 *            比较的序列列表
 	 * @return
 	 */
 	private boolean isLargerThanMinSupport(ItemSet itemSet,
@@ -264,7 +264,7 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * ����ģʽ��������
+	 * 序列模式分析计算
 	 */
 	public void prefixSpanCalculate() {
 		Sequence seq;
@@ -274,7 +274,7 @@ public class PrefixSpanTool {
 		removeInitSeqsItem();
 
 		for (String s : singleItems) {
-			// ���ʼ��a,b,d��ʼ�ݹ�����Ѱ��Ƶ������ģʽ
+			// 从最开始的a,b,d开始递归往下寻找频繁序列模式
 			seq = new Sequence();
 			itemSet = new ItemSet(s);
 			seq.getItemSetList().add(itemSet);
@@ -282,7 +282,7 @@ public class PrefixSpanTool {
 			if (isLargerThanMinSupport(s, totalSeqs)) {
 				tempSeqList = new ArrayList<>();
 				for (Sequence s2 : totalSeqs) {
-					// �жϵ�һ���Ƿ�������������У������Ž�����ȡ����
+					// 判断单一项是否包含于在序列中，包含才进行提取操作
 					if (s2.strIsContained(s)) {
 						tempSeq = s2.extractItem(s);
 						tempSeqList.add(tempSeq);
@@ -298,10 +298,10 @@ public class PrefixSpanTool {
 	}
 
 	/**
-	 * ��ģʽ������Ƶ������ģʽ
+	 * 按模式类别输出频繁序列模式
 	 */
 	private void printTotalFreSeqs() {
-		System.out.println("����ģʽ�ھ�����");
+		System.out.println("序列模式挖掘结果：");
 		
 		ArrayList<Sequence> seqList;
 		HashMap<String, ArrayList<Sequence>> seqMap = new HashMap<>();
@@ -340,7 +340,7 @@ public class PrefixSpanTool {
 				}
 				System.out.print(">, ");
 
-				// ÿ5�����л�һ��
+				// 每5个序列换一行
 				if (count == 5) {
 					count = 0;
 					System.out.println();

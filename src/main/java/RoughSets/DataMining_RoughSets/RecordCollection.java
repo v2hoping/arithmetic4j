@@ -1,19 +1,19 @@
-package RoughSets.DataMining_RoughSets;
+package DataMining_RoughSets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ���ݼ�¼���ϣ�����һЩ��ͬ������
+ * 数据记录集合，包含一些共同的属性
  * 
  * @author lyq
  * 
  */
 public class RecordCollection {
-	// ���ϰ���������
+	// 集合包含的属性
 	private HashMap<String, String> attrValues;
-	// ���ݼ�¼�б�
+	// 数据记录列表
 	private ArrayList<Record> recordList;
 
 	public RecordCollection() {
@@ -32,7 +32,7 @@ public class RecordCollection {
 	}
 
 	/**
-	 * ���ؼ��ϵ��ַ���������
+	 * 返回集合的字符名称数组
 	 * 
 	 * @return
 	 */
@@ -47,10 +47,10 @@ public class RecordCollection {
 	}
 
 	/**
-	 * �жϼ����Ƿ�������������ƶ�Ӧ������ֵ
+	 * 判断集合是否包含此属性名称对应的属性值
 	 * 
 	 * @param attrName
-	 *            ������
+	 *            属性名
 	 * @return
 	 */
 	public boolean isContainedAttrName(String attrName) {
@@ -64,10 +64,10 @@ public class RecordCollection {
 	}
 
 	/**
-	 * �ж�2�������Ƿ���ȣ��Ƚϰ��������ݼ�¼�Ƿ���ȫһ��
+	 * 判断2个集合是否相等，比较包含的数据记录是否完全一致
 	 * 
 	 * @param rc
-	 *            ���Ƚϼ���
+	 *            待比较集合
 	 * @return
 	 */
 	public boolean isCollectionSame(RecordCollection rc) {
@@ -83,7 +83,7 @@ public class RecordCollection {
 				}
 			}
 
-			// �����1����¼�����������㼯�ϲ����
+			// 如果有1个记录不包含，就算集合不相等
 			if (!isSame) {
 				break;
 			}
@@ -93,10 +93,10 @@ public class RecordCollection {
 	}
 
 	/**
-	 * ����֮��Ľ�����
+	 * 集合之间的交运算
 	 * 
 	 * @param rc
-	 *            ������Ĳ������������һ����
+	 *            交运算的参与运算的另外一集合
 	 * @return
 	 */
 	public RecordCollection overlapCalculate(RecordCollection rc) {
@@ -106,7 +106,7 @@ public class RecordCollection {
 		HashMap<String, String> resultAttrValues = new HashMap<>();
 		ArrayList<Record> resultRecords = new ArrayList<>();
 
-		// ���м��ϵĽ����㣬����ͬ�ļ�¼����������
+		// 进行集合的交运算，有相同的记录的则进行添加
 		for (Record record : this.recordList) {
 			for (Record record2 : rc.recordList) {
 				if (record.isRecordSame(record2)) {
@@ -116,12 +116,12 @@ public class RecordCollection {
 			}
 		}
 
-		// ���û�н�������ֱ�ӷ���
+		// 如果没有交集，则直接返回
 		if (resultRecords.size() == 0) {
 			return null;
 		}
 
-		// ��2�����ϵ����Խ��кϲ�
+		// 将2个集合的属性进行合并
 		for (Map.Entry entry : this.attrValues.entrySet()) {
 			key = (String) entry.getKey();
 			value = (String) entry.getValue();
@@ -141,10 +141,10 @@ public class RecordCollection {
 	}
 
 	/**
-	 * �󼯺ϵĲ��������Ա������Ե�����
+	 * 求集合的并集，各自保留各自的属性
 	 * 
 	 * @param rc
-	 *            ���ϲ��ļ���
+	 *            待合并的集合
 	 * @return
 	 */
 	public RecordCollection unionCal(RecordCollection rc) {
@@ -164,7 +164,7 @@ public class RecordCollection {
 	}
 	
 	/**
-	 * ��������а�����Ԫ��
+	 * 输出集合中包含的元素
 	 */
 	public void printRc(){
 		System.out.print("{");

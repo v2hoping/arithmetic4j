@@ -1,4 +1,4 @@
-package Others.DataMining_Chameleon;
+package DataMining_Chameleon;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,29 +8,29 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 /**
- * Chameleon ���׶ξ����㷨������
+ * Chameleon 两阶段聚类算法工具类
  * 
  * @author lyq
  * 
  */
 public class ChameleonTool {
-	// �������ݵ��ļ���ַ
+	// 测试数据点文件地址
 	private String filePath;
-	// ��һ�׶ε�k���ڵ�k��С
+	// 第一阶段的k近邻的k大小
 	private int k;
-	// �ض���������ֵ
+	// 簇度量函数阈值
 	private double minMetric;
-	// �ܵ������ĸ���
+	// 总的坐标点的个数
 	private int pointNum;
-	// �ܵ����Ӿ�������,���ű�ʾ����������id��
+	// 总的连接矩阵的情况,括号表示的是坐标点的id号
 	public static int[][] edges;
-	// �����֮��ıߵ�Ȩ��
+	// 点与点之间的边的权重
 	public static double[][] weights;
-	// ԭʼ���������
+	// 原始坐标点数据
 	private ArrayList<Point> totalPoints;
-	// ��һ�׶β��������е���ͨ��ͼ��Ϊ���ʼ�ľ���
+	// 第一阶段产生的所有的连通子图作为最初始的聚类
 	private ArrayList<Cluster> initClusters;
-	// ����ؽ��
+	// 结果簇结合
 	private ArrayList<Cluster> resultClusters;
 
 	public ChameleonTool(String filePath, int k, double minMetric) {
@@ -42,7 +42,7 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -71,14 +71,14 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * �ݹ�ĺϲ�С�۴�
+	 * 递归的合并小聚簇
 	 */
 	private void combineSubClusters() {
 		Cluster cluster = null;
 
 		resultClusters = new ArrayList<>();
 
-		// �����ľ۴�ֻʣ��һ����ʱ�����˳�ѭ��
+		// 当最后的聚簇只剩下一个的时候，则退出循环
 		while (initClusters.size() > 1) {
 			cluster = initClusters.get(0);
 			combineAndRemove(cluster, initClusters);
@@ -86,7 +86,7 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * �ݹ�ĺϲ��۴غ��Ƴ��۴�
+	 * 递归的合并聚簇和移除聚簇
 	 * 
 	 * @param clusterList
 	 */
@@ -112,12 +112,12 @@ public class ChameleonTool {
 			}
 		}
 
-		// �����������ֵ������ֵ������кϲ�,������Ѱ���Ժϲ��Ĵ�
+		// 如果度量函数值超过阈值，则进行合并,继续搜寻可以合并的簇
 		if (maxMetric > minMetric) {
 			clusterList.remove(cluster2);
-			//���߽�������
+			//将边进行连接
 			connectClusterToCluster(cluster1, cluster2);
-			// ����1�ʹ�2�ϲ�
+			// 将簇1和簇2合并
 			cluster1.points.addAll(cluster2.points);
 			remainClusters = combineAndRemove(cluster1, clusterList);
 		} else {
@@ -130,11 +130,11 @@ public class ChameleonTool {
 	}
 	
 	/**
-	 * ��2���ؽ��бߵ�����
+	 * 将2个簇进行边的连接
 	 * @param c1
-	 * �۴�1
+	 * 聚簇1
 	 * @param c2
-	 * �۴�2
+	 * 聚簇2
 	 */
 	private void connectClusterToCluster(Cluster c1, Cluster c2){
 		ArrayList<int[]> connectedEdges;
@@ -148,14 +148,14 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * �㷨��һ�׶��γɾֲ�����ͨͼ
+	 * 算法第一阶段形成局部的连通图
 	 */
 	private void connectedGraph() {
 		double distance = 0;
 		Point p1;
 		Point p2;
 
-		// ��ʼ��Ȩ�ؾ�������Ӿ���
+		// 初始化权重矩阵和连接矩阵
 		weights = new double[pointNum][pointNum];
 		edges = new int[pointNum][pointNum];
 		for (int i = 0; i < pointNum; i++) {
@@ -165,10 +165,10 @@ public class ChameleonTool {
 
 				distance = p1.ouDistance(p2);
 				if (distance == 0) {
-					// �����Ϊ����Ļ�����Ȩ������Ϊ0
+					// 如果点为自身的话，则权重设置为0
 					weights[i][j] = 0;
 				} else {
-					// �ߵ�Ȩ�ز��õ�ֵΪ����ĵ���,����Խ����Ȩ��Խ��
+					// 边的权重采用的值为距离的倒数,距离越近，权重越大
 					weights[i][j] = 1.0 / distance;
 				}
 			}
@@ -178,13 +178,13 @@ public class ChameleonTool {
 		int[] ids;
 		int id1 = 0;
 		int id2 = 0;
-		// ��ÿ��id����㣬ȡ��Ȩ��ǰk�����ĵ��������
+		// 对每个id坐标点，取其权重前k个最大的点进行相连
 		for (int i = 0; i < pointNum; i++) {
 			tempWeight = weights[i];
-			// ��������
+			// 进行排序
 			ids = sortWeightArray(tempWeight);
 			
-			// ȡ��ǰk��Ȩ�����ı߽�������
+			// 取出前k个权重最大的边进行连接
 			for (int j = 0; j < ids.length; j++) {
 				if (j < k) {
 					id1 = i;
@@ -198,10 +198,10 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * Ȩ�ص�ð���㷨����
+	 * 权重的冒泡算法排序
 	 * 
 	 * @param array
-	 *            ����������
+	 *            待排序数组
 	 */
 	private int[] sortWeightArray(double[] array) {
 		double[] copyArray = array.clone();
@@ -221,7 +221,7 @@ public class ChameleonTool {
 			}
 			
 			ids[i] = k;
-			//����ǰ�ҵ�������ֵ����Ϊ-1�����Ѿ��ҵ�����
+			//将当前找到的最大的值重置为-1代表已经找到过了
 			copyArray[k] = -1;
 		}
 		
@@ -229,7 +229,7 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * ���ݱߵ���ͨ��ȥ��������������е�С�۴�
+	 * 根据边的连通性去深度优先搜索所有的小聚簇
 	 */
 	private void searchSmallCluster() {
 		int currentId = 0;
@@ -238,7 +238,7 @@ public class ChameleonTool {
 		initClusters = new ArrayList<>();
 		ArrayList<Point> pointList = null;
 
-		// ��id�ķ�ʽ���ȥdfs����
+		// 以id的方式逐个去dfs搜索
 		for (int i = 0; i < pointNum; i++) {
 			p = totalPoints.get(i);
 
@@ -258,14 +258,14 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * ������ȵķ�ʽ�ҵ����������ŵ����������
+	 * 深度优先的方式找到边所连接着的所有坐标点
 	 * 
 	 * @param p
-	 *            ��ǰ���������
+	 *            当前搜索的起点
 	 * @param lastId
-	 *            �˵�ĸ������
+	 *            此点的父坐标点
 	 * @param pList
-	 *            ������б�
+	 *            坐标点列表
 	 */
 	private void recusiveDfsSearch(Point p, int parentId, ArrayList<Point> pList) {
 		int id1 = 0;
@@ -284,19 +284,19 @@ public class ChameleonTool {
 			if (edges[id1][id2] == 1 && id2 != parentId) {
 				newPoint = totalPoints.get(j);
 				pList.add(newPoint);
-				// �Դ˵�Ϊ��㣬�����ݹ�����
+				// 以此点为起点，继续递归搜索
 				recusiveDfsSearch(newPoint, id1, pList);
 			}
 		}
 	}
 
 	/**
-	 * ��������2���صıߵ�Ȩ��
+	 * 计算连接2个簇的边的权重
 	 * 
 	 * @param c1
-	 *            �۴�1
+	 *            聚簇1
 	 * @param c2
-	 *            �۴�2
+	 *            聚簇2
 	 * @return
 	 */
 	private double calEC(Cluster c1, Cluster c2) {
@@ -305,7 +305,7 @@ public class ChameleonTool {
 
 		connectedEdges = c1.calNearestEdge(c2, 2);
 
-		// ��������2���ֵıߵ�Ȩ�غ�
+		// 计算连接2部分的边的权重和
 		for (int[] array : connectedEdges) {
 			resultEC += weights[array[0]][array[1]];
 		}
@@ -314,7 +314,7 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * ����2���ص���Ի�����
+	 * 计算2个簇的相对互连性
 	 * 
 	 * @param c1
 	 * @param c2
@@ -336,12 +336,12 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * ����ص���Խ��ƶ�
+	 * 计算簇的相对近似度
 	 * 
 	 * @param c1
-	 *            ��1
+	 *            簇1
 	 * @param c2
-	 *            ��2
+	 *            簇2
 	 * @return
 	 */
 	private double calRC(Cluster c1, Cluster c2) {
@@ -362,40 +362,40 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * �������������ֵ
+	 * 计算度量函数的值
 	 * 
 	 * @param c1
-	 *            ��1
+	 *            簇1
 	 * @param c2
-	 *            ��2
+	 *            簇2
 	 * @param alpha
-	 *            �ݵĲ���ֵ
+	 *            幂的参数值
 	 * @return
 	 */
 	private double calMetricfunction(Cluster c1, Cluster c2, int alpha) {
-		// ��������ֵ
+		// 度量函数值
 		double metricValue = 0;
 		double RI = 0;
 		double RC = 0;
 
 		RI = calRI(c1, c2);
 		RC = calRC(c1, c2);
-		// ���alpha����1�����������Խ����ԣ����alpha��ң��1��ע����Ի�����
+		// 如果alpha大于1，则更重视相对近似性，如果alpha逍遥于1，注重相对互连性
 		metricValue = RI * Math.pow(RC, alpha);
 
 		return metricValue;
 	}
 
 	/**
-	 * ����۴���
+	 * 输出聚簇列
 	 * @param clusterList
-	 * ����۴���
+	 * 输出聚簇列
 	 */
 	private void printClusters(ArrayList<Cluster> clusterList) {
 		int i = 1;
 
 		for (Cluster cluster : clusterList) {
-			System.out.print("�۴�" + i + ":");
+			System.out.print("聚簇" + i + ":");
 			for (Point p : cluster.points) {
 				System.out.print(MessageFormat.format("({0}, {1}) ", p.x, p.y));
 			}
@@ -406,18 +406,18 @@ public class ChameleonTool {
 	}
 
 	/**
-	 * �����۴�
+	 * 创建聚簇
 	 */
 	public void buildCluster() {
-		// ��һ�׶��γ�С�۴�
+		// 第一阶段形成小聚簇
 		connectedGraph();
 		searchSmallCluster();
-		System.out.println("��һ�׶��γɵ�С�ؼ��ϣ�");
+		System.out.println("第一阶段形成的小簇集合：");
 		printClusters(initClusters);
 		
-		// �ڶ��׶θ���RI��RC��ֵ�ϲ�С�۴��γ����ս���۴�
+		// 第二阶段根据RI和RC的值合并小聚簇形成最终结果聚簇
 		combineSubClusters();
-		System.out.println("���յľ۴ؼ��ϣ�");
+		System.out.println("最终的聚簇集合：");
 		printClusters(resultClusters);
 	}
 }

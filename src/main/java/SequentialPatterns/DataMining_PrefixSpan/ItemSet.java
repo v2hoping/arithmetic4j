@@ -1,15 +1,15 @@
-package SequentialPatterns.DataMining_PrefixSpan;
+package DataMining_PrefixSpan;
 
 import java.util.ArrayList;
 
 /**
- * �ַ����
+ * 字符项集类
  * 
  * @author lyq
  * 
  */
 public class ItemSet {
-	// ��ڵ��ַ�
+	// 项集内的字符
 	private ArrayList<String> items;
 
 	public ItemSet(String[] str) {
@@ -39,7 +39,7 @@ public class ItemSet {
 	}
 
 	/**
-	 * ��ȡ����1��Ԫ��
+	 * 获取项集最后1个元素
 	 * 
 	 * @return
 	 */

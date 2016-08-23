@@ -1,4 +1,4 @@
-package BaggingAndBoosting.DataMining_AdaBoost;
+package DataMining_AdaBoost;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,32 +10,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * AdaBoost�����㷨������
+ * AdaBoost提升算法工具类
  * 
  * @author lyq
  * 
  */
 public class AdaBoostTool {
-	// �������𣬳���Ĭ��Ϊ����1�͸���-1
+	// 分类的类别，程序默认为正类1和负类-1
 	public static final int CLASS_POSITIVE = 1;
 	public static final int CLASS_NEGTIVE = -1;
 
-	// ���ȼ����3��������(������Ӧ�����¶����ݼ�����ѵ���õ�)
+	// 事先假设的3个分类器(理论上应该重新对数据集进行训练得到)
 	public static final String CLASSIFICATION1 = "X=2.5";
 	public static final String CLASSIFICATION2 = "X=7.5";
 	public static final String CLASSIFICATION3 = "Y=5.5";
 
-	// ��������
+	// 分类器组
 	public static final String[] ClASSIFICATION = new String[] {
 			CLASSIFICATION1, CLASSIFICATION2, CLASSIFICATION3 };
-	// ����Ȩ����
+	// 分类权重组
 	private double[] CLASSIFICATION_WEIGHT;
 
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// �������ֵ
+	// 误差率阈值
 	private double errorValue;
-	// ���е����ݵ�
+	// 所有的数据点
 	private ArrayList<Point> totalPoint;
 
 	public AdaBoostTool(String filePath, double errorValue) {
@@ -45,7 +45,7 @@ public class AdaBoostTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -74,10 +74,10 @@ public class AdaBoostTool {
 	}
 
 	/**
-	 * ���ݵ�ǰ�����ֵ������õ�Ȩ��
+	 * 根据当前的误差值算出所得的权重
 	 * 
 	 * @param errorValue
-	 *            ��ǰ���ֵ�����������
+	 *            当前划分的坐标点误差率
 	 * @return
 	 */
 	private double calculateWeight(double errorValue) {
@@ -91,12 +91,12 @@ public class AdaBoostTool {
 	}
 
 	/**
-	 * ���㵱ǰ���ֵ������
+	 * 计算当前划分的误差率
 	 * 
 	 * @param pointMap
-	 *            ����֮��ĵ㼯
+	 *            划分之后的点集
 	 * @param weight
-	 *            ���λ��ֵõ��ķ�����Ȩ��
+	 *            本次划分得到的分类器权重
 	 * @return
 	 */
 	private double calculateErrorValue(
@@ -112,7 +112,7 @@ public class AdaBoostTool {
 			pList = (ArrayList<Point>) entry.getValue();
 			for (Point p : pList) {
 				temp = p.getProbably();
-				// ����������Ͳ���ȣ���������
+				// 如果划分类型不相等，代表划错了
 				if (tempClassType != p.getClassType()) {
 					resultValue += temp;
 				}
@@ -126,27 +126,27 @@ public class AdaBoostTool {
 			pList = (ArrayList<Point>) entry.getValue();
 			for (Point p : pList) {
 				temp = p.getProbably();
-				// ����������Ͳ���ȣ���������
+				// 如果划分类型不相等，代表划错了
 				if (tempClassType != p.getClassType()) {
-					// ����ĵ��Ȩ�ر������
+					// 划错的点的权重比例变大
 					temp *= Math.exp(weight);
 					p.setProbably(temp);
 				} else {
-					// ���Եĵ��Ȩ�رȼ�С
+					// 划对的点的权重比减小
 					temp *= Math.exp(-weight);
 					p.setProbably(temp);
 				}
 			}
 		}
 
-		// ��������û��С����ֵ����������
+		// 如果误差率没有小于阈值，继续处理
 		dataNormalized();
 
 		return resultValue;
 	}
 
 	/**
-	 * ��������һ������
+	 * 概率做归一化处理
 	 */
 	private void dataNormalized() {
 		double sumProbably = 0;
@@ -156,7 +156,7 @@ public class AdaBoostTool {
 			sumProbably += p.getProbably();
 		}
 
-		// ��һ������
+		// 归一化处理
 		for (Point p : totalPoint) {
 			temp = p.getProbably();
 			p.setProbably(temp / sumProbably);
@@ -164,7 +164,7 @@ public class AdaBoostTool {
 	}
 
 	/**
-	 * ��AdaBoost�㷨�õ�����Ϸ����������ݽ��з���
+	 * 用AdaBoost算法得到的组合分类器对数据进行分类
 	 * 
 	 */
 	public void adaBoostClassify() {
@@ -173,7 +173,7 @@ public class AdaBoostTool {
 
 		calculateWeightArray();
 		for (int i = 0; i < ClASSIFICATION.length; i++) {
-			System.out.println(MessageFormat.format("������{0}Ȩ��Ϊ��{1}", (i+1), CLASSIFICATION_WEIGHT[i]));
+			System.out.println(MessageFormat.format("分类器{0}权重为：{1}", (i+1), CLASSIFICATION_WEIGHT[i]));
 		}
 		
 		for (int j = 0; j < totalPoint.size(); j++) {
@@ -185,22 +185,22 @@ public class AdaBoostTool {
 						* CLASSIFICATION_WEIGHT[i];
 			}
 			
-			//���з����ж�
+			//进行符号判断
 			if (value > 0) {
 				System.out
 						.println(MessageFormat.format(
-								"��({0}, {1})����Ϸ�����Ϊ��1���õ��ʵ�ʷ���Ϊ{2}", p.getX(), p.getY(),
+								"点({0}, {1})的组合分类结果为：1，该点的实际分类为{2}", p.getX(), p.getY(),
 								p.getClassType()));
 			} else {
 				System.out.println(MessageFormat.format(
-						"��({0}, {1})����Ϸ�����Ϊ��-1���õ��ʵ�ʷ���Ϊ{2}", p.getX(), p.getY(),
+						"点({0}, {1})的组合分类结果为：-1，该点的实际分类为{2}", p.getX(), p.getY(),
 						p.getClassType()));
 			}
 		}
 	}
 
 	/**
-	 * ���������Ȩ������
+	 * 计算分类器权重数组
 	 */
 	private void calculateWeightArray() {
 		int tempClassType = 0;
@@ -229,35 +229,35 @@ public class AdaBoostTool {
 			mapList.put(CLASS_NEGTIVE, negPointList);
 
 			if (i == 0) {
-				// �ʼ�ĸ������Ȩ��һ�������Դ���0��ʹ��e��0�η�����1
+				// 最开始的各个点的权重一样，所以传入0，使得e的0次方等于1
 				errorValue = calculateErrorValue(mapList);
 			} else {
-				// ÿ�ΰ��ϴμ������õ�Ȩ�ش��룬���и��ʵ��������С
+				// 每次把上次计算所得的权重代入，进行概率的扩大或缩小
 				errorValue = calculateErrorValue(mapList);
 			}
 
-			// ���㵱ǰ������������Ȩ��
+			// 计算当前分类器的所得权重
 			CLASSIFICATION_WEIGHT[i] = calculateWeight(errorValue);
 		}
 	}
 
 	/**
-	 * �ø����ӷ��������з���
+	 * 用各个子分类器进行分类
 	 * 
 	 * @param classification
-	 *            ����������
+	 *            分类器名称
 	 * @param p
-	 *            �����������
+	 *            待划分坐标点
 	 * @return
 	 */
 	private int classifyData(String classification, Point p) {
-		// �ָ�������������
+		// 分割线所属坐标轴
 		String position;
-		// �ָ��ߵ�ֵ
+		// 分割线的值
 		double value = 0;
 		double posProbably = 0;
 		double negProbably = 0;
-		// �����Ƿ��Ǵ���һ�ߵĻ���
+		// 划分是否是大于一边的划分
 		boolean isLarger = false;
 		String[] array;
 		ArrayList<Point> pList = new ArrayList<>();
@@ -271,7 +271,7 @@ public class AdaBoostTool {
 				isLarger = true;
 			}
 
-			// ��ѵ������������������ߵĵ����
+			// 将训练数据中所有属于这边的点加入
 			for (Point point : totalPoint) {
 				if (isLarger && point.getX() > value) {
 					pList.add(point);
@@ -284,7 +284,7 @@ public class AdaBoostTool {
 				isLarger = true;
 			}
 
-			// ��ѵ������������������ߵĵ����
+			// 将训练数据中所有属于这边的点加入
 			for (Point point : totalPoint) {
 				if (isLarger && point.getY() > value) {
 					pList.add(point);
@@ -302,7 +302,7 @@ public class AdaBoostTool {
 			}
 		}
 		
-		//���ఴ�������������л���
+		//分类按正负类数量进行划分
 		if (posProbably > negProbably) {
 			return CLASS_POSITIVE;
 		} else {

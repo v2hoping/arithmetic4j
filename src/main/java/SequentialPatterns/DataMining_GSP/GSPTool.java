@@ -1,4 +1,4 @@
-package SequentialPatterns.DataMining_GSP;
+package DataMining_GSP;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,25 +10,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GSP����ģʽ�����㷨
+ * GSP序列模式分析算法
  * 
  * @author lyq
  * 
  */
 public class GSPTool {
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// ��С֧�ֶ���ֵ
+	// 最小支持度阈值
 	private int minSupportCount;
-	// ʱ����С���
+	// 时间最小间隔
 	private int min_gap;
-	// ʱ�������
+	// 时间最大间隔
 	private int max_gap;
-	// ԭʼ��������
+	// 原始数据序列
 	private ArrayList<Sequence> totalSequences;
-	// GSP�㷨�в��������е�Ƶ�������
+	// GSP算法中产生的所有的频繁项集序列
 	private ArrayList<Sequence> totalFrequencySeqs;
-	// ���������ֶ�ʱ���ӳ��ͼ����
+	// 序列项数字对时间的映射图容器
 	private ArrayList<ArrayList<HashMap<Integer, Integer>>> itemNum2Time;
 
 	public GSPTool(String filePath, int minSupportCount, int min_gap,
@@ -42,7 +42,7 @@ public class GSPTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -81,7 +81,7 @@ public class GSPTool {
 			mapSeq.put(tID, seq);
 		}
 
-		// ������ͼ���뵽����List��
+		// 将序列图加入到序列List中
 		totalSequences = new ArrayList<>();
 		for (Map.Entry entry : mapSeq.entrySet()) {
 			totalSequences.add((Sequence) entry.getValue());
@@ -89,7 +89,7 @@ public class GSPTool {
 	}
 
 	/**
-	 * ����1Ƶ���
+	 * 生成1频繁项集
 	 * 
 	 * @return
 	 */
@@ -104,7 +104,7 @@ public class GSPTool {
 		for (Sequence seq : totalSequences) {
 			for (ItemSet itemSet : seq.getItemSetList()) {
 				for (int num : itemSet.getItems()) {
-					// ���û�д���������������Ӳ���
+					// 如果没有此种类型项，则进行添加操作
 					if (!itemNumMap.containsKey(num)) {
 						itemNumMap.put(num, 1);
 					}
@@ -122,7 +122,7 @@ public class GSPTool {
 				
 				for (ItemSet itemSet : seq.getItemSetList()) {
 					for (int num : itemSet.getItems()) {
-						// ���û�д���������������Ӳ���
+						// 如果没有此种类型项，则进行添加操作
 						if (num == number) {
 							isContain = true;
 							break;
@@ -154,19 +154,19 @@ public class GSPTool {
 			}
 
 		}
-		// ��������������
+		// 将序列升序排列
 		Collections.sort(seqList);
-		// ��Ƶ��1�������Ƶ����б���
+		// 将频繁1项集加入总频繁项集列表中
 		totalFrequencySeqs.addAll(seqList);
 
 		return seqList;
 	}
 
 	/**
-	 * ͨ��1Ƶ������Ӳ���2Ƶ���
+	 * 通过1频繁项集连接产生2频繁项集
 	 * 
 	 * @param oneSeq
-	 *            1Ƶ�������
+	 *            1频繁项集序列
 	 * @return
 	 */
 	private ArrayList<Sequence> generateTwoFrequencyItem(
@@ -177,8 +177,8 @@ public class GSPTool {
 		int num1;
 		int num2;
 
-		// ���罫<a>,<b>2��1Ƶ�����������ϣ����Է�Ϊ<a a>��<a b>��<b a>,<b b>4������ģʽ
-		// ע���ʱ��ÿ�������а���2�������
+		// 假如将<a>,<b>2个1频繁项集做连接组合，可以分为<a a>，<a b>，<b a>,<b b>4个序列模式
+		// 注意此时的每个序列中包含2个独立项集
 		for (int i = 0; i < oneSeq.size(); i++) {
 			num1 = oneSeq.get(i).getFirstItemSetNum();
 			for (int j = 0; j < oneSeq.size(); j++) {
@@ -196,7 +196,7 @@ public class GSPTool {
 			}
 		}
 
-		// �������ӻ���1�������ÿ��������ֻ������һ������������ʱa,b�Ļ�������<(a,a)> <(a,b)> <(b,b)>
+		// 上面连接还有1种情况是每个序列中只包含有一个项集的情况，此时a,b的划分则是<(a,a)> <(a,b)> <(b,b)>
 		for (int i = 0; i < oneSeq.size(); i++) {
 			num1 = oneSeq.get(i).getFirstItemSetNum();
 			for (int j = i; j < oneSeq.size(); j++) {
@@ -211,17 +211,17 @@ public class GSPTool {
 				}
 			}
 		}
-		// ͬ����2Ƶ������뵽��Ƶ�����
+		// 同样将2频繁项集加入到总频繁项集中
 		totalFrequencySeqs.addAll(resultSeq);
 
 		return resultSeq;
 	}
 
 	/**
-	 * �����ϴε�Ƶ�������Ӳ����µĺ�ѡ��
+	 * 根据上次的频繁集连接产生新的侯选集
 	 * 
 	 * @param seqList
-	 *            �ϴβ����ĺ�ѡ��
+	 *            上次产生的候选集
 	 * @return
 	 */
 	private ArrayList<Sequence> generateCandidateItem(
@@ -229,7 +229,7 @@ public class GSPTool {
 		Sequence tempSeq;
 		ArrayList<Integer> tempNumArray;
 		ArrayList<Sequence> resultSeq = new ArrayList<>();
-		// �����������б�
+		// 序列数字项列表
 		ArrayList<ArrayList<Integer>> seqNums = new ArrayList<>();
 
 		for (int i = 0; i < seqList.size(); i++) {
@@ -243,18 +243,18 @@ public class GSPTool {
 
 		ArrayList<Integer> array1;
 		ArrayList<Integer> array2;
-		// ����i,j�Ŀ���
+		// 序列i,j的拷贝
 		Sequence seqi = null;
 		Sequence seqj = null;
-		// �ж��Ƿ��ܹ����ӣ�Ĭ��������
+		// 判断是否能够连接，默认能连接
 		boolean canConnect = true;
-		// �����������㣬�����Լ����Լ�����
+		// 进行连接运算，包括自己与自己连接
 		for (int i = 0; i < seqNums.size(); i++) {
 			for (int j = 0; j < seqNums.size(); j++) {
 				array1 = (ArrayList<Integer>) seqNums.get(i).clone();
 				array2 = (ArrayList<Integer>) seqNums.get(j).clone();
 
-				// ����һ��������ȥ����һ�����ڶ���������ȥ�����һ�������ʣ�µĲ�����ȣ����������
+				// 将第一个数字组去掉第一个，第二个数字组去掉最后一个，如果剩下的部分相等，则可以连接
 				array1.remove(0);
 				array2.remove(array2.size() - 1);
 
@@ -272,16 +272,16 @@ public class GSPTool {
 
 					int lastItemNum = seqj.getLastItemSetNum();
 					if (seqj.isLastItemSetSingleNum()) {
-						// ���j���е�����Ϊ��һֵ�������һ�������Զ��������i����
+						// 如果j序列的最后项集为单一值，则最后一个数字以独立项集加入i序列
 						ItemSet itemSet = new ItemSet(new int[] { lastItemNum });
 						seqi.getItemSetList().add(itemSet);
 					} else {
-						// ���j���е�����Ϊ�ǵ�һֵ�������һ�����ּ���i�������һ�����
+						// 如果j序列的最后项集为非单一值，则最后一个数字加入i序列最后一个项集中
 						ItemSet itemSet = seqi.getLastItemSet();
 						itemSet.getItems().add(lastItemNum);
 					}
 
-					// �ж��Ƿ񳬹���С֧�ֶ���ֵ
+					// 判断是否超过最小支持度阈值
 					if (isChildSeqContained(seqi)
 							&& countSupport(seqi) >= minSupportCount) {
 						resultSeq.add(seqi);
@@ -295,10 +295,10 @@ public class GSPTool {
 	}
 
 	/**
-	 * �жϴ����е������������Ƿ�Ҳ��Ƶ������
+	 * 判断此序列的所有子序列是否也是频繁序列
 	 * 
 	 * @param seq
-	 *            ���Ƚ�����
+	 *            待比较序列
 	 * @return
 	 */
 	private boolean isChildSeqContained(Sequence seq) {
@@ -325,10 +325,10 @@ public class GSPTool {
 	}
 
 	/**
-	 * ��ѡ���ж�֧�ֶȵ�ֵ
+	 * 候选集判断支持度的值
 	 * 
 	 * @param seq
-	 *            ���ж�����
+	 *            待判断序列
 	 * @return
 	 */
 	private int countSupport(Sequence seq) {
@@ -339,7 +339,7 @@ public class GSPTool {
 		HashMap<Integer, Integer> timeMap;
 		ArrayList<ItemSet> itemSetList;
 		ArrayList<ArrayList<Integer>> numArray = new ArrayList<>();
-		// ÿ���Ӧ��ʱ������
+		// 每项集对应的时间链表
 		ArrayList<ArrayList<Integer>> timeArray = new ArrayList<>();
 
 		for (ItemSet itemSet : seq.getItemSetList()) {
@@ -362,7 +362,7 @@ public class GSPTool {
 
 					if (tempItemSet.getItems().size() == childNum.size()) {
 						timeMap = itemNum2Time.get(i).get(j);
-						// ֻ�е������ƥ��ʱ��ƥ��
+						// 只有当项集长度匹配时才匹配
 						for (int k = 0; k < childNum.size(); k++) {
 							if (timeMap.containsKey(childNum.get(k))) {
 								matchNum++;
@@ -370,7 +370,7 @@ public class GSPTool {
 							}
 						}
 
-						// �����ȫƥ�䣬���¼ʱ��
+						// 如果完全匹配，则记录时间
 						if (matchNum == childNum.size()) {
 							localTime.add(t);
 						}
@@ -383,7 +383,7 @@ public class GSPTool {
 				}
 			}
 
-			// �ж�ʱ���Ƿ�����ʱ�������СԼ����������㣬��������������ѡ����
+			// 判断时间是否满足时间最大最小约束，如果满足，则此条事务包含候选事务
 			if (timeArray.size() == numArray.size()
 					&& judgeTimeInGap(timeArray)) {
 				count++;
@@ -394,10 +394,10 @@ public class GSPTool {
 	}
 
 	/**
-	 * �ж������Ƿ�����ʱ��Լ��
+	 * 判断事务是否满足时间约束
 	 * 
 	 * @param timeArray
-	 *            ʱ�����飬ÿ�д��������������еķ���ʱ������
+	 *            时间数组，每行代表各项集的在事务中的发生时间链表
 	 * @return
 	 */
 	private boolean judgeTimeInGap(ArrayList<ArrayList<Integer>> timeArray) {
@@ -423,7 +423,7 @@ public class GSPTool {
 	}
 
 	/**
-	 * ������ȱ���ʱ�䣬�ж��Ƿ��з���������ʱ����
+	 * 深度优先遍历时间，判断是否有符合条件的时间间隔
 	 * 
 	 * @param preTime
 	 * @param timeArray
@@ -439,7 +439,7 @@ public class GSPTool {
 		for (int i = 0; i < firstItemItem.size(); i++) {
 			if (firstItemItem.get(i) - preTime >= min_gap
 					&& firstItemItem.get(i) - preTime <= max_gap) {
-				// �����2����ʱ������ʱ��Լ������������µݹ�
+				// 如果此2项间隔时间满足时间约束，则继续往下递归
 				preTime = firstItemItem.get(i);
 				timeArrayClone.remove(0);
 
@@ -458,7 +458,7 @@ public class GSPTool {
 	}
 
 	/**
-	 * ��ʼ�������ʱ�������ͼ��Ϊ�˺����ʱ��Լ������
+	 * 初始化序列项到时间的序列图，为了后面的时间约束计算
 	 */
 	private void initItemNumToTimeMap() {
 		Sequence seq;
@@ -485,7 +485,7 @@ public class GSPTool {
 	}
 
 	/**
-	 * ����GSP�㷨����
+	 * 进行GSP算法计算
 	 */
 	public void gspCalculate() {
 		ArrayList<Sequence> oneSeq;
@@ -497,7 +497,7 @@ public class GSPTool {
 		twoSeq = generateTwoFrequencyItem(oneSeq);
 		candidateSeq = twoSeq;
 
-		// ��������������ѡ����ֱ��û�в�������ѡ��
+		// 不断连接生产候选集，直到没有产生出侯选集
 		for (;;) {
 			candidateSeq = generateCandidateItem(candidateSeq);
 
@@ -511,10 +511,10 @@ public class GSPTool {
 	}
 
 	/**
-	 * ��������б���Ϣ
+	 * 输出序列列表信息
 	 * 
 	 * @param outputSeqList
-	 *            ����������б�
+	 *            待输出序列列表
 	 */
 	private void outputSeqence(ArrayList<Sequence> outputSeqList) {
 		for (Sequence seq : outputSeqList) {

@@ -1,4 +1,4 @@
-package Others.DataMining_RandomForest;
+package DataMining_RandomForest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,31 +10,31 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * ���ɭ���㷨������
+ * 随机森林算法工具类
  * 
  * @author lyq
  * 
  */
 public class RandomForestTool {
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// ������������ռ������ռ����
+	// 决策树的样本占总数的占比率
 	private double sampleNumRatio;
-	// �������ݵĲɼ���������ռ�������ı���
+	// 样本数据的采集特征数量占总特征的比例
 	private double featureNumRatio;
-	// �������Ĳ���������
+	// 决策树的采样样本数
 	private int sampleNum;
-	// �������ݵĲɼ�����������
+	// 样本数据的采集采样特征数
 	private int featureNum;
-	// ���ɭ���еľ���������Ŀ,�����ܵ�������/���ڹ���ÿ���������ݵ�����
+	// 随机森林中的决策树的数目,等于总的数据数/用于构造每棵树的数据的数量
 	private int treeNum;
-	// �����������
+	// 随机数产生器
 	private Random random;
-	// ��������������������
+	// 样本数据列属性名称行
 	private String[] featureNames;
-	// ԭʼ���ܵ�����
+	// 原始的总的数据
 	private ArrayList<String[]> totalDatas;
-	// ������ɭ��
+	// 决策树森林
 	private ArrayList<DecisionTree> decisionForest;
 
 	public RandomForestTool(String filePath, double sampleNumRatio,
@@ -47,7 +47,7 @@ public class RandomForestTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -69,22 +69,22 @@ public class RandomForestTool {
 		totalDatas = dataArray;
 		featureNames = totalDatas.get(0);
 		sampleNum = (int) ((totalDatas.size() - 1) * sampleNumRatio);
-		//������������ʱ����Ҫȥ��id���Ժ;������ԣ����������Լ���
+		//算属性数量的时候需要去掉id属性和决策属性，用条件属性计算
 		featureNum = (int) ((featureNames.length -2) * featureNumRatio);
-		// ��������ʱ����Ҫȥ����������������
+		// 算数量的时候需要去掉首行属性名称行
 		treeNum = (totalDatas.size() - 1) / sampleNum;
 	}
 
 	/**
-	 * ����������
+	 * 产生决策树
 	 */
 	private DecisionTree produceDecisionTree() {
 		int temp = 0;
 		DecisionTree tree;
 		String[] tempData;
-		//�������ݵ�����к���
+		//采样数据的随机行号组
 		ArrayList<Integer> sampleRandomNum;
-		//������������������к���
+		//采样属性特征的随机列号组
 		ArrayList<Integer> featureRandomNum;
 		ArrayList<String[]> datas;
 		
@@ -95,7 +95,7 @@ public class RandomForestTool {
 		for(int i=0; i<sampleNum;){
 			temp = random.nextInt(totalDatas.size());
 			
-			//������������������У�������
+			//如果是行首属性名称行，则跳过
 			if(temp == 0){
 				continue;
 			}
@@ -109,7 +109,7 @@ public class RandomForestTool {
 		for(int i=0; i<featureNum;){
 			temp = random.nextInt(featureNames.length);
 			
-			//����ǵ�һ�е�����id�Ż����Ǿ��������У�������
+			//如果是第一列的数据id号或者是决策属性列，则跳过
 			if(temp == 0 || temp == featureNames.length-1){
 				continue;
 			}
@@ -122,11 +122,11 @@ public class RandomForestTool {
 
 		String[] singleRecord;
 		String[] headCulumn = null;
-		// ��ȡ���������
+		// 获取随机数据行
 		for(int dataIndex: sampleRandomNum){
 			singleRecord = totalDatas.get(dataIndex);
 			
-			//ÿ�е�����=��ѡ��������+id��
+			//每行的列数=所选的特征数+id号
 			tempData = new String[featureNum+2];
 			headCulumn = new String[featureNum+2];
 			
@@ -137,22 +137,22 @@ public class RandomForestTool {
 				tempData[k] = singleRecord[temp];
 			}
 			
-			//����id�е���Ϣ
+			//加上id列的信息
 			headCulumn[0] = featureNames[0];
-			//���Ͼ��߷����е���Ϣ
+			//加上决策分类列的信息
 			headCulumn[featureNum+1] = featureNames[featureNames.length-1];
 			tempData[featureNum+1] = singleRecord[featureNames.length-1];
 			
-			//�����������
+			//加入此行数据
 			datas.add(tempData);
 		}
 		
-		//���������г�������
+		//加入行首列出现名称
 		datas.add(0, headCulumn);
-		//��ɸѡ��������������id����
+		//对筛选出的数据重新做id分配
 		temp = 0;
 		for(String[] array: datas){
-			//�ӵ�2�п�ʼ��ֵ
+			//从第2行开始赋值
 			if(temp > 0){
 				array[0] = temp + "";
 			}
@@ -166,31 +166,31 @@ public class RandomForestTool {
 	}
 
 	/**
-	 * �������ɭ��
+	 * 构造随机森林
 	 */
 	public void constructRandomTree() {
 		DecisionTree tree;
 		random = new Random();
 		decisionForest = new ArrayList<>();
 
-		System.out.println("���������ɭ���еľ�������");
-		// �������������ɭ����
+		System.out.println("下面是随机森林中的决策树：");
+		// 构造决策树加入森林中
 		for (int i = 0; i < treeNum; i++) {
-			System.out.println("\n������" + (i+1));
+			System.out.println("\n决策树" + (i+1));
 			tree = produceDecisionTree();
 			decisionForest.add(tree);
 		}
 	}
 
 	/**
-	 * ���ݸ��������������������ľ���
+	 * 根据给定的属性条件进行类别的决策
 	 * 
 	 * @param features
-	 *            ��������֪����������
+	 *            给定的已知的属性描述
 	 * @return
 	 */
 	public String judgeClassType(String features) {
-		// �������ֵ
+		// 结果类型值
 		String resultClassType = "";
 		String classType = "";
 		int count = 0;
@@ -199,7 +199,7 @@ public class RandomForestTool {
 		for (DecisionTree tree : decisionForest) {
 			classType = tree.decideClassType(features);
 			if (type2Num.containsKey(classType)) {
-				// �������Ѿ����ڣ���ʹ�������1
+				// 如果类别已经存在，则使其计数加1
 				count = type2Num.get(classType);
 				count++;
 			} else {
@@ -209,7 +209,7 @@ public class RandomForestTool {
 			type2Num.put(classType, count);
 		}
 
-		// ѡ���������֧�ּ�������һ�����ֵ
+		// 选出其中类别支持计数最多的一个类别值
 		count = -1;
 		for (Map.Entry entry : type2Num.entrySet()) {
 			if ((int) entry.getValue() > count) {

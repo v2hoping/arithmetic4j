@@ -1,19 +1,19 @@
-package Others.DataMining_KDTree;
+package DataMining_KDTree;
 
 /**
- * �ռ�ʸ������ʾ������Ŀռ䷶Χ
+ * 空间矢量，表示所代表的空间范围
  * 
  * @author lyq
  * 
  */
 public class Range {
-	// �߽���߽�
+	// 边界左边界
 	double left;
-	// �߽��ұ߽�
+	// 边界右边界
 	double right;
-	// �߽��ϱ߽�
+	// 边界上边界
 	double top;
-	// �߽��±߽�
+	// 边界下边界
 	double bottom;
 
 	public Range() {
@@ -31,7 +31,7 @@ public class Range {
 	}
 
 	/**
-	 * �ռ�ʸ�����в�����
+	 * 空间矢量进行并操作
 	 * 
 	 * @param range
 	 * @return
@@ -39,28 +39,28 @@ public class Range {
 	public Range crossOperation(Range r) {
 		Range range = new Range();
 
-		// ȡ�����Ҳ����߽�
+		// 取靠近右侧的左边界
 		if (r.left > this.left) {
 			range.left = r.left;
 		} else {
 			range.left = this.left;
 		}
 
-		// ȡ���������ұ߽�
+		// 取靠近左侧的右边界
 		if (r.right < this.right) {
 			range.right = r.right;
 		} else {
 			range.right = this.right;
 		}
 
-		// ȡ�����²���ϱ߽�
+		// 取靠近下侧的上边界
 		if (r.top < this.top) {
 			range.top = r.top;
 		} else {
 			range.top = this.top;
 		}
 
-		// ȡ�����ϲ���±߽�
+		// 取靠近上侧的下边界
 		if (r.bottom > this.bottom) {
 			range.bottom = r.bottom;
 		} else {
@@ -71,12 +71,12 @@ public class Range {
 	}
 
 	/**
-	 * ���������ָ��ȷ�����ռ�ʸ��
+	 * 根据坐标点分割方向确定左侧空间矢量
 	 * 
 	 * @param p
-	 *            ����ʸ��
+	 *            数据矢量
 	 * @param dir
-	 *            �ָ��
+	 *            分割方向
 	 * @return
 	 */
 	public static Range initLeftRange(Point p, int dir) {
@@ -92,12 +92,12 @@ public class Range {
 	}
 
 	/**
-	 * ���������ָ��ȷ���Ҳ�ռ�ʸ��
+	 * 根据坐标点分割方向确定右侧空间矢量
 	 * 
 	 * @param p
-	 *            ����ʸ��
+	 *            数据矢量
 	 * @param dir
-	 *            �ָ��
+	 *            分割方向
 	 * @return
 	 */
 	public static Range initRightRange(Point p, int dir) {

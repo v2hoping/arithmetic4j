@@ -1,16 +1,16 @@
-package SequentialPatterns.DataMining_GSP;
+package DataMining_GSP;
 
 import java.util.ArrayList;
 
 /**
- * �����е����
+ * 序列中的子项集
  * 
  * @author lyq
  * 
  */
 public class ItemSet {
 	/**
-	 * ��б����������������
+	 * 项集中保存的是数字项数组
 	 */
 	private ArrayList<Integer> items;
 
@@ -41,10 +41,10 @@ public class ItemSet {
 	}
 
 	/**
-	 * �ж�2����Ƿ����
+	 * 判断2个项集是否相等
 	 * 
 	 * @param itemSet
-	 *            �Ƚ϶���
+	 *            比较对象
 	 * @return
 	 */
 	public boolean compareIsSame(ItemSet itemSet) {
@@ -56,7 +56,7 @@ public class ItemSet {
 
 		for (int i = 0; i < itemSet.items.size(); i++) {
 			if (this.items.get(i) != itemSet.items.get(i)) {
-				// ֻҪ��ֵ����ȣ�ֱ�����������
+				// 只要有值不相等，直接算作不相等
 				result = false;
 				break;
 			}
@@ -66,7 +66,7 @@ public class ItemSet {
 	}
 
 	/**
-	 * �������ͬ��������һ��
+	 * 拷贝项集中同样的数据一份
 	 * 
 	 * @return
 	 */

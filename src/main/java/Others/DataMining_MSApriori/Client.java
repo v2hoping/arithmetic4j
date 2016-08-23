@@ -1,34 +1,34 @@
-package Others.DataMining_MSApriori;
+package DataMining_MSApriori;
 
 /**
- * ���ڶ�֧�ֶȵ�Apriori�㷨������
+ * 基于多支持度的Apriori算法测试类
  * @author lyq
  *
  */
 public class Client {
 	public static void main(String[] args){
-		//�Ƿ�������������
+		//是否是事务型数据
 		boolean isTransaction;
-		//���������ļ���ַ
+		//测试数据文件地址
 		String filePath = "C:\\Users\\lyq\\Desktop\\icon\\input.txt";
-		//��ϵ���������ļ���ַ
+		//关系表型数据文件地址
 		String tableFilePath = "C:\\Users\\lyq\\Desktop\\icon\\input2.txt";
-		//��С֧�ֶ���ֵ
+		//最小支持度阈值
 		double minSup;
-		// ��С���Ŷ���
+		// 最小置信度率
 		double minConf;
-		//���֧�ֶȲ����ֵ
+		//最大支持度差别阈值
 		double delta;
-		//����Ŀ����С֧�ֶ���,�����е��±���������Ʒ��ID
+		//多项目的最小支持度数,括号中的下标代表的是商品的ID
 		double[] mis;
-		//msApriori�㷨������
+		//msApriori算法工具类
 		MSAprioriTool tool;
 		
-		//Ϊ�˲��Եķ��㣬ȡһ��ƫ�͵����Ŷ�ֵ0.3
+		//为了测试的方便，取一个偏低的置信度值0.3
 		minConf = 0.3;
 		minSup = 0.1;
 		delta = 0.5;
-		//ÿ���֧�ֶ��ʶ�Ĭ��Ϊ0.1����һ�ʹ��
+		//每项的支持度率都默认为0.1，第一项不使用
 		mis = new double[]{-1, 0.1, 0.1, 0.1, 0.1, 0.1};
 		isTransaction = true;
 		
@@ -38,7 +38,7 @@ public class Client {
 		System.out.println();
 		
 		isTransaction = false;
-		//���³�ʼ������
+		//重新初始化数据
 		tool = new MSAprioriTool(tableFilePath, minConf, minSup, isTransaction);
 		tool.calFItems();
 	}	

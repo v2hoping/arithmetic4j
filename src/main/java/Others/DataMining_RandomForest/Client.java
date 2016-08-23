@@ -1,9 +1,9 @@
-package Others.DataMining_RandomForest;
+package DataMining_RandomForest;
 
 import java.text.MessageFormat;
 
 /**
- * ���ɭ���㷨���Գ���
+ * 随机森林算法测试场景
  * 
  * @author lyq
  * 
@@ -13,9 +13,9 @@ public class Client {
 		String filePath = "C:\\Users\\lyq\\Desktop\\icon\\input.txt";
 		String queryStr = "Age=Youth,Income=Low,Student=No,CreditRating=Fair";
 		String resultClassType = "";
-		// ������������ռ������ռ����
+		// 决策树的样本占总数的占比率
 		double sampleNumRatio = 0.4;
-		// �������ݵĲɼ���������ռ�������ı���
+		// 样本数据的采集特征数量占总特征的比例
 		double featureNumRatio = 0.5;
 
 		RandomForestTool tool = new RandomForestTool(filePath, sampleNumRatio,
@@ -27,7 +27,7 @@ public class Client {
 		System.out.println();
 		System.out
 				.println(MessageFormat.format(
-						"��ѯ��������{0},Ԥ��ķ�����ΪBuysCompute:{1}", queryStr,
+						"查询属性描述{0},预测的分类结果为BuysCompute:{1}", queryStr,
 						resultClassType));
 	}
 }

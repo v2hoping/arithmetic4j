@@ -1,26 +1,26 @@
-package Others.DataMining_GA;
+package GA;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * �Ŵ��㷨������
+ * 遗传算法工具类
  * 
  * @author lyq
  * 
  */
 public class GATool {
-	// ������Сֵ
+	// 变量最小值
 	private int minNum;
-	// �������ֵ
+	// 变量最大值
 	private int maxNum;
-	// ���������ı���λ��
+	// 单个变量的编码位数
 	private int codeNum;
-	// ��ʼ��Ⱥ������
+	// 初始种群的数量
 	private int initSetsNum;
-	// �����������
+	// 随机数生成器
 	private Random random;
-	// ��ʼȺ��
+	// 初始群体
 	private ArrayList<int[]> initSets;
 
 	public GATool(int minNum, int maxNum, int initSetsNum) {
@@ -33,7 +33,7 @@ public class GATool {
 	}
 
 	/**
-	 * ������ʼ��Ⱥ��
+	 * 产生初始化群体
 	 */
 	private void produceInitSets() {
 		this.codeNum = 0;
@@ -42,7 +42,7 @@ public class GATool {
 
 		initSets = new ArrayList<>();
 
-		// ȷ������λ��
+		// 确定编码位数
 		while (num != 0) {
 			codeNum++;
 			num /= 2;
@@ -55,7 +55,7 @@ public class GATool {
 	}
 
 	/**
-	 * ������ʼ����ı���
+	 * 产生初始个体的编码
 	 * 
 	 * @return
 	 */
@@ -81,7 +81,7 @@ public class GATool {
 		}
 		numToBinaryArray(array2, num2);
 
-		// ����ܵı���
+		// 组成总的编码
 		for (int i = 0, k = 0; i < tempArray.length; i++, k++) {
 			if (k < codeNum) {
 				tempArray[i] = array1[k];
@@ -94,10 +94,10 @@ public class GATool {
 	}
 
 	/**
-	 * ѡ�����������ֵ�ϸߵĸ��������Ŵ�����һ��
+	 * 选择操作，把适值较高的个体优先遗传到下一代
 	 * 
 	 * @param initCodes
-	 *            ��ʼ�������
+	 *            初始个体编码
 	 * @return
 	 */
 	private ArrayList<int[]> selectOperate(ArrayList<int[]> initCodes) {
@@ -111,7 +111,7 @@ public class GATool {
 			sumAdaptiveValue += adaptiveValue[i];
 		}
 
-		// ת�ɸ��ʵ���ʽ������һ������
+		// 转成概率的形式，做归一化操作
 		for (int i = 0; i < initSetsNum; i++) {
 			adaptiveValue[i] = adaptiveValue[i] / sumAdaptiveValue;
 		}
@@ -119,17 +119,17 @@ public class GATool {
 		for (int i = 0; i < initSetsNum; i++) {
 			randomNum = random.nextInt(100) + 1;
 			randomNum = randomNum / 100;
-			//��Ϊ1.0���޷��жϵ��ģ�,�ܺͻ����޽ӽ�1.0ȡΪ0.99���ж�
+			//因为1.0是无法判断到的，,总和会无限接近1.0取为0.99做判断
 			if(randomNum == 1){
 				randomNum = randomNum - 0.01;
 			}
 
 			sumAdaptiveValue = 0;
-			// ȷ������
+			// 确定区间
 			for (int j = 0; j < initSetsNum; j++) {
 				if (randomNum > sumAdaptiveValue
 						&& randomNum <= sumAdaptiveValue + adaptiveValue[j]) {
-					//���ÿ����ķ�ʽ���������ظ�
+					//采用拷贝的方式避免引用重复
 					resultCodes.add(initCodes.get(j).clone());
 					break;
 				} else {
@@ -142,21 +142,21 @@ public class GATool {
 	}
 
 	/**
-	 * ��������
+	 * 交叉运算
 	 * 
 	 * @param selectedCodes
-	 *            �ϲ����ѡ���ı���
+	 *            上步骤的选择后的编码
 	 * @return
 	 */
 	private ArrayList<int[]> crossOperate(ArrayList<int[]> selectedCodes) {
 		int randomNum = 0;
-		// �����
+		// 交叉点
 		int crossPoint = 0;
 		ArrayList<int[]> resultCodes = new ArrayList<>();
-		// ���������У���������������
+		// 随机编码队列，进行随机交叉配对
 		ArrayList<int[]> randomCodeSeqs = new ArrayList<>();
 
-		// �����������
+		// 进行随机排序
 		while (selectedCodes.size() > 0) {
 			randomNum = random.nextInt(selectedCodes.size());
 
@@ -167,14 +167,14 @@ public class GATool {
 		int temp = 0;
 		int[] array1;
 		int[] array2;
-		// ����������������
+		// 进行两两交叉运算
 		for (int i = 1; i < randomCodeSeqs.size(); i++) {
 			if (i % 2 == 1) {
 				array1 = randomCodeSeqs.get(i - 1);
 				array2 = randomCodeSeqs.get(i);
 				crossPoint = random.nextInt(2 * codeNum - 1) + 1;
 
-				// ���н����λ�ú�ı������
+				// 进行交叉点位置后的编码调换
 				for (int j = 0; j < 2 * codeNum; j++) {
 					if (j >= crossPoint) {
 						temp = array1[j];
@@ -183,7 +183,7 @@ public class GATool {
 					}
 				}
 
-				// ���뵽������������
+				// 加入到交叉运算结果中
 				resultCodes.add(array1);
 				resultCodes.add(array2);
 			}
@@ -193,14 +193,14 @@ public class GATool {
 	}
 
 	/**
-	 * �������
+	 * 变异操作
 	 * 
 	 * @param crossCodes
-	 *            ���������Ľ��
+	 *            交叉运算后的结果
 	 * @return
 	 */
 	private ArrayList<int[]> variationOperate(ArrayList<int[]> crossCodes) {
-		// �����
+		// 变异点
 		int variationPoint = 0;
 		ArrayList<int[]> resultCodes = new ArrayList<>();
 
@@ -208,7 +208,7 @@ public class GATool {
 			variationPoint = random.nextInt(codeNum * 2);
 
 			for (int i = 0; i < array.length; i++) {
-				// �������б���
+				// 变异点进行变异
 				if (i == variationPoint) {
 					array[i] = (array[i] == 0 ? 1 : 0);
 					break;
@@ -222,12 +222,12 @@ public class GATool {
 	}
 
 	/**
-	 * ����תΪ��������ʽ
+	 * 数字转为二进制形式
 	 * 
 	 * @param binaryArray
-	 *            ת����Ķ�����������ʽ
+	 *            转化后的二进制数组形式
 	 * @param num
-	 *            ��ת������
+	 *            待转化数字
 	 */
 	private void numToBinaryArray(int[] binaryArray, int num) {
 		int index = 0;
@@ -238,7 +238,7 @@ public class GATool {
 			num /= 2;
 		}
 		
-		//��������ǰ��β���ĵ���
+		//进行数组前和尾部的调换
 		for(int i=0; i<binaryArray.length/2; i++){
 			temp = binaryArray[i];
 			binaryArray[i] = binaryArray[binaryArray.length - 1 - i];
@@ -247,10 +247,10 @@ public class GATool {
 	}
 
 	/**
-	 * ����������ת��Ϊ����
+	 * 二进制数组转化为数字
 	 * 
 	 * @param binaryArray
-	 *            ��ת������������
+	 *            待转化二进制数组
 	 */
 	private int binaryArrayToNum(int[] binaryArray) {
 		int result = 0;
@@ -265,7 +265,7 @@ public class GATool {
 	}
 
 	/**
-	 * �������������ֵ
+	 * 计算个体编码的适值
 	 * 
 	 * @param codeArray
 	 */
@@ -284,7 +284,7 @@ public class GATool {
 			}
 		}
 
-		// ������ֵ�ĵ���
+		// 进行适值的叠加
 		x1 = binaryArrayToNum(array1);
 		x2 = binaryArrayToNum(array2);
 		result = x1 * x1 + x2 * x2;
@@ -293,12 +293,12 @@ public class GATool {
 	}
 
 	/**
-	 * �����Ŵ��㷨����
+	 * 进行遗传算法计算
 	 */
 	public void geneticCal() {
-		// �����ֵ
+		// 最大适值
 		int maxFitness;
-		//�����Ŵ�����
+		//迭代遗传次数
 		int loopCount = 0;
 		boolean canExit = false;
 		ArrayList<int[]> initCodes;
@@ -307,7 +307,7 @@ public class GATool {
 		ArrayList<int[]> variationCodes;
 		
 		int[] maxCode = new int[2*codeNum];
-		//���������ֵ
+		//计算最大适值
 		for(int i=0; i<2*codeNum; i++){
 			maxCode[i] = 1;
 		}
@@ -316,7 +316,7 @@ public class GATool {
 		initCodes = initSets;
 		while (true) {
 			for (int[] array : initCodes) {
-				// �Ŵ���������ֹ����Ϊ���ڱ���ﵽ�����ֵ
+				// 遗传迭代的终止条件为存在编码达到最大适值
 				if (maxFitness == calCodeAdaptiveValue(array)) {
 					canExit = true;
 					break;
@@ -335,21 +335,21 @@ public class GATool {
 			loopCount++;
 		}
 
-		System.out.println("�ܹ��Ŵ�������" + loopCount +"��" );
+		System.out.println("总共遗传进化了" + loopCount +"次" );
 		printFinalCodes(initCodes);
 	}
 
 	/**
-	 * ������ı��뼯
+	 * 输出最后的编码集
 	 * 
 	 * @param finalCodes
-	 *            ���Ľ������
+	 *            最后的结果编码
 	 */
 	private void printFinalCodes(ArrayList<int[]> finalCodes) {
 		int j = 0;
 
 		for (int[] array : finalCodes) {
-			System.out.print("����" + (j + 1) + ":");
+			System.out.print("个体" + (j + 1) + ":");
 			for (int i = 0; i < array.length; i++) {
 				System.out.print(array[i]);
 			}

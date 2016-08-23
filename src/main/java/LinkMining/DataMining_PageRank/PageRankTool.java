@@ -1,4 +1,4 @@
-package LinkMining.DataMining_PageRank;
+package DataMining_PageRank;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,22 +9,22 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 /**
- * PageRankï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ã·¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * PageRankÍøÒ³ÅÅÃûËã·¨¹¤¾ßÀà
  * 
  * @author lyq
  * 
  */
 public class PageRankTool {
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ²âÊÔÊäÈëÊı¾İ
 	private String filePath;
-	// ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ÍøÒ³×ÜÊıÁ¿
 	private int pageNum;
-	// ï¿½ï¿½ï¿½Ó¹ï¿½Ïµï¿½ï¿½ï¿½ï¿½
+	// Á´½Ó¹ØÏµ¾ØÕó
 	private double[][] linkMatrix;
-	// Ã¿ï¿½ï¿½Ò³ï¿½ï¿½pageRankÖµï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+	// Ã¿¸öÒ³ÃæpageRankÖµ³õÊ¼ÏòÁ¿
 	private double[] pageRankVecor;
 
-	// ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ÍøÒ³ÊıÁ¿·ÖÀà
 	ArrayList<String> pageClass;
 
 	public PageRankTool(String filePath) {
@@ -33,7 +33,7 @@ public class PageRankTool {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ğ¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+	 * ´ÓÎÄ¼şÖĞ¶ÁÈ¡Êı¾İ
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -53,7 +53,7 @@ public class PageRankTool {
 		}
 
 		pageClass = new ArrayList<>();
-		// Í³ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// Í³¼ÆÍøÒ³ÀàĞÍÖÖÊı
 		for (String[] array : dataArray) {
 			for (String s : array) {
 				if (!pageClass.contains(s)) {
@@ -68,7 +68,7 @@ public class PageRankTool {
 		linkMatrix = new double[pageNum][pageNum];
 		pageRankVecor = new double[pageNum];
 		for (int k = 0; k < pageNum; k++) {
-			// ï¿½ï¿½Ê¼Ã¿ï¿½ï¿½Ò³ï¿½ï¿½ï¿½pageRankÖµÎª1
+			// ³õÊ¼Ã¿¸öÒ³ÃæµÄpageRankÖµÎª1
 			pageRankVecor[k] = 1.0;
 		}
 		for (String[] array : dataArray) {
@@ -76,25 +76,25 @@ public class PageRankTool {
 			i = Integer.parseInt(array[0]);
 			j = Integer.parseInt(array[1]);
 
-			// ï¿½ï¿½ï¿½ï¿½linkMatrix[i][j]Îª1ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½jï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// ÉèÖÃlinkMatrix[i][j]Îª1´ú±íiÍøÒ³°üº¬Ö¸ÏòjÍøÒ³µÄÁ´½Ó
 			linkMatrix[i - 1][j - 1] = 1;
 		}
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
+	 * ½«¾ØÕó×ªÖÃ
 	 */
 	private void transferMatrix() {
 		int count = 0;
 		for (double[] array : linkMatrix) {
-			// ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ó¸ï¿½ï¿½ï¿½
+			// ¼ÆËãÒ³ÃæÁ´½Ó¸öÊı
 			count = 0;
 			for (double d : array) {
 				if (d == 1) {
 					count++;
 				}
 			}
-			// ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½
+			// °´¸ÅÂÊ¾ù·Ö
 			for (int i = 0; i < array.length; i++) {
 				if (array[i] == 1) {
 					array[i] /= count;
@@ -103,7 +103,7 @@ public class PageRankTool {
 		}
 
 		double t = 0;
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½×ªï¿½Æ¾ï¿½ï¿½ï¿½
+		// ½«¾ØÕó×ªÖÃ»»£¬×÷Îª¸ÅÂÊ×ªÒÆ¾ØÕó
 		for (int i = 0; i < linkMatrix.length; i++) {
 			for (int j = i + 1; j < linkMatrix[0].length; j++) {
 				t = linkMatrix[i][j];
@@ -114,17 +114,17 @@ public class PageRankTool {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½ï¿½ï¿½İ·ï¿½ï¿½ï¿½ï¿½ï¿½pageRankÖµ
+	 * ÀûÓÃÃİ·¨¼ÆËãpageRankÖµ
 	 */
 	public void printPageRankValue() {
 		transferMatrix();
-		// ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+		// ×èÄáÏµÊı
 		double damp = 0.5;
-		// ï¿½ï¿½ï¿½Ó¸ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½
+		// Á´½Ó¸ÅÂÊ¾ØÕó
 		double[][] A = new double[pageNum][pageNum];
 		double[][] e = new double[pageNum][pageNum];
 
-		// ï¿½ï¿½ï¿½Ã¹ï¿½Ê½A=d*q+(1-d)*e/mï¿½ï¿½mÎªï¿½ï¿½Ò³ï¿½Ü¸ï¿½ï¿½ï¿½,dï¿½ï¿½ï¿½ï¿½damp
+		// µ÷ÓÃ¹«Ê½A=d*q+(1-d)*e/m£¬mÎªÍøÒ³×Ü¸öÊı,d¾ÍÊÇdamp
 		double temp = (1 - damp) / pageNum;
 		for (int i = 0; i < e.length; i++) {
 			for (int j = 0; j < e[0].length; j++) {
@@ -140,21 +140,21 @@ public class PageRankTool {
 			}
 		}
 
-		// ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îªï¿½Ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼
+		// Îó²îÖµ£¬×÷ÎªÅĞ¶ÏÊÕÁ²±ê×¼
 		double errorValue = Integer.MAX_VALUE;
 		double[] newPRVector = new double[pageNum];
-		// ï¿½ï¿½Æ½ï¿½ï¿½Ã¿ï¿½ï¿½PRÖµï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½0.001Ê±ï¿½ï¿½ï¿½ï¿½ïµ½ï¿½ï¿½ï¿½ï¿½
+		// µ±Æ½¾ùÃ¿¸öPRÖµÎó²îĞ¡ÓÚ0.001Ê±¾ÍËã´ïµ½ÊÕÁ²
 		while (errorValue > 0.001 * pageNum) {
 			System.out.println("**********");
 			for (int i = 0; i < pageNum; i++) {
 				temp = 0;
-				// ï¿½ï¿½A*pageRankVector,ï¿½ï¿½ï¿½ï¿½ï¿½İ·ï¿½ï¿½ï¿½ï¿½,Ö±ï¿½ï¿½pageRankVectorÖµï¿½ï¿½ï¿½ï¿½
+				// ½«A*pageRankVector,ÀûÓÃÃİ·¨Çó½â,Ö±µ½pageRankVectorÖµÊÕÁ²
 				for (int j = 0; j < pageNum; j++) {
-					// tempï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½iÒ³ï¿½ï¿½ï¿½pageRankÖµ
+					// temp¾ÍÊÇÃ¿¸öÍøÒ³µ½iÒ³ÃæµÄpageRankÖµ
 					temp += A[i][j] * pageRankVecor[j];
 				}
 
-				// ï¿½ï¿½ï¿½ï¿½tempï¿½ï¿½ï¿½ï¿½iï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½PageRankÖµ
+				// ×îºóµÄtemp¾ÍÊÇiÍøÒ³µÄ×ÜPageRankÖµ
 				newPRVector[i] = temp;
 				System.out.println(temp);
 			}
@@ -162,7 +162,7 @@ public class PageRankTool {
 			errorValue = 0;
 			for (int i = 0; i < pageNum; i++) {
 				errorValue += Math.abs(pageRankVecor[i] - newPRVector[i]);
-				// ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½
+				// ĞÂµÄÏòÁ¿´úÌæ¾ÉµÄÏòÁ¿
 				pageRankVecor[i] = newPRVector[i];
 			}
 		}
@@ -171,14 +171,14 @@ public class PageRankTool {
 		temp = 0;
 		System.out.println("--------------------");
 		for (int i = 0; i < pageNum; i++) {
-			System.out.println(MessageFormat.format("ï¿½ï¿½Ò³{0}ï¿½ï¿½pageRankÖµï¿½ï¿½{1}",
+			System.out.println(MessageFormat.format("ÍøÒ³{0}µÄpageRankÖµ£º{1}",
 					pageClass.get(i), pageRankVecor[i]));
 			if (pageRankVecor[i] > temp) {
 				temp = pageRankVecor[i];
 				name = pageClass.get(i);
 			}
 		}
-		System.out.println(MessageFormat.format("ï¿½È¼ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½Ò³Îªï¿½ï¿½{0}", name));
+		System.out.println(MessageFormat.format("µÈ¼¶×î¸ßµÄÍøÒ³Îª£º{0}", name));
 	}
 
 }

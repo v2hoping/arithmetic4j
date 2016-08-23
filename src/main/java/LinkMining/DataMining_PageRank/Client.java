@@ -1,7 +1,7 @@
-package LinkMining.DataMining_PageRank;
+package DataMining_PageRank;
 
 /**
- * PageRank������ҳ��Ҫ��/�����㷨
+ * PageRank计算网页重要性/排名算法
  * @author lyq
  *
  */

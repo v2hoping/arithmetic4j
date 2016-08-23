@@ -1,7 +1,7 @@
-package AssociationAnalysis.DataMining_Apriori;
+package DataMining_Apriori;
 
 /**
- * apriori���������ھ��㷨������
+ * apriori关联规则挖掘算法调用类
  * @author lyq
  *
  */

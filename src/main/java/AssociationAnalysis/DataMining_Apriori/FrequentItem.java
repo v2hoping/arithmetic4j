@@ -1,17 +1,17 @@
-package AssociationAnalysis.DataMining_Apriori;
+package DataMining_Apriori;
 
 /**
- * Ƶ���
+ * 频繁项集
  * 
  * @author lyq
  * 
  */
 public class FrequentItem implements Comparable<FrequentItem>{
-	// Ƶ����ļ���ID
+	// 频繁项集的集合ID
 	private String[] idArray;
-	// Ƶ�����֧�ֶȼ���
+	// 频繁项集的支持度计数
 	private int count;
-	//Ƶ����ĳ��ȣ�1�����2��������3�
+	//频繁项集的长度，1项集或是2项集，亦或是3项集
 	private int length;
 	
 	public FrequentItem(String[] idArray, int count){

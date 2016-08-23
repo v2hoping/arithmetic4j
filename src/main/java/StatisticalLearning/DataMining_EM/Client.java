@@ -1,7 +1,7 @@
-package StatisticalLearning.DataMining_EM;
+package DataMining_EM;
 
 /**
- * EM��������㷨����������
+ * EM期望最大化算法场景调用类
  * @author lyq
  *
  */

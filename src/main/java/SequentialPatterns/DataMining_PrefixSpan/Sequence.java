@@ -1,15 +1,15 @@
-package SequentialPatterns.DataMining_PrefixSpan;
+package DataMining_PrefixSpan;
 
 import java.util.ArrayList;
 
 /**
- * ������
+ * 序列类
  * 
  * @author lyq
  * 
  */
 public class Sequence {
-	// �����ڵ��
+	// 序列内的项集
 	private ArrayList<ItemSet> itemSetList;
 
 	public Sequence() {
@@ -25,10 +25,10 @@ public class Sequence {
 	}
 
 	/**
-	 * �жϵ�һ���Ƿ�����ڴ�����
+	 * 判断单一项是否包含于此序列
 	 * 
 	 * @param c
-	 *            ���ж���
+	 *            待判断项
 	 * @return
 	 */
 	public boolean strIsContained(String c) {
@@ -49,7 +49,7 @@ public class Sequence {
 			}
 
 			if (isContained) {
-				// ����Ѿ����������ˣ�ֱ������ѭ��
+				// 如果已经检测出包含了，直接挑出循环
 				break;
 			}
 		}
@@ -58,10 +58,10 @@ public class Sequence {
 	}
 
 	/**
-	 * �ж������Ƿ������������
+	 * 判断组合项集是否包含于序列中
 	 * 
 	 * @param itemSet
-	 *            ��ϵ����Ԫ�س���1��
+	 *            组合的项集，元素超过1个
 	 * @return
 	 */
 	public boolean compoentItemIsContain(ItemSet itemSet) {
@@ -71,13 +71,13 @@ public class Sequence {
 
 		for (int i = 0; i < this.itemSetList.size(); i++) {
 			tempItems = this.itemSetList.get(i).getItems();
-			// ��2��������ң���һ�ִ�_X���ҳ�x���������Ԫ�أ���Ϊ_ǰ׺�Ѿ�Ϊԭ����Ԫ��
+			// 分2种情况查找，第一种从_X中找出x等于项集最后的元素，因为_前缀已经为原本的元素
 			if (tempItems.size() > 1 && tempItems.get(0).equals("_")
 					&& tempItems.get(1).equals(lastItem)) {
 				isContained = true;
 				break;
 			} else if (!tempItems.get(0).equals("_")) {
-				// ��û��_ǰ׺�����ʼѰ�ң��ڶ���Ϊ�Ӻ���ĺ�׺���ҳ�ֱ���ҳ������ַ�ΪabΪͬһ����
+				// 从没有_前缀的项集开始寻找，第二种为从后面的后缀中找出直接找出连续字符为ab为同一项集的项集
 				if (strArrayContains(tempItems, itemSet.getItems())) {
 					isContained = true;
 					break;
@@ -93,10 +93,10 @@ public class Sequence {
 	}
 
 	/**
-	 * ɾ��������
+	 * 删除单个项
 	 * 
 	 * @param s
-	 *            ��ɾ����
+	 *            待删除项
 	 */
 	public void deleteSingleItem(String s) {
 		ArrayList<String> tempItems;
@@ -117,10 +117,10 @@ public class Sequence {
 	}
 
 	/**
-	 * ��ȡ��s֮�����õ�����
+	 * 提取项s之后所得的序列
 	 * 
 	 * @param s
-	 *            Ŀ����ȡ��s
+	 *            目标提取项s
 	 */
 	public Sequence extractItem(String s) {
 		Sequence extractSeq = this.copySeqence();
@@ -133,24 +133,24 @@ public class Sequence {
 			itemSet = extractSeq.itemSetList.get(k);
 			items = itemSet.getItems();
 			if (items.size() == 1 && items.get(0).equals(s)) {
-				//����ҵ����ǵ������ȫ�Ƴ�������ѭ��
+				//如果找到的是单项，则完全移除，跳出循环
 				extractSeq.itemSetList.remove(k);
 				break;
 			} else if (items.size() > 1 && !items.get(0).equals("_")) {
-				//�ں����Ķ�Ԫ�������ж��Ƿ������Ԫ��
+				//在后续的多元素项中判断是否包含此元素
 				if (items.contains(s)) {
-					//���������s�����Ԫ�ؼ��뵽��ʱ�ַ�������
+					//如果包含把s后面的元素加入到临时字符数组中
 					int index = items.indexOf(s);
 					for (int j = index; j < items.size(); j++) {
 						tempItems.add(items.get(j));
 					}
-					//����һλ��s����±��"_"
+					//将第一位的s变成下标符"_"
 					tempItems.set(0, "_");
 					if (tempItems.size() == 1) {
-						// �����ƥ��Ϊ����ĩ�ˣ�ͬ���Ƴ�
+						// 如果此匹配为在最末端，同样移除
 						deleteItemSets.add(itemSet);
 					} else {
-						//���仯�����滻ԭ����
+						//将变化后的项集替换原来的
 						extractSeq.itemSetList.set(k, new ItemSet(tempItems));
 					}
 					break;
@@ -158,7 +158,7 @@ public class Sequence {
 					deleteItemSets.add(itemSet);
 				}
 			} else {
-				// ����������2��������ͳͳ�Ƴ�
+				// 不符合以上2项条件的统统移除
 				deleteItemSets.add(itemSet);
 			}
 		}
@@ -168,14 +168,14 @@ public class Sequence {
 	}
 
 	/**
-	 * ��ȡ�����֮�������
+	 * 提取组合项之后的序列
 	 * 
 	 * @param array
-	 *            �������
+	 *            组合数组
 	 * @return
 	 */
 	public Sequence extractCompoentItem(ArrayList<String> array) {
-		// �ҵ�Ŀ����Ƿ�����ֹͣ
+		// 找到目标项，是否立刻停止
 		boolean stopExtract = false;
 		Sequence seq = this.copySeqence();
 		String lastItem = array.get(array.size() - 1);
@@ -188,23 +188,23 @@ public class Sequence {
 			}
 
 			tempItems = seq.itemSetList.get(i).getItems();
-			// ��2��������ң���һ�ִ�_X���ҳ�x���������Ԫ�أ���Ϊ_ǰ׺�Ѿ�Ϊԭ����Ԫ��
+			// 分2种情况查找，第一种从_X中找出x等于项集最后的元素，因为_前缀已经为原本的元素
 			if (tempItems.size() > 1 && tempItems.get(0).equals("_")
 					&& tempItems.get(1).equals(lastItem)) {
 				if (tempItems.size() == 2) {
 					seq.itemSetList.remove(i);
 				} else {
-					// ��1��λ�ñ�Ϊ�±��"_"��������1���ַ���λ��
+					// 把1号位置变为下标符"_"，往后移1个字符的位置
 					tempItems.set(1, "_");
-					// �Ƴ���һ����"_"�»���
+					// 移除第一个的"_"下划符
 					tempItems.remove(0);
 				}
 				stopExtract = true;
 				break;
 			} else if (!tempItems.get(0).equals("_")) {
-				// ��û��_ǰ׺�����ʼѰ�ң��ڶ���Ϊ�Ӻ���ĺ�׺���ҳ�ֱ���ҳ������ַ�ΪabΪͬһ����
+				// 从没有_前缀的项集开始寻找，第二种为从后面的后缀中找出直接找出连续字符为ab为同一项集的项集
 				if (strArrayContains(tempItems, array)) {
-					// ���������ҳ���һ�������ַ���λ�ã��Ѻ���Ĳ��ֽ�ȡ����
+					// 从左往右找出第一个给定字符的位置，把后面的部分截取出来
 					int index = tempItems.indexOf(lastItem);
 					ArrayList<String> array2 = new ArrayList<String>();
 
@@ -214,7 +214,7 @@ public class Sequence {
 					array2.set(0, "_");
 
 					if (array2.size() == 1) {
-						//���������ĩβ��λ�ã����Ƴ������������滻
+						//如果此项在末尾的位置，则移除该项，否则进行替换
 						deleteItems.add(seq.itemSetList.get(i));
 					} else {
 						seq.itemSetList.set(i, new ItemSet(array2));
@@ -225,7 +225,7 @@ public class Sequence {
 					deleteItems.add(seq.itemSetList.get(i));
 				}
 			} else {
-				// ��������Ǵ���_X��X���������һ��Ԫ�ص����
+				// 这种情况是处理_X中X不等于最后一个元素的情况
 				deleteItems.add(seq.itemSetList.get(i));
 			}
 		}
@@ -236,7 +236,7 @@ public class Sequence {
 	}
 
 	/**
-	 * ���һ������
+	 * 深拷贝一个序列
 	 * 
 	 * @return
 	 */
@@ -255,7 +255,7 @@ public class Sequence {
 	}
 
 	/**
-	 * ��ȡ���������һ��������1��Ԫ��
+	 * 获取序列中最后一个项集的最后1个元素
 	 * 
 	 * @return
 	 */
@@ -268,7 +268,7 @@ public class Sequence {
 	}
 
 	/**
-	 * �ж�strList2�Ƿ���strList1��������
+	 * 判断strList2是否是strList1的子序列
 	 * 
 	 * @param strList1
 	 * @param strList2

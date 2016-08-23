@@ -1,4 +1,4 @@
-package RoughSets.DataMining_RoughSets;
+package DataMining_RoughSets;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ���ݼ�¼������������¼��������
+ * 数据记录，包含这条记录所有属性
  * 
  * @author lyq
  * 
  */
 public class Record {
-	// ��¼����
+	// 记录名称
 	private String name;
-	// ��¼���Լ�ֵ��
+	// 记录属性键值对
 	private HashMap<String, String> attrValues;
 
 	public Record(String name, HashMap<String, String> attrValues) {
@@ -27,10 +27,10 @@ public class Record {
 	}
 
 	/**
-	 * �������Ƿ����������ֵ
+	 * 此数据是否包含此属性值
 	 * 
 	 * @param attr
-	 *            ���ж�����ֵ
+	 *            待判断属性值
 	 * @return
 	 */
 	public boolean isContainedAttr(String attr) {
@@ -44,10 +44,10 @@ public class Record {
 	}
 
 	/**
-	 * �ж����ݼ�¼�Ƿ���ͬһ����¼�����������������ж�
+	 * 判断数据记录是否是同一条记录，根据数据名称来判断
 	 * 
 	 * @param record
-	 *            Ŀ��Ƚ϶���
+	 *            目标比较对象
 	 * @return
 	 */
 	public boolean isRecordSame(Record record) {
@@ -61,7 +61,7 @@ public class Record {
 	}
 
 	/**
-	 * ���ݵľ������Է���
+	 * 数据的决策属性分类
 	 * 
 	 * @return
 	 */
@@ -74,10 +74,10 @@ public class Record {
 	}
 
 	/**
-	 * ����Լ������������߹���
+	 * 根据约简属性输出决策规则
 	 * 
 	 * @param reductAttr
-	 *            Լ�����Լ���
+	 *            约简属性集合
 	 */
 	public String getDecisionRule(ArrayList<String> reductAttr) {
 		String ruleStr = "";
@@ -86,7 +86,7 @@ public class Record {
 		String decisionValue;
 
 		decisionValue = attrValues.get(RoughSetsTool.DECISION_ATTR_NAME);
-		ruleStr += "����";
+		ruleStr += "属性";
 		for (Map.Entry entry : this.attrValues.entrySet()) {
 			attrName = (String) entry.getKey();
 			value = (String) entry.getValue();
@@ -98,7 +98,7 @@ public class Record {
 
 			ruleStr += MessageFormat.format("{0}={1},", attrName, value);
 		}
-		ruleStr += "���ķ���Ϊ" + decisionValue;
+		ruleStr += "他的分类为" + decisionValue;
 		
 		return ruleStr;
 	}

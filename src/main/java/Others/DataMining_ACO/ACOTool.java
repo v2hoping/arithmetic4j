@@ -1,4 +1,4 @@
-package Others.DataMining_ACO;
+package DataMining_ACO;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,41 +12,41 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * ��Ⱥ�㷨������
+ * 蚁群算法工具类
  * 
  * @author lyq
  * 
  */
 public class ACOTool {
-	// ������������
+	// 输入数据类型
 	public static final int INPUT_CITY_NAME = 1;
 	public static final int INPUT_CITY_DIS = 2;
 
-	// ���м�����ڽӾ���
+	// 城市间距离邻接矩阵
 	public static double[][] disMatrix;
-	// ��ǰʱ��
+	// 当前时间
 	public static int currentTime;
 
-	// �������ݵ�ַ
+	// 测试数据地址
 	private String filePath;
-	// ��������
+	// 蚂蚁数量
 	private int antNum;
-	// ���Ʋ���
+	// 控制参数
 	private double alpha;
 	private double beita;
 	private double p;
 	private double Q;
-	// �����������
+	// 随机数产生器
 	private Random random;
-	// �������Ƽ���,����Ϊ�˷��㣬�����������ֱ�ʾ
+	// 城市名称集合,这里为了方便，将城市用数字表示
 	private ArrayList<String> totalCitys;
-	// ���е����ϼ���
+	// 所有的蚂蚁集合
 	private ArrayList<Ant> totalAnts;
-	// ���м����Ϣ��Ũ�Ⱦ�������ʱ������������
+	// 城市间的信息素浓度矩阵，随着时间的增多而减少
 	private double[][] pheromoneMatrix;
-	// Ŀ������·��,˳��Ϊ�Ӽ��ϵ�ǰ������Ų��
+	// 目标的最短路径,顺序为从集合的前部往后挪动
 	private ArrayList<String> bestPath;
-	// ��Ϣ�ؾ���洢ͼ,key���õĸ�ʽ(i,j,t)->value
+	// 信息素矩阵存储图,key采用的格式(i,j,t)->value
 	private Map<String, Double> pheromoneTimeMap;
 
 	public ACOTool(String filePath, int antNum, double alpha, double beita,
@@ -63,7 +63,7 @@ public class ACOTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -86,7 +86,7 @@ public class ACOTool {
 		int src = 0;
 		int des = 0;
 		int size = 0;
-		// ���г�������������ͳ��
+		// 进行城市名称种数的统计
 		this.totalCitys = new ArrayList<>();
 		for (String[] array : dataArray) {
 			if (array[0].equals("#") && totalCitys.size() == 0) {
@@ -95,11 +95,11 @@ public class ACOTool {
 				continue;
 			} else if (array[0].equals("#") && totalCitys.size() > 0) {
 				size = totalCitys.size();
-				// ��ʼ���������
+				// 初始化距离矩阵
 				this.disMatrix = new double[size + 1][size + 1];
 				this.pheromoneMatrix = new double[size + 1][size + 1];
 
-				// ��ʼֵ-1����˶�Ӧλ����ֵ
+				// 初始值-1代表此对应位置无值
 				for (int i = 0; i < size; i++) {
 					for (int j = 0; j < size; j++) {
 						this.disMatrix[i][j] = -1;
@@ -124,14 +124,14 @@ public class ACOTool {
 	}
 
 	/**
-	 * ��������ϳ���i��j�ĸ���
+	 * 计算从蚂蚁城市i到j的概率
 	 * 
 	 * @param cityI
-	 *            ����I
+	 *            城市I
 	 * @param cityJ
-	 *            ����J
+	 *            城市J
 	 * @param currentTime
-	 *            ��ǰʱ��
+	 *            当前时间
 	 * @return
 	 */
 	private double calIToJProbably(String cityI, String cityJ, int currentTime) {
@@ -157,27 +157,27 @@ public class ACOTool {
 	}
 
 	/**
-	 * �����ۺϸ������ϴ�I�����ߵ�J���еĸ���
+	 * 计算综合概率蚂蚁从I城市走到J城市的概率
 	 * 
 	 * @return
 	 */
 	public String selectAntNextCity(Ant ant, int currentTime) {
 		double randomNum;
 		double tempPro;
-		// �ܸ���ָ��
+		// 总概率指数
 		double proTotal;
 		String nextCity = null;
 		ArrayList<String> allowedCitys;
-		// �����и��ʼ�
+		// 各城市概率集
 		double[] proArray;
 
-		// ����Ǹոտ�ʼ��ʱ��û��·���κγ��У����������һ������
+		// 如果是刚刚开始的时候，没有路过任何城市，则随机返回一个城市
 		if (ant.currentPath.size() == 0) {
 			nextCity = String.valueOf(random.nextInt(totalCitys.size()) + 1);
 
 			return nextCity;
 		} else if (ant.nonVisitedCitys.isEmpty()) {
-			// ���ȫ��������ϣ����ٴλص����
+			// 如果全部遍历完毕，则再次回到起点
 			nextCity = ant.currentPath.get(0);
 
 			return nextCity;
@@ -194,23 +194,23 @@ public class ACOTool {
 		}
 
 		for (int i = 0; i < allowedCitys.size(); i++) {
-			// ��һ������
+			// 归一化处理
 			proArray[i] /= proTotal;
 		}
 
-		// �������ѡ����һ������
+		// 用随机数选择下一个城市
 		randomNum = random.nextInt(100) + 1;
 		randomNum = randomNum / 100;
-		// ��Ϊ1.0���޷��жϵ��ģ�,�ܺͻ����޽ӽ�1.0ȡΪ0.99���ж�
+		// 因为1.0是无法判断到的，,总和会无限接近1.0取为0.99做判断
 		if (randomNum == 1) {
 			randomNum = randomNum - 0.01;
 		}
 
 		tempPro = 0;
-		// ȷ������
+		// 确定区间
 		for (int j = 0; j < allowedCitys.size(); j++) {
 			if (randomNum > tempPro && randomNum <= tempPro + proArray[j]) {
-				// ���ÿ����ķ�ʽ���������ظ�
+				// 采用拷贝的方式避免引用重复
 				nextCity = allowedCitys.get(j);
 				break;
 			} else {
@@ -222,7 +222,7 @@ public class ACOTool {
 	}
 
 	/**
-	 * ��ȡ����ʱ����ϴӳ���i������j����Ϣ��Ũ��
+	 * 获取给定时间点上从城市i到城市j的信息素浓度
 	 * 
 	 * @param t
 	 * @param cityI
@@ -233,7 +233,7 @@ public class ACOTool {
 		double pheromone = 0;
 		String key;
 
-		// ��һ�����轫ʱ�䵹��һ����
+		// 上一周期需将时间倒回一周期
 		key = MessageFormat.format("{0},{1},{2}", cityI, cityJ, t);
 
 		if (pheromoneTimeMap.containsKey(key)) {
@@ -244,22 +244,22 @@ public class ACOTool {
 	}
 
 	/**
-	 * ÿ�ֽ�����ˢ����Ϣ��Ũ�Ⱦ���
+	 * 每轮结束，刷新信息素浓度矩阵
 	 * 
 	 * @param t
 	 */
 	private void refreshPheromone(int t) {
 		double pheromone = 0;
-		// ��һ�����ڽ��������Ϣ��Ũ�ȣ�����Ϣ��Ũ��ͼ�в���
+		// 上一轮周期结束后的信息素浓度，丛信息素浓度图中查找
 		double lastTimeP = 0;
-		// ������Ϣ��Ũ��������
+		// 本轮信息素浓度增加量
 		double addPheromone;
 		String key;
 
 		for (String i : totalCitys) {
 			for (String j : totalCitys) {
 				if (!i.equals(j)) {
-					// ��һ�����轫ʱ�䵹��һ����
+					// 上一周期需将时间倒回一周期
 					key = MessageFormat.format("{0},{1},{2}", i, j, t - 1);
 
 					if (pheromoneTimeMap.containsKey(key)) {
@@ -271,12 +271,12 @@ public class ACOTool {
 					addPheromone = 0;
 					for (Ant ant : totalAnts) {
 						if(ant.pathContained(i, j)){
-							// ÿֻ���ϴ�������Ϣ��Ϊ�������ӳ��Ծ����ܳɱ�
+							// 每只蚂蚁传播的信息素为控制因子除以距离总成本
 							addPheromone += Q / ant.calSumDistance();
 						}
 					}
 
-					// ���ϴεĽ��ֵ���ϵ���������������ͼ��
+					// 将上次的结果值加上递增的量，并存入图中
 					pheromone = p * lastTimeP + addPheromone;
 					key = MessageFormat.format("{0},{1},{2}", i, j, t);
 					pheromoneTimeMap.put(key, pheromone);
@@ -287,14 +287,14 @@ public class ACOTool {
 	}
 
 	/**
-	 * ��Ⱥ�㷨��������
+	 * 蚁群算法迭代次数
 	 * @param loopCount
-	 * �����������
+	 * 具体遍历次数
 	 */
 	public void antStartSearching(int loopCount) {
-		// ��ȺѰ�ҵ��ܴ���
+		// 蚁群寻找的总次数
 		int count = 0;
-		// ѡ�е���һ������
+		// 选中的下一个城市
 		String selectedCity = "";
 
 		pheromoneTimeMap = new HashMap<String, Double>();
@@ -310,22 +310,22 @@ public class ACOTool {
 					ant.goToNextCity(selectedCity);
 				}
 
-				// ����Ѿ����������г��У�����������ѭ��
+				// 如果已经遍历完所有城市，则跳出此轮循环
 				if (totalAnts.get(0).isBack()) {
 					break;
 				}
 			}
 
-			// ����ʱ�����
+			// 周期时间叠加
 			currentTime++;
 			refreshPheromone(currentTime);
 			count++;
 		}
 
-		// ���ݾ���ɱ���ѡ������������̵�һ��·��
+		// 根据距离成本，选出所花距离最短的一个路径
 		Collections.sort(totalAnts);
 		bestPath = totalAnts.get(0).currentPath;
-		System.out.println(MessageFormat.format("����{0}��ѭ�����������յó������·����", count));
+		System.out.println(MessageFormat.format("经过{0}次循环遍历，最终得出的最佳路径：", count));
 		System.out.print("entrance");
 		for (String cityName : bestPath) {
 			System.out.print(MessageFormat.format("-->{0}", cityName));
@@ -333,14 +333,14 @@ public class ACOTool {
 	}
 
 	/**
-	 * ��ʼ����Ⱥ����
+	 * 初始化蚁群操作
 	 */
 	private void initAnts() {
 		Ant tempAnt;
 		ArrayList<String> nonVisitedCitys;
 		totalAnts.clear();
 
-		// ��ʼ����Ⱥ
+		// 初始化蚁群
 		for (int i = 0; i < antNum; i++) {
 			nonVisitedCitys = (ArrayList<String>) totalCitys.clone();
 			tempAnt = new Ant(pheromoneMatrix, nonVisitedCitys);

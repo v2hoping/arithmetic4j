@@ -1,4 +1,4 @@
-package AssociationAnalysis.DataMining_FPTree;
+package DataMining_FPTree;
 
 import java.util.ArrayList;
 

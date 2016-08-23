@@ -1,4 +1,4 @@
-package RoughSets.DataMining_RoughSets;
+package DataMining_RoughSets;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,26 +9,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * �ֲڼ�����Լ���㷨������
+ * 粗糙集属性约简算法工具类
  * 
  * @author lyq
  * 
  */
 public class RoughSetsTool {
-	// ������������
+	// 决策属性名称
 	public static String DECISION_ATTR_NAME;
 
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// ��������������
+	// 数据属性列名称
 	private String[] attrNames;
-	// ���е�����
+	// 所有的数据
 	private ArrayList<String[]> totalDatas;
-	// ���е����ݼ�¼,������������Ǽ�¼�������ǿ�Լ��ģ�ԭʼ�����ǲ��ܱ��
+	// 所有的数据记录,与上面的区别是记录的属性是可约简的，原始数据是不能变的
 	private ArrayList<Record> totalRecords;
-	// ��������ͼ
+	// 条件属性图
 	private HashMap<String, ArrayList<String>> conditionAttr;
-	// ���Լ�¼����
+	// 属性记录集合
 	private ArrayList<RecordCollection> collectionList;
 
 	public RoughSetsTool(String filePath) {
@@ -37,7 +37,7 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -63,14 +63,14 @@ public class RoughSetsTool {
 		totalDatas = new ArrayList<>();
 		totalRecords = new ArrayList<>();
 		conditionAttr = new HashMap<>();
-		// ��ֵ����������
+		// 赋值属性名称行
 		attrNames = dataArray.get(0);
 		DECISION_ATTR_NAME = attrNames[attrNames.length - 1];
 		for (int j = 0; j < dataArray.size(); j++) {
 			array = dataArray.get(j);
 			totalDatas.add(array);
 			if (j == 0) {
-				// ���˵���һ������������
+				// 过滤掉第一行列名称数据
 				continue;
 			}
 
@@ -78,7 +78,7 @@ public class RoughSetsTool {
 			for (int i = 0; i < attrNames.length; i++) {
 				attrMap.put(attrNames[i], array[i]);
 
-				// Ѱ����������
+				// 寻找条件属性
 				if (i > 0 && i < attrNames.length - 1) {
 					if (conditionAttr.containsKey(attrNames[i])) {
 						attrList = conditionAttr.get(attrNames[i]);
@@ -98,7 +98,7 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �����ݼ�¼�������Էָ������
+	 * 将数据记录根据属性分割到集合中
 	 */
 	private void recordSpiltToCollection() {
 		String attrName;
@@ -114,7 +114,7 @@ public class RoughSetsTool {
 
 			for (String s : attrList) {
 				recordList = new ArrayList<>();
-				// Ѱ������Ϊs�����ݼ�¼���뵽������
+				// 寻找属性为s的数据记录分入到集合中
 				for (Record record : totalRecords) {
 					if (record.isContainedAttr(s)) {
 						recordList.add(record);
@@ -131,24 +131,24 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �������Լ���ͼ
+	 * 构造属性集合图
 	 * 
 	 * @param reductAttr
-	 *            ��ҪԼ�������
+	 *            需要约简的属性
 	 * @return
 	 */
 	private HashMap<String, ArrayList<RecordCollection>> constructCollectionMap(
 			ArrayList<String> reductAttr) {
 		String currentAtttrName;
 		ArrayList<RecordCollection> cList;
-		// �������Զ�Ӧͼ
+		// 集合属性对应图
 		HashMap<String, ArrayList<RecordCollection>> collectionMap = new HashMap<>();
 
-		// ��ȡ���������Բ���
+		// 截取出条件属性部分
 		for (int i = 1; i < attrNames.length - 1; i++) {
 			currentAtttrName = attrNames[i];
 
-			// �жϴ��������Ƿ���ҪԼ��
+			// 判断此属性列是否需要约简
 			if (reductAttr != null && reductAttr.contains(currentAtttrName)) {
 				continue;
 			}
@@ -168,18 +168,18 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �������еķ��Ѽ��ϼ���֪ʶϵͳ
+	 * 根据已有的分裂集合计算知识系统
 	 */
 	private ArrayList<RecordCollection> computeKnowledgeSystem(
 			HashMap<String, ArrayList<RecordCollection>> collectionMap) {
 		String attrName = null;
 		ArrayList<RecordCollection> cList = null;
-		// ֪ʶϵͳ
+		// 知识系统
 		ArrayList<RecordCollection> ksCollections;
 
 		ksCollections = new ArrayList<>();
 
-		// ȡ��1��
+		// 取出1项
 		for (Map.Entry entry : collectionMap.entrySet()) {
 			attrName = (String) entry.getKey();
 			cList = (ArrayList<RecordCollection>) entry.getValue();
@@ -195,14 +195,14 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �ݹ�������е�֪ʶϵͳ��ͨ���������м��ϵĽ���
+	 * 递归计算所有的知识系统，通过计算所有集合的交集
 	 * 
 	 * @param ksCollection
-	 *            �Ѿ����֪ʶϵͳ�ļ���
+	 *            已经求得知识系统的集合
 	 * @param map
-	 *            ��δ�����й�������ļ���
+	 *            还未曾进行过交运算的集合
 	 * @param preCollection
-	 *            ǰ���������Ѿ�ͨ�������������ļ���
+	 *            前个步骤中已经通过交运算计算出的集合
 	 */
 	private void recurrenceComputeKS(ArrayList<RecordCollection> ksCollections,
 			HashMap<String, ArrayList<RecordCollection>> map,
@@ -212,7 +212,7 @@ public class RoughSetsTool {
 		ArrayList<RecordCollection> cList = null;
 		HashMap<String, ArrayList<RecordCollection>> mapCopy = new HashMap<>();
 		
-		//����Ѿ�û�������ˣ���ֱ�����
+		//如果已经没有数据了，则直接添加
 		if(map.size() == 0){
 			ksCollections.add(preCollection);
 			return;
@@ -223,7 +223,7 @@ public class RoughSetsTool {
 			mapCopy.put((String) entry.getKey(), cList);
 		}
 
-		// ȡ��1��
+		// 取出1项
 		for (Map.Entry entry : map.entrySet()) {
 			attrName = (String) entry.getKey();
 			cList = (ArrayList<RecordCollection>) entry.getValue();
@@ -232,14 +232,14 @@ public class RoughSetsTool {
 
 		mapCopy.remove(attrName);
 		for (RecordCollection rc : cList) {
-			// ��ѡ�����Ե�һ�����Ͻ��н����㣬Ȼ���ٴεݹ�
+			// 挑选此属性的一个集合进行交运算，然后再次递归
 			tempCollection = preCollection.overlapCalculate(rc);
 
 			if (tempCollection == null) {
 				continue;
 			}
 
-			// ���map���Ѿ�û��������,˵���ݹ鵽ͷ��
+			// 如果map中已经没有数据了,说明递归到头了
 			if (mapCopy.size() == 0) {
 				ksCollections.add(tempCollection);
 			} else {
@@ -249,27 +249,27 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * ���дֲڼ�����Լ���㷨
+	 * 进行粗糙集属性约简算法
 	 */
 	public void findingReduct() {
 		RecordCollection[] sameClassRcs;
 		KnowledgeSystem ks;
 		ArrayList<RecordCollection> ksCollections;
-		// ��Լ�������
+		// 待约简的属性
 		ArrayList<String> reductAttr = null;
 		ArrayList<String> attrNameList;
-		// ���տ�Լ���������
+		// 最终可约简的属性组
 		ArrayList<ArrayList<String>> canReductAttrs;
 		HashMap<String, ArrayList<RecordCollection>> collectionMap;
 
 		sameClassRcs = selectTheSameClassRC();
-		// ���ｲ���ݰ��ո��������С���Ի�����9������
+		// 这里讲数据按照各个分类的小属性划分了9个集合
 		recordSpiltToCollection();
 
 		collectionMap = constructCollectionMap(reductAttr);
 		ksCollections = computeKnowledgeSystem(collectionMap);
 		ks = new KnowledgeSystem(ksCollections);
-		System.out.println("ԭʼ���Ϸ�������½��Ƽ���");
+		System.out.println("原始集合分类的上下近似集合");
 		ks.getDownSimilarRC(sameClassRcs[0]).printRc();
 		ks.getUpSimilarRC(sameClassRcs[0]).printRc();
 		ks.getDownSimilarRC(sameClassRcs[1]).printRc();
@@ -283,7 +283,7 @@ public class RoughSetsTool {
 		ArrayList<String> remainAttr;
 		canReductAttrs = new ArrayList<>();
 		reductAttr = new ArrayList<>();
-		// �����������Եĵݹ�Լ��
+		// 进行条件属性的递归约简
 		for (String s : attrNameList) {
 			remainAttr = (ArrayList<String>) attrNameList.clone();
 			remainAttr.remove(s);
@@ -297,16 +297,16 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �ݹ��������Լ��
+	 * 递归进行属性约简
 	 * 
 	 * @param resultAttr
-	 *            �Ѿ��������Լ��������
+	 *            已经计算出的约简属性组
 	 * @param reductAttr
-	 *            ��ҪԼ���������
+	 *            将要约简的属性组
 	 * @param remainAttr
-	 *            ʣ�������
+	 *            剩余的属性
 	 * @param sameClassRc
-	 *            ���������½��Ƽ��ϵ�ͬ�༯��
+	 *            待计算上下近似集合的同类集合
 	 */
 	private void recurrenceFindingReduct(
 			ArrayList<ArrayList<String>> resultAttr,
@@ -331,20 +331,20 @@ public class RoughSetsTool {
 		downRc2 = ks.getDownSimilarRC(sameClassRc[1]);
 		upRc2 = ks.getUpSimilarRC(sameClassRc[1]);
 
-		// ������½���û����ȫ���ԭ��������Ϊ���Բ��ܱ�Լ��
+		// 如果上下近似没有完全拟合原集合则认为属性不能被约简
 		if (!upRc1.isCollectionSame(sameClassRc[0])
 				|| !downRc1.isCollectionSame(sameClassRc[0])) {
 			return;
 		}
-		//����͸��඼��Ƚ�
+		//正类和负类都需比较
 		if (!upRc2.isCollectionSame(sameClassRc[1])
 				|| !downRc2.isCollectionSame(sameClassRc[1])) {
 			return;
 		}
 
-		// ���뵽�������
+		// 加入到结果集中
 		resultAttr.add(reductAttr);
-		//ֻʣ��1�����Բ�����Լ��
+		//只剩下1个属性不能再约简
 		if (remainAttr.size() == 1) {
 			return;
 		}
@@ -360,7 +360,7 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * ѡ����������һ�µļ���
+	 * 选出决策属性一致的集合
 	 * 
 	 * @return
 	 */
@@ -370,7 +370,7 @@ public class RoughSetsTool {
 		resultRc[1] = new RecordCollection();
 		String attrValue;
 
-		// �ҳ���һ����¼�ľ���������Ϊһ������
+		// 找出第一个记录的决策属性作为一个分类
 		attrValue = totalRecords.get(0).getRecordDecisionClass();
 		for (Record r : totalRecords) {
 			if (attrValue.equals(r.getRecordDecisionClass())) {
@@ -384,18 +384,18 @@ public class RoughSetsTool {
 	}
 	
 	/**
-	 * ������߹���
+	 * 输出决策规则
 	 * @param reductAttrArray
-	 * Լ��������
+	 * 约简属性组
 	 */
 	public void printRules(ArrayList<ArrayList<String>> reductAttrArray){
-		//���������Ѿ��������Ĺ��򣬱����ظ����
+		//用来保存已经描述过的规则，避免重复输出
 		ArrayList<String> rulesArray;
 		String rule;
 		
 		for(ArrayList<String> ra: reductAttrArray){
 			rulesArray = new ArrayList<>();
-			System.out.print("Լ������ԣ�");
+			System.out.print("约简的属性：");
 			for(String s: ra){
 				System.out.print(s + ",");
 			}
@@ -413,10 +413,10 @@ public class RoughSetsTool {
 	}
 
 	/**
-	 * �����¼����
+	 * 输出记录集合
 	 * 
 	 * @param rcList
-	 *            �������¼����
+	 *            待输出记录集合
 	 */
 	public void printRecordCollectionList(ArrayList<RecordCollection> rcList) {
 		for (RecordCollection rc : rcList) {

@@ -1,7 +1,7 @@
-package LinkMining.DataMining_HITS;
+package DataMining_HITS;
 
 /**
- * HITS���ӷ����㷨
+ * HITS链接分析算法
  * @author lyq
  *
  */

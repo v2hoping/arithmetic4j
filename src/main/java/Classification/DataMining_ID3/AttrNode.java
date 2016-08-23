@@ -1,20 +1,20 @@
-package Classification.DataMining_ID3;
+package DataMing_ID3;
 
 import java.util.ArrayList;
 
 /**
- * ���Խڵ㣬����Ҷ�ӽڵ�
+ * 属性节点，不是叶子节点
  * @author lyq
  *
  */
 public class AttrNode {
-	//��ǰ���Ե�����
+	//当前属性的名字
 	private String attrName;
-	//���ڵ�ķ�������ֵ
+	//父节点的分类属性值
 	private String parentAttrValue;
-	//�����ӽڵ�
+	//属性子节点
 	private AttrNode[] childAttrNode;
-	//����Ҷ�ӽڵ�
+	//孩子叶子节点
 	private ArrayList<String> childDataIndex;
 
 	public String getAttrName() {

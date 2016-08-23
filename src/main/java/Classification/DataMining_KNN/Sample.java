@@ -1,17 +1,17 @@
-package Classification.DataMining_KNN;
+package DataMining_KNN;
 
 /**
- * ����������
+ * 样本数据类
  * 
  * @author lyq
  * 
  */
 public class Sample implements Comparable<Sample>{
-	// �������ݵķ�������
+	// 样本数据的分类名称
 	private String className;
-	// �������ݵ���������
+	// 样本数据的特征向量
 	private String[] features;
-	//��������֮��ļ��ֵ���Դ�������
+	//测试样本之间的间距值，以此做排序
 	private Integer distance;
 	
 	public Sample(String[] features){

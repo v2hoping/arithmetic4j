@@ -1,4 +1,4 @@
-package LinkMining.DataMining_HITS;
+package DataMining_HITS;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,22 +7,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * HITS���ӷ����㷨������
+ * HITS链接分析算法工具类
  * @author lyq
  *
  */
 public class HITSTool {
-	//���������ļ���ַ
+	//输入数据文件地址
 	private String filePath;
-	//��ҳ����
+	//网页个数
 	private int pageNum;
-	//��ҳAuthorityȨ��ֵ
+	//网页Authority权威值
 	private double[] authority;
-	//��ҳhub����ֵ
+	//网页hub中心值
 	private double[] hub;
-	//���Ӿ����ϵ
+	//链接矩阵关系
 	private int[][] linkMatrix;
-	//��ҳ����
+	//网页种类
 	private ArrayList<String> pageClass;
 	
 	public HITSTool(String filePath){
@@ -31,7 +31,7 @@ public class HITSTool {
 	}
 	
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -51,7 +51,7 @@ public class HITSTool {
 		}
 
 		pageClass = new ArrayList<>();
-		// ͳ����ҳ��������
+		// 统计网页类型种数
 		for (String[] array : dataArray) {
 			for (String s : array) {
 				if (!pageClass.contains(s)) {
@@ -67,7 +67,7 @@ public class HITSTool {
 		authority = new double[pageNum];
 		hub = new double[pageNum];
 		for(int k=0; k<pageNum; k++){
-			//��ʼʱĬ��Ȩ��ֵ������ֵ��Ϊ1
+			//初始时默认权威值和中心值都为1
 			authority[k] = 1;
 			hub[k] = 1;
 		}
@@ -77,20 +77,20 @@ public class HITSTool {
 			i = Integer.parseInt(array[0]);
 			j = Integer.parseInt(array[1]);
 
-			// ����linkMatrix[i][j]Ϊ1����i��ҳ����ָ��j��ҳ������
+			// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接
 			linkMatrix[i - 1][j - 1] = 1;
 		}
 	}
 	
 	/**
-	 * ������ҳ�棬Ҳ����authorityȨ��ֵ��ߵ�ҳ��
+	 * 输出结果页面，也就是authority权威值最高的页面
 	 */
 	public void printResultPage(){
-		//���Hub��Authorityֵ�����ں���Ĺ�һ������
+		//最大Hub和Authority值，用于后面的归一化计算
 		double maxHub = 0;
 		double maxAuthority = 0;
 		int maxAuthorityIndex =0;
-		//���ֵ�����������ж�
+		//误差值，用于收敛判断
 		double error = Integer.MAX_VALUE;
 		double[] newHub = new double[pageNum];
 		double[] newAuthority = new double[pageNum];
@@ -102,7 +102,7 @@ public class HITSTool {
 				newAuthority[k] = 0;
 			}
 			
-			//hub��authorityֵ�ĸ��¼���
+			//hub和authority值的更新计算
 			for(int i=0; i<pageNum; i++){
 				for(int j=0; j<pageNum; j++){
 					if(linkMatrix[i][j] == 1){
@@ -126,7 +126,7 @@ public class HITSTool {
 			}
 			
 			error = 0;
-			//��һ������
+			//归一化处理
 			for(int k=0; k<pageNum; k++){
 				newHub[k] /= maxHub;
 				newAuthority[k] /= maxAuthority;
@@ -140,11 +140,11 @@ public class HITSTool {
 			System.out.println("---------");
 		}
 		
-		System.out.println("****������������ҳ��Ȩ��ֵ������ֵ****");
+		System.out.println("****最终收敛的网页的权威值和中心值****");
 		for(int k=0; k<pageNum; k++){
-			System.out.println("��ҳ" + pageClass.get(k) + ":"+ authority[k] + ":" + hub[k]);
+			System.out.println("网页" + pageClass.get(k) + ":"+ authority[k] + ":" + hub[k]);
 		}
-		System.out.println("Ȩ��ֵ��ߵ���ҳΪ����ҳ" + pageClass.get(maxAuthorityIndex));
+		System.out.println("权威值最高的网页为：网页" + pageClass.get(maxAuthorityIndex));
 	}
 
 }

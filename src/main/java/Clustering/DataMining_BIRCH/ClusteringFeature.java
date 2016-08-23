@@ -1,21 +1,21 @@
-package Clustering.DataMining_BIRCH;
+package DataMining_BIRCH;
 
 import java.util.ArrayList;
 
 /**
- * ����������������
+ * 聚类特征基本属性
  * 
  * @author lyq
  * 
  */
 public abstract class ClusteringFeature {
-	// �����нڵ������Ŀ
+	// 子类中节点的总数目
 	protected int N;
-	// ������N���ڵ�����Ժ�
+	// 子类中N个节点的线性和
 	protected double[] LS;
-	// ������N���ڵ��ƽ����
+	// 子类中N个节点的平方和
 	protected double[] SS;
-	//�ڵ���ȣ�����CF�������
+	//节点深度，用于CF树的输出
 	protected int level;
 
 	public int getN() {
@@ -55,10 +55,10 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * ���ݽڵ����ݼ������Ժ�
+	 * 根据节点数据计算线性和
 	 * 
 	 * @param dataRecords
-	 *            �ڵ����ݼ�¼
+	 *            节点数据记录
 	 */
 	protected void setLS(ArrayList<double[]> dataRecords) {
 		int num = dataRecords.get(0).length;
@@ -77,10 +77,10 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * ���ݽڵ����ݼ���ƽ��
+	 * 根据节点数据计算平方
 	 * 
 	 * @param dataRecords
-	 *            �ڵ�����
+	 *            节点数据
 	 */
 	protected void setSS(ArrayList<double[]> dataRecords) {
 		int num = dataRecords.get(0).length;
@@ -99,7 +99,7 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * CF���������ĵ��ӣ����뿼�ǻ���
+	 * CF向量特征的叠加，无须考虑划分
 	 * 
 	 * @param node
 	 */
@@ -119,7 +119,7 @@ public abstract class ClusteringFeature {
 			}
 		}
 
-		// 3�������Ͻ��е���
+		// 3个数量上进行叠加
 		for (int i = 0; i < LS.length; i++) {
 			LS[i] += otherLS[i];
 			SS[i] += otherSS[i];
@@ -128,7 +128,7 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * ��������֮��ľ��뼴������֮��ľ���
+	 * 计算簇与簇之间的距离即簇中心之间的距离
 	 * 
 	 * @return
 	 */
@@ -149,17 +149,17 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * ������ڶ����ƽ������
+	 * 计算簇内对象的平均距离
 	 * 
 	 * @param records
-	 *            ���ڵ����ݼ�¼
+	 *            簇内的数据记录
 	 * @return
 	 */
 	protected double computerInClusterDistance(ArrayList<double[]> records) {
 		double sumDistance = 0;
 		double[] data1;
 		double[] data2;
-		// ��������
+		// 数据总数
 		int totalNum = records.size();
 
 		for (int i = 0; i < totalNum - 1; i++) {
@@ -170,17 +170,17 @@ public abstract class ClusteringFeature {
 			}
 		}
 
-		// ���ص�ֵ�����ܶ������ܶ���Ӧ���룬���ظ���һ��
+		// 返回的值除以总对数，总对数应减半，会重复算一次
 		return Math.sqrt(sumDistance / (totalNum * (totalNum - 1) / 2));
 	}
 
 	/**
-	 * �Ը�����2������������ŷʽ����
+	 * 对给定的2个向量，计算欧式距离
 	 * 
 	 * @param record1
-	 *            ������1
+	 *            向量点1
 	 * @param record2
-	 *            ������2
+	 *            向量点2
 	 */
 	private double computeOuDistance(double[] record1, double[] record2) {
 		double distance = 0;
@@ -193,10 +193,10 @@ public abstract class ClusteringFeature {
 	}
 
 	/**
-	 * ������ӽڵ������������ֵ���з��ѵĲ���
+	 * 聚类添加节点包括，超出阈值进行分裂的操作
 	 * 
 	 * @param clusteringFeature
-	 *            ����Ӿ۴�
+	 *            待添加聚簇
 	 */
 	public abstract void addingCluster(ClusteringFeature clusteringFeature);
 }

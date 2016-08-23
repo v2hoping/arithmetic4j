@@ -1,26 +1,26 @@
-package GraphMining.DataMining_GSpan;
+package DataMining_GSpan;
 
 /**
- * �ߣ�����Ԫ���ʾ
+ * 边，用五元组表示
  * 
  * @author lyq
  * 
  */
 public class Edge {
-	// ��Ԫ��Ĵ�С�ȽϽ��
+	// 五元组的大小比较结果
 	public static final int EDGE_EQUAL = 0;
 	public static final int EDGE_SMALLER = 1;
 	public static final int EDGE_LARGER = 2;
 
-	// �ߵ�һ�˵�id�ű�ʶ
+	// 边的一端的id号标识
 	int ix;
-	// �ߵ���һ�˵�id�ű�ʶ
+	// 边的另一端的id号标识
 	int iy;
-	// �ߵ�һ�˵ĵ���
+	// 边的一端的点标号
 	int x;
-	// �ߵı��
+	// 边的标号
 	int a;
-	// �ߵ���һ�˵ĵ���
+	// 边的另一端的点标号
 	int y;
 
 	public Edge(int ix, int iy, int x, int a, int y) {
@@ -32,7 +32,7 @@ public class Edge {
 	}
 
 	/**
-	 * ��ǰ����������ıߵĴ�С�ȽϹ�ϵ
+	 * 当前边是与给定的边的大小比较关系
 	 * 
 	 * @param e
 	 * @return
@@ -42,7 +42,7 @@ public class Edge {
 		int[] array1 = new int[] { ix, iy, x, y, a };
 		int[] array2 = new int[] { e.ix, e.iy, e.x, e.y, e.a };
 
-		// ����ix, iy,x,y,a�Ĵ������αȽ�
+		// 按照ix, iy,x,y,a的次序依次比较
 		for (int i = 0; i < array1.length; i++) {
 			if (array1[i] < array2[i]) {
 				result = EDGE_SMALLER;
@@ -51,7 +51,7 @@ public class Edge {
 				result = EDGE_LARGER;
 				break;
 			} else {
-				// �����ȣ������Ƚ���һ��
+				// 如果相等，继续比较下一个
 				continue;
 			}
 		}

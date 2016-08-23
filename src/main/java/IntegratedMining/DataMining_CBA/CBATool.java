@@ -1,4 +1,4 @@
-package IntegratedMining.DataMining_CBA;
+package DataMining_CBA;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,39 +9,39 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import IntegratedMining.DataMining_CBA.AprioriTool.AprioriTool;
-import IntegratedMining.DataMining_CBA.AprioriTool.FrequentItem;
+import DataMining_CBA.AprioriTool.AprioriTool;
+import DataMining_CBA.AprioriTool.FrequentItem;
 
 /**
- * CBA�㷨(�����������)������
+ * CBA算法(关联规则分类)工具类
  * 
  * @author lyq
  * 
  */
 public class CBATool {
-	// �������𻮷�
+	// 年龄的类别划分
 	public final String AGE = "Age";
 	public final String AGE_YOUNG = "Young";
 	public final String AGE_MIDDLE_AGED = "Middle_aged";
 	public final String AGE_Senior = "Senior";
 
-	// �������ݵ�ַ
+	// 测试数据地址
 	private String filePath;
-	// ��С֧�ֶ���ֵ��
+	// 最小支持度阈值率
 	private double minSupportRate;
-	// ��С���Ŷ���ֵ�������ж��Ƿ��ܹ���Ϊ��������
+	// 最小置信度阈值，用来判断是否能够成为关联规则
 	private double minConf;
-	// ��С֧�ֶ�
+	// 最小支持度
 	private int minSupportCount;
-	// ����������
+	// 属性列名称
 	private String[] attrNames;
-	// �����������������ּ���
+	// 类别属性所代表的数字集合
 	private ArrayList<Integer> classTypes;
-	// �ö�ά���鱣���������
+	// 用二维数组保存测试数据
 	private ArrayList<String[]> totalDatas;
-	// Apriori�㷨������
+	// Apriori算法工具类
 	private AprioriTool aprioriTool;
-	// ���Ե����ֵ�ӳ��ͼ
+	// 属性到数字的映射图
 	private HashMap<String, Integer> attr2Num;
 	private HashMap<Integer, String> num2Attr;
 
@@ -53,7 +53,7 @@ public class CBATool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -83,22 +83,22 @@ public class CBATool {
 	}
 
 	/**
-	 * ����ֵ���滻���滻�����ֵ���ʽ���Ա����Ƶ������ھ�
+	 * 属性值的替换，替换成数字的形式，以便进行频繁项的挖掘
 	 */
 	private void attributeReplace() {
 		int currentValue = 1;
 		int num = 0;
 		String s;
-		// �����������ֵ�ӳ��ͼ
+		// 属性名到数字的映射图
 		attr2Num = new HashMap<>();
 		num2Attr = new HashMap<>();
 		classTypes = new ArrayList<>();
 
-		// ����1���еķ�ʽ�����������ұ�ɨ��,�����������к�id��
+		// 按照1列列的方式来，从左往右边扫描,跳过列名称行和id列
 		for (int j = 1; j < attrNames.length; j++) {
 			for (int i = 1; i < totalDatas.size(); i++) {
 				s = totalDatas.get(i)[j];
-				// �����������ʽ�ģ�����ֻ���������ת���������������������
+				// 如果是数字形式的，这里只做年龄类别转换，其他的数字情况类似
 				if (attrNames[j].equals(AGE)) {
 					num = Integer.parseInt(s);
 					if (num <= 20 && num > 0) {
@@ -114,7 +114,7 @@ public class CBATool {
 					attr2Num.put(totalDatas.get(i)[j], currentValue);
 					num2Attr.put(currentValue, totalDatas.get(i)[j]);
 					if (j == attrNames.length - 1) {
-						// ��������һ�У�˵���Ƿ�������У���¼����
+						// 如果是组后一列，说明是分类类别列，记录下来
 						classTypes.add(currentValue);
 					}
 
@@ -123,7 +123,7 @@ public class CBATool {
 			}
 		}
 
-		// ��ԭʼ�������������滻��ÿ����¼��Ϊ�������������ݵ���ʽ
+		// 对原始的数据作属性替换，每条记录变为类似于事务数据的形式
 		for (int i = 1; i < totalDatas.size(); i++) {
 			for (int j = 1; j < attrNames.length; j++) {
 				s = totalDatas.get(i)[j];
@@ -135,16 +135,16 @@ public class CBATool {
 	}
 
 	/**
-	 * Apriori����ȫ��Ƶ���
+	 * Apriori计算全部频繁项集
 	 * @return
 	 */
 	private ArrayList<FrequentItem> aprioriCalculate() {
 		String[] tempArray;
 		ArrayList<FrequentItem> totalFrequentItems;
 		ArrayList<String[]> copyData = (ArrayList<String[]>) totalDatas.clone();
-		// ȥ������������
+		// 去除属性名称行
 		copyData.remove(0);
-		// ȥ������ID
+		// 去除首列ID
 		for (int i = 0; i < copyData.size(); i++) {
 			String[] array = copyData.get(i);
 			tempArray = new String[array.length - 1];
@@ -159,23 +159,23 @@ public class CBATool {
 	}
 
 	/**
-	 * ���ڹ�������ķ���
+	 * 基于关联规则的分类
 	 * 
 	 * @param attrValues
-	 *            Ԥ��֪����һЩ����
+	 *            预先知道的一些属性
 	 * @return
 	 */
 	public String CBAJudge(String attrValues) {
 		int value = 0;
-		// ���շ������
+		// 最终分类类别
 		String classType = null;
 		String[] tempArray;
-		// ��֪������ֵ
+		// 已知的属性值
 		ArrayList<String> attrValueList = new ArrayList<>();
 		ArrayList<FrequentItem> totalFrequentItems;
 
 		totalFrequentItems = aprioriCalculate();
-		// ����ѯ����������һ���Եķָ�
+		// 将查询条件进行逐一属性的分割
 		String[] array = attrValues.split(",");
 		for (String record : array) {
 			tempArray = record.split("=");
@@ -183,20 +183,20 @@ public class CBATool {
 			attrValueList.add(value + "");
 		}
 
-		// ��Ƶ�����Ѱ�ҷ�����������
+		// 在频繁项集中寻找符合条件的项
 		for (FrequentItem item : totalFrequentItems) {
-			// ���˵����������Ƶ����
+			// 过滤掉不满足个数频繁项
 			if (item.getIdArray().length < (attrValueList.size() + 1)) {
 				continue;
 			}
 
-			// Ҫ��֤��ѯ�����Զ�������Ƶ�����
+			// 要保证查询的属性都包含在频繁项集中
 			if (itemIsSatisfied(item, attrValueList)) {
 				tempArray = item.getIdArray();
 				classType = classificationBaseRules(tempArray);
 
 				if (classType != null) {
-					// �������滻
+					// 作属性替换
 					classType = num2Attr.get(Integer.parseInt(classType));
 					break;
 				}
@@ -207,10 +207,10 @@ public class CBATool {
 	}
 
 	/**
-	 * ���ڹ���������з���
+	 * 基于关联规则进行分类
 	 * 
 	 * @param items
-	 *            Ƶ����
+	 *            频繁项
 	 * @return
 	 */
 	private String classificationBaseRules(String[] items) {
@@ -218,7 +218,7 @@ public class CBATool {
 		String[] arrayTemp;
 		int count1 = 0;
 		int count2 = 0;
-		// ���Ŷ�
+		// 置信度
 		double confidenceRate;
 
 		String[] noClassTypeItems = new String[items.length - 1];
@@ -232,7 +232,7 @@ public class CBATool {
 		}
 
 		for (String[] array : totalDatas) {
-			// ȥ��ID���ֺ�
+			// 去除ID数字号
 			arrayTemp = new String[array.length - 1];
 			System.arraycopy(array, 1, arrayTemp, 0, array.length - 1);
 			if (isStrArrayContain(arrayTemp, noClassTypeItems)) {
@@ -244,23 +244,23 @@ public class CBATool {
 			}
 		}
 
-		// �����Ŷȵļ���
+		// 做置信度的计算
 		confidenceRate = count1 * 1.0 / count2;
 		if (confidenceRate >= minConf) {
 			return classType;
 		} else {
-			// �����������С���Ŷ�Ҫ����˹���������Ч
+			// 如果不满足最小置信度要求，则此关联规则无效
 			return null;
 		}
 	}
 
 	/**
-	 * �жϵ����ַ��Ƿ�������ַ�������
+	 * 判断单个字符是否包含在字符数组中
 	 * 
 	 * @param array
-	 *            �ַ�����
+	 *            字符数组
 	 * @param s
-	 *            �жϵĵ��ַ�
+	 *            判断的单字符
 	 * @return
 	 */
 	private boolean strIsContained(String[] array, String s) {
@@ -277,7 +277,7 @@ public class CBATool {
 	}
 
 	/**
-	 * ����array2�Ƿ������array1�У�����Ҫ��ȫһ��
+	 * 数组array2是否包含于array1中，不需要完全一样
 	 * 
 	 * @param array1
 	 * @param array2
@@ -288,14 +288,14 @@ public class CBATool {
 		for (String s2 : array2) {
 			isContain = false;
 			for (String s1 : array1) {
-				// ֻҪs2�ַ�������array1�У�����ַ����������array1��
+				// 只要s2字符存在于array1中，这个字符就算包含在array1中
 				if (s2.equals(s1)) {
 					isContain = true;
 					break;
 				}
 			}
 
-			// һ�����ֲ��������ַ�����array2���鲻������array1��
+			// 一旦发现不包含的字符，则array2数组不包含于array1中
 			if (!isContain) {
 				break;
 			}
@@ -305,12 +305,12 @@ public class CBATool {
 	}
 
 	/**
-	 * �ж�Ƶ����Ƿ������ѯ
+	 * 判断频繁项集是否满足查询
 	 * 
 	 * @param item
-	 *            ���жϵ�Ƶ���
+	 *            待判断的频繁项集
 	 * @param attrValues
-	 *            ��ѯ������ֵ�б�
+	 *            查询的属性值列表
 	 * @return
 	 */
 	private boolean itemIsSatisfied(FrequentItem item,
@@ -334,7 +334,7 @@ public class CBATool {
 		if (isContained) {
 			isContained = false;
 
-			// ��Ҫ��֤�Ƿ�Ƶ������Ƿ������������
+			// 还要验证是否频繁项集中是否包含分类属性
 			for (Integer type : classTypes) {
 				if (strIsContained(array, type + "")) {
 					isContained = true;

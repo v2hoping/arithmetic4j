@@ -1,19 +1,19 @@
-package Others.DataMining_ACO;
+package DataMining_ACO;
 
 /**
- * ��Ⱥ�㷨������
+ * 蚁群算法测试类
  * @author lyq
  *
  */
 public class Client {
 	public static void main(String[] args){
-		//��������
+		//测试数据
 		String filePath = "C:\\Users\\lyq\\Desktop\\icon\\input.txt";
-		//��������
+		//蚂蚁数量
 		int antNum;
-		//��Ⱥ�㷨��������
+		//蚁群算法迭代次数
 		int loopCount;
-		//���Ʋ���
+		//控制参数
 		double alpha;
 		double beita;
 		double p;

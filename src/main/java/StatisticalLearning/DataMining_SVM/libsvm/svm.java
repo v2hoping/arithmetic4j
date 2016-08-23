@@ -2,7 +2,7 @@
 
 
 
-package StatisticalLearning.DataMining_SVM.libsvm;
+package DataMining_SVM.libsvm;
 import java.io.*;
 import java.util.*;
 
@@ -2638,7 +2638,7 @@ public class svm {
 	}
 
 	/**
-	 * ��svm�����ò�������֤����Ϊ��Щ����ֻ��Բ��ֵ�֧��������������
+	 * 对svm的配置参数叫验证，因为有些参数只针对部分的支持向量机的类型
 	 * @param prob
 	 * @param param
 	 * @return

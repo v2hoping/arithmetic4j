@@ -1,25 +1,25 @@
-package GraphMining.DataMining_GSpan;
+package DataMining_GSpan;
 
 import java.util.ArrayList;
 
 /**
- * ͼ��������
+ * 图的数据类
  * 
  * @author lyq
  * 
  */
 public class GraphData {
-	// �ڵ�����
+	// 节点组标号
 	private ArrayList<Integer> nodeLabels;
-	// �ڵ��Ƿ����,���ܱ��Ƴ�
+	// 节点是否可用,可能被移除
 	private ArrayList<Boolean> nodeVisibles;
-	// �ߵļ��ϱ��
+	// 边的集合标号
 	private ArrayList<Integer> edgeLabels;
-	// �ߵ�һ�ߵ�id
+	// 边的一边点id
 	private ArrayList<Integer> edgeX;
-	// �ߵ���һ�ߵĵ�id
+	// 边的另一边的点id
 	private ArrayList<Integer> edgeY;
-	// ���Ƿ����
+	// 边是否可用
 	private ArrayList<Boolean> edgeVisibles;
 
 	public GraphData() {
@@ -81,14 +81,14 @@ public class GraphData {
 	}
 
 	/**
-	 * ���ݵ��Ƶ�����Ƴ�ͼ�в�Ƶ���ĵ��
+	 * 根据点边频繁度移除图中不频繁的点边
 	 * 
 	 * @param freqNodeLabel
-	 *            ���Ƶ����ͳ��
+	 *            点的频繁度统计
 	 * @param freqEdgeLabel
-	 *            �ߵ�Ƶ����ͳ��
+	 *            边的频繁度统计
 	 * @param minSupportCount
-	 *            ��С֧�ֶȼ���
+	 *            最小支持度计数
 	 */
 	public void removeInFreqNodeAndEdge(int[] freqNodeLabel,
 			int[] freqEdgeLabel, int minSupportCount) {
@@ -99,7 +99,7 @@ public class GraphData {
 		for (int i = 0; i < nodeLabels.size(); i++) {
 			label = nodeLabels.get(i);
 			if (freqNodeLabel[label] < minSupportCount) {
-				// ���С��֧�ֶȼ�������˵㲻����
+				// 如果小于支持度计数，则此点不可用
 				nodeVisibles.set(i, false);
 			}
 		}
@@ -108,12 +108,12 @@ public class GraphData {
 			label = edgeLabels.get(i);
 
 			if (freqEdgeLabel[label] < minSupportCount) {
-				// ���С��֧�ֶȼ�������˱߲�����
+				// 如果小于支持度计数，则此边不可用
 				edgeVisibles.set(i, false);
 				continue;
 			}
 
-			// ����˱ߵ�ĳ���˵Ķ˵��Ѿ��������ˣ���˱�Ҳ������,x,y��ʾid��
+			// 如果此边的某个端的端点已经不可用了，则此边也不可用,x,y表示id号
 			x = edgeX.get(i);
 			y = edgeY.get(i);
 			if (!nodeVisibles.get(x) || !nodeVisibles.get(y)) {
@@ -123,23 +123,23 @@ public class GraphData {
 	}
 
 	/**
-	 * ���ݱ���������¶����������ĵ�����±��
+	 * 根据标号排序重新对满足条件的点边重新编号
 	 * 
 	 * @param nodeLabel2Rank
-	 *            ������
+	 *            点排名
 	 * @param edgeLabel2Rank
-	 *            ������
+	 *            边排名
 	 */
 	public void reLabelByRank(int[] nodeLabel2Rank, int[] edgeLabel2Rank) {
 		int label = 0;
 		int count = 0;
 		int temp = 0;
-		// �ɵ�id����id�ŵ�ӳ��
+		// 旧的id对新id号的映射
 		int[] oldId2New = new int[nodeLabels.size()];
 		for (int i = 0; i < nodeLabels.size(); i++) {
 			label = nodeLabels.get(i);
 
-			// �����ǰ���ǿ��õģ����˱�ŵ���������Ϊ�˵��µı��
+			// 如果当前点是可用的，将此标号的排名号作为此点新的标号
 			if (nodeVisibles.get(i)) {
 				nodeLabels.set(i, nodeLabel2Rank[label]);
 				oldId2New[i] = count;
@@ -150,11 +150,11 @@ public class GraphData {
 		for (int i = 0; i < edgeLabels.size(); i++) {
 			label = edgeLabels.get(i);
 
-			// �����ǰ���ǿ��õģ����˱�ŵ���������Ϊ�˵��µı��
+			// 如果当前边是可用的，将此标号的排名号作为此点新的标号
 			if (edgeVisibles.get(i)) {
 				edgeLabels.set(i, edgeLabel2Rank[label]);
 
-				// �Դ˵���x,y��id���滻
+				// 对此点做x,y的id号替换
 				temp = edgeX.get(i);
 				edgeX.set(i, oldId2New[temp]);
 				temp = edgeY.get(i);

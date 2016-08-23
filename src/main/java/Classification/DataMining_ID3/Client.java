@@ -1,7 +1,7 @@
-package Classification.DataMining_ID3;
+package DataMing_ID3;
 
 /**
- * ID3�����������㷨���Գ�����
+ * ID3决策树分类算法测试场景类
  * @author lyq
  *
  */

@@ -1,17 +1,17 @@
-package SequentialPatterns.DataMining_GSP;
+package DataMining_GSP;
 
 import java.util.ArrayList;
 
 /**
- * ���У�ÿ�������ڲ���������ItemSet�
+ * 序列，每个序列内部包含多组ItemSet项集
  * 
  * @author lyq
  * 
  */
 public class Sequence implements Comparable<Sequence>, Cloneable {
-	// ������������ID
+	// 序列所属事务ID
 	private int trsanctionID;
-	// ��б�
+	// 项集列表
 	private ArrayList<ItemSet> itemSetList;
 
 	public Sequence(int trsanctionID) {
@@ -40,7 +40,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * ȡ�������е�һ����ĵ�һ��Ԫ��
+	 * 取出序列中第一个项集的第一个元素
 	 * 
 	 * @return
 	 */
@@ -49,7 +49,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * ��ȡ���������һ���
+	 * 获取序列中最后一个项集
 	 * 
 	 * @return
 	 */
@@ -58,7 +58,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * ��ȡ���������һ��������һ��һ��Ԫ��
+	 * 获取序列中最后一个项集的最后一个一个元素
 	 * 
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * �ж����������һ����Ƿ�Ϊ��һ��ֵ
+	 * 判断序列中最后一个项集是否为单一的值
 	 * 
 	 * @return
 	 */
@@ -95,7 +95,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 	
 	/**
-	 * ����һ��һģһ��������
+	 * 拷贝一份一模一样的序列
 	 */
 	public Sequence copySeqence(){
 		Sequence copySeq = new Sequence();
@@ -107,10 +107,10 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * �Ƚ�2�������Ƿ���ȣ���Ҫ�ж��ڲ���ÿ����Ƿ���ȫһ��
+	 * 比较2个序列是否相等，需要判断内部的每个项集是否完全一致
 	 * 
 	 * @param seq
-	 *            �Ƚϵ����ж���
+	 *            比较的序列对象
 	 * @return
 	 */
 	public boolean compareIsSame(Sequence seq) {
@@ -127,7 +127,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 			tempItemSet2 = itemSetList2.get(i);
 
 			if (!tempItemSet1.compareIsSame(tempItemSet2)) {
-				// ֻҪ����ȣ�ֱ���˳�����
+				// 只要不相等，直接退出函数
 				result = false;
 				break;
 			}
@@ -137,7 +137,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 	}
 
 	/**
-	 * ���ɴ����е�����������
+	 * 生成此序列的所有子序列
 	 * 
 	 * @return
 	 */
@@ -152,7 +152,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 			if (tempItemSet.getItems().size() == 1) {
 				tempSeq = this.copySeqence();
 				
-				// ���ֻ�����ֻ��1��Ԫ�أ���ֱ���Ƴ�
+				// 如果只有项集中只有1个元素，则直接移除
 				tempSeq.itemSetList.remove(i);
 				childSeqs.add(tempSeq);
 			} else {
@@ -160,7 +160,7 @@ public class Sequence implements Comparable<Sequence>, Cloneable {
 				for (int j = 0; j < tempItems.size(); j++) {
 					tempSeq = this.copySeqence();
 
-					// �ڿ������������Ƴ�һ������
+					// 在拷贝的序列中移除一个数字
 					tempSeq.getItemSetList().get(i).getItems().remove(j);
 					childSeqs.add(tempSeq);
 				}

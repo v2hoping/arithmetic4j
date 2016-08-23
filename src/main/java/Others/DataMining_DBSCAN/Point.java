@@ -1,17 +1,17 @@
-package Others.DataMining_DBSCAN;
+package DataMining_DBSCAN;
 
 /**
- * �������
+ * 坐标点类
  * 
  * @author lyq
  * 
  */
 public class Point {
-	// ����������
+	// 坐标点横坐标
 	int x;
-	// �����������
+	// 坐标点纵坐标
 	int y;
-	// �˽ڵ��Ƿ��Ѿ������ʹ�
+	// 此节点是否已经被访问过
 	boolean isVisited;
 
 	public Point(String x, String y) {
@@ -21,10 +21,10 @@ public class Point {
 	}
 
 	/**
-	 * ���㵱ǰ�����ƶ���֮���ŷʽ����
+	 * 计算当前点与制定点之间的欧式距离
 	 * 
 	 * @param p
-	 *            ����������p��
+	 *            待计算聚类的p点
 	 * @return
 	 */
 	public double ouDistance(Point p) {
@@ -38,10 +38,10 @@ public class Point {
 	}
 
 	/**
-	 * �ж�2��������Ƿ�Ϊ�ø������
+	 * 判断2个坐标点是否为用个坐标点
 	 * 
 	 * @param p
-	 *            ���Ƚ������
+	 *            待比较坐标点
 	 * @return
 	 */
 	public boolean isTheSame(Point p) {

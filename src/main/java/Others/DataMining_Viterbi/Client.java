@@ -1,20 +1,20 @@
-package Others.DataMining_Viterbi;
+package DataMining_Viterbi;
 
 /**
- * ά�ر��㷨
+ * 维特比算法
  * 
  * @author lyq
  * 
  */
 public class Client {
 	public static void main(String[] args) {
-		// ״̬ת�Ƹ��ʾ���·��
+		// 状态转移概率矩阵路径
 		String stmFilePath;
-		// ��������·��
+		// 混淆矩阵路径
 		String cfFilePath;
-		// �۲쵽��״̬
+		// 观察到的状态
 		String[] observeStates;
-		// ��ʼ״̬
+		// 初始状态
 		double[] initStatePro;
 		ViterbiTool tool;
 

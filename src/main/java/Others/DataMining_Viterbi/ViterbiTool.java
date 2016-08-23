@@ -1,4 +1,4 @@
-package Others.DataMining_Viterbi;
+package DataMining_Viterbi;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,31 +9,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ά�ر��㷨������
+ * 维特比算法工具类
  * 
  * @author lyq
  * 
  */
 public class ViterbiTool {
-	// ״̬ת�Ƹ��ʾ����ļ���ַ
+	// 状态转移概率矩阵文件地址
 	private String stmFilePath;
-	// ���������ļ���ַ
+	// 混淆矩阵文件地址
 	private String confusionFilePath;
-	// ��ʼ״̬����
+	// 初始状态概率
 	private double[] initStatePro;
-	// �۲쵽��״̬����
+	// 观察到的状态序列
 	public String[] observeStates;
-	// ״̬ת�ƾ���ֵ
+	// 状态转移矩阵值
 	private double[][] stMatrix;
-	// ��������ֵ
+	// 混淆矩阵值
 	private double[][] confusionMatrix;
-	// ���������µ�Ǳ����������ֵ
+	// 各个条件下的潜在特征概率值
 	private double[][] potentialValues;
-	// Ǳ������
+	// 潜在特征
 	private ArrayList<String> potentialAttrs;
-	// ����ֵ������ӳ��ͼ
+	// 属性值列坐标映射图
 	private HashMap<String, Integer> name2Index;
-	// ����������ֵӳ��ͼ
+	// 列坐标属性值映射图
 	private HashMap<Integer, String> index2name;
 
 	public ViterbiTool(String stmFilePath, String confusionFilePath,
@@ -47,7 +47,7 @@ public class ViterbiTool {
 	}
 
 	/**
-	 * ��ʼ�����ݲ���
+	 * 初始化数据操作
 	 */
 	private void initOperation() {
 		double[] temp;
@@ -70,7 +70,7 @@ public class ViterbiTool {
 				}
 			}
 
-			// ��ת�����ֵ����������
+			// 将转换后的值赋给数组中
 			this.stMatrix[index] = temp;
 			index++;
 		}
@@ -87,26 +87,26 @@ public class ViterbiTool {
 				}
 			}
 
-			// ��ת�����ֵ����������
+			// 将转换后的值赋给数组中
 			this.confusionMatrix[index] = temp;
 			index++;
 		}
 
 		this.potentialAttrs = new ArrayList<>();
-		// ���Ǳ����������
+		// 添加潜在特征属性
 		for (String s : smtDatas.get(0)) {
 			this.potentialAttrs.add(s);
 		}
-		// ȥ��������Ч��
+		// 去除首列无效列
 		potentialAttrs.remove(0);
 
 		this.name2Index = new HashMap<>();
 		this.index2name = new HashMap<>();
 
-		// ��������±�ӳ���ϵ
+		// 添加名称下标映射关系
 		for (int i = 1; i < smtDatas.get(0).length; i++) {
 			this.name2Index.put(smtDatas.get(0)[i], i);
-			// ����±굽���Ƶ�ӳ��
+			// 添加下标到名称的映射
 			this.index2name.put(i, smtDatas.get(0)[i]);
 		}
 
@@ -116,7 +116,7 @@ public class ViterbiTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private ArrayList<String[]> readDataFile(String filePath) {
 		File file = new File(filePath);
@@ -139,16 +139,16 @@ public class ViterbiTool {
 	}
 
 	/**
-	 * ���ݹ۲������������ص��������ʾ���
+	 * 根据观察特征计算隐藏的特征概率矩阵
 	 */
 	private void calPotencialProMatrix() {
 		String curObserveState;
-		// �۲�������Ǳ���������±�
+		// 观察特征和潜在特征的下标
 		int osIndex;
 		int psIndex;
 		double temp;
 		double maxPro;
-		// �����������ֵ���������Ӱ������ظ���
+		// 混淆矩阵概率值，就是相关影响的因素概率
 		double confusionPro;
 
 		this.potentialValues = new double[observeStates.length][potentialAttrs
@@ -158,7 +158,7 @@ public class ViterbiTool {
 			osIndex = this.name2Index.get(curObserveState);
 			maxPro = -1;
 
-			// ��Ϊ�ǵ�һ���۲�������û��ǰ���Ӱ�죬���ݳ�ʼ״̬����
+			// 因为是第一个观察特征，没有前面的影响，根据初始状态计算
 			if (i == 0) {
 				for (String attr : this.potentialAttrs) {
 					psIndex = this.name2Index.get(attr);
@@ -168,20 +168,20 @@ public class ViterbiTool {
 					this.potentialValues[BaseNames.DAY1][psIndex] = temp;
 				}
 			} else {
-				// �����Ǳ��������ǰһ��������Ӱ�죬�Լ���ǰ�Ļ�������Ӱ��
+				// 后面的潜在特征受前一个特征的影响，以及当前的混淆因素影响
 				for (String toDayAttr : this.potentialAttrs) {
 					psIndex = this.name2Index.get(toDayAttr);
 					confusionPro = this.confusionMatrix[psIndex][osIndex];
 
 					int index;
 					maxPro = -1;
-					// ͨ������ĸ��ʼ�������������������
+					// 通过昨天的概率计算今天此特征的最大概率
 					for (String yAttr : this.potentialAttrs) {
 						index = this.name2Index.get(yAttr);
 						temp = this.potentialValues[i - 1][index]
 								* this.stMatrix[index][psIndex];
 
-						// ����õ������Ǳ��������������
+						// 计算得到今天此潜在特征的最大概率
 						if (temp > maxPro) {
 							maxPro = temp;
 						}
@@ -194,7 +194,7 @@ public class ViterbiTool {
 	}
 
 	/**
-	 * ����ͬʱ��������ֵ���Ǳ������ֵ
+	 * 根据同时期最大概率值输出潜在特征值
 	 */
 	private void outputResultAttr() {
 		double maxPro;
@@ -213,17 +213,17 @@ public class ViterbiTool {
 				}
 			}
 
-			// ȡ���������±��Ӧ��Ǳ������
+			// 取出最大概率下标对应的潜在特征
 			psValues.add(this.index2name.get(maxIndex));
 		}
 
-		System.out.println("�۲�����Ϊ��");
+		System.out.println("观察特征为：");
 		for (String s : this.observeStates) {
 			System.out.print(s + ", ");
 		}
 		System.out.println();
 
-		System.out.println("Ǳ������Ϊ��");
+		System.out.println("潜在特征为：");
 		for (String s : psValues) {
 			System.out.print(s + ", ");
 		}
@@ -231,7 +231,7 @@ public class ViterbiTool {
 	}
 
 	/**
-	 * ���ݹ۲����ԣ��õ�Ǳ��������Ϣ
+	 * 根据观察属性，得到潜在属性信息
 	 */
 	public void calHMMObserve() {
 		calPotencialProMatrix();

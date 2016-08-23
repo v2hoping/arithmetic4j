@@ -1,14 +1,14 @@
-package StatisticalLearning.DataMining_SVM.libsvm;
+package DataMining_SVM.libsvm;
 /**
  * 
- * svm�����ڵ�
+ * svm向量节点
  * @author lyq
  *
  */
 public class svm_node implements java.io.Serializable
 {
-	//�ڵ�����
+	//节点索引
 	public int index;
-	//�ڵ��ֵ
+	//节点的值
 	public double value;
 }

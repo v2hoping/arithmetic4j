@@ -1,20 +1,20 @@
-package Clustering.DataMining_BIRCH;
+package DataMining_BIRCH;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * ��Ҷ�ӽڵ�
+ * 非叶子节点
  * 
  * @author lyq
  * 
  */
 public class NonLeafNode extends ClusteringFeature {
-	// ��Ҷ�ӽڵ�ĺ��ӽڵ����Ϊ��Ҷ�ӽڵ㣬Ҳ����ΪҶ�ӽڵ�
+	// 非叶子节点的孩子节点可能为非叶子节点，也可能为叶子节点
 	private ArrayList<NonLeafNode> nonLeafChilds;
-	// �����Ҷ�ӽڵ�ĺ��ӣ�����˫���������ʽ����
+	// 如果是叶子节点的孩子，则以双向链表的形式存在
 	private LinkedList<LeafNode> leafChilds;
-	// ���׽ڵ�
+	// 父亲节点
 	private NonLeafNode parentNode;
 
 	public ArrayList<NonLeafNode> getNonLeafChilds() {
@@ -34,10 +34,10 @@ public class NonLeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * ���Ҷ�ӽڵ�
+	 * 添加叶子节点
 	 * 
 	 * @param leafNode
-	 *            �����Ҷ�ӽڵ�
+	 *            待添加叶子节点
 	 * @return
 	 */
 	public boolean addingNeededDivide(LeafNode leafNode) {
@@ -47,14 +47,14 @@ public class NonLeafNode extends ClusteringFeature {
 			leafChilds.add(leafNode);
 			leafNode.setParentNode(this);
 		} else {
-			// �����Ӻ�Ҷ�ӽڵ�������ƽ�����ӣ�����Ӻ���Ҫ����
+			// 如果添加后，叶子节点数超过平衡因子，则添加后需要分裂
 			if (leafChilds.size() + 1 > BIRCHTool.B) {
 				needDivided = true;
 			}
 			leafChilds.add(leafNode);
 			leafNode.setParentNode(this);
 
-			// ���Գ���
+			// 测试程序
 			/*
 			 * if(leafChilds.size() == 2){ if(BIRCHTool.B == 2){ needDivided =
 			 * true; LeafNode node = new LeafNode(); node.setN(1);
@@ -67,10 +67,10 @@ public class NonLeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * ��ӷ�Ҷ�ӽڵ�
+	 * 添加非叶子节点
 	 * 
 	 * @param nonLeafNode
-	 *            ����ӷ�Ҷ�ӽڵ�
+	 *            待添加非叶子节点
 	 * @return
 	 */
 	public boolean addingNeededDivide(NonLeafNode nonLeafNode) {
@@ -80,7 +80,7 @@ public class NonLeafNode extends ClusteringFeature {
 			nonLeafChilds.add(nonLeafNode);
 			nonLeafNode.setParentNode(this);
 		} else {
-			// �����Ӻ�Ҷ�ӽڵ�������ƽ�����ӣ������ʧ��
+			// 如果添加后，叶子节点数超过平衡因子，则添加失败
 			if (nonLeafChilds.size() + 1 > BIRCHTool.B) {
 				needDivided = false;
 			}
@@ -92,21 +92,21 @@ public class NonLeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * ��ΪҶ�ӽڵ���������ֵ�����з���
+	 * 因为叶子节点数超过阈值，进行分裂
 	 * 
 	 * @return
 	 */
 	public NonLeafNode[] leafNodeDivided() {
 		NonLeafNode[] nonLeafNodes = new NonLeafNode[2];
 
-		// �ؼ����������2���أ�����Ĵذ��վͽ�ԭ�򻮷ּ���
+		// 簇间距离差距最大的2个簇，后面的簇按照就近原则划分即可
 		LeafNode node1 = null;
 		LeafNode node2 = null;
 		LeafNode tempNode = null;
 		double maxValue = 0;
 		double temp = 0;
 
-		// �ҳ����ľ���������2����
+		// 找出簇心距离差距最大的2个簇
 		for (int i = 0; i < leafChilds.size() - 1; i++) {
 			tempNode = leafChilds.get(i);
 			for (int j = i + 1; j < leafChilds.size(); j++) {
@@ -126,11 +126,11 @@ public class NonLeafNode extends ClusteringFeature {
 		nonLeafNodes[1].addingCluster(node2);
 		leafChilds.remove(node1);
 		leafChilds.remove(node2);
-		// �ͽ������
+		// 就近分配簇
 		for (LeafNode c : leafChilds) {
 			if (node1.computerClusterDistance(c) < node2
 					.computerClusterDistance(c)) {
-				// �ؼ��������ӽ���С�أ��ͼ�����С������Ҷ�ӽڵ�
+				// 簇间距离如果接近最小簇，就加入最小簇所属叶子节点
 				nonLeafNodes[0].addingCluster(c);
 				c.setParentNode(nonLeafNodes[0]);
 			} else {
@@ -143,21 +143,21 @@ public class NonLeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * ��Ϊ��Ҷ�ӽڵ���������ֵ�����з���
+	 * 因为非叶子节点数超过阈值，进行分裂
 	 * 
 	 * @return
 	 */
 	public NonLeafNode[] nonLeafNodeDivided() {
 		NonLeafNode[] nonLeafNodes = new NonLeafNode[2];
 
-		// �ؼ����������2���أ�����Ĵذ��վͽ�ԭ�򻮷ּ���
+		// 簇间距离差距最大的2个簇，后面的簇按照就近原则划分即可
 		NonLeafNode node1 = null;
 		NonLeafNode node2 = null;
 		NonLeafNode tempNode = null;
 		double maxValue = 0;
 		double temp = 0;
 
-		// �ҳ����ľ���������2����
+		// 找出簇心距离差距最大的2个簇
 		for (int i = 0; i < nonLeafChilds.size() - 1; i++) {
 			tempNode = nonLeafChilds.get(i);
 			for (int j = i + 1; j < nonLeafChilds.size(); j++) {
@@ -177,11 +177,11 @@ public class NonLeafNode extends ClusteringFeature {
 		nonLeafNodes[1].addingCluster(node2);
 		nonLeafChilds.remove(node1);
 		nonLeafChilds.remove(node2);
-		// �ͽ������
+		// 就近分配簇
 		for (NonLeafNode c : nonLeafChilds) {
 			if (node1.computerClusterDistance(c) < node2
 					.computerClusterDistance(c)) {
-				// �ؼ��������ӽ���С�أ��ͼ�����С������Ҷ�ӽڵ�
+				// 簇间距离如果接近最小簇，就加入最小簇所属叶子节点
 				nonLeafNodes[0].addingCluster(c);
 				c.setParentNode(nonLeafNodes[0]);
 			} else {
@@ -194,10 +194,10 @@ public class NonLeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * Ѱ�ҵ���ӽ���Ҷ�ӽڵ�
+	 * 寻找到最接近的叶子节点
 	 * 
 	 * @param cluster
-	 *            ����Ӿ۴�
+	 *            待添加聚簇
 	 * @return
 	 */
 	public LeafNode findedClosestNode(Cluster cluster) {
@@ -223,7 +223,7 @@ public class NonLeafNode extends ClusteringFeature {
 				}
 			}
 
-			// �ݹ����������
+			// 递归继续往下找
 			node = nonLeafNode.findedClosestNode(cluster);
 		}
 
@@ -244,7 +244,7 @@ public class NonLeafNode extends ClusteringFeature {
 		NonLeafNode nonLeafNode = null;
 		NonLeafNode[] nonLeafNodeArrays;
 		boolean neededDivide = false;
-		// ���¾�������ֵ
+		// 更新聚类特征值
 		directAddCluster(clusteringFeature);
 
 		if (clusteringFeature instanceof LeafNode) {

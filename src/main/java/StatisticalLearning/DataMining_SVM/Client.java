@@ -1,19 +1,19 @@
-package StatisticalLearning.DataMining_SVM;
+package DataMining_SVM;
 
 /**
- * SVM֧������������������
+ * SVM支持向量机场景调用类
  * @author lyq
  *
  */
 public class Client {
 	public static void main(String[] args){
-		//ѵ���������ļ�·��
+		//训练集数据文件路径
 		String trainDataPath = "C:\\Users\\lyq\\Desktop\\icon\\trainInput.txt";
-		//���������ļ�·��
+		//测试数据文件路径
 		String testDataPath = "C:\\Users\\lyq\\Desktop\\icon\\testInput.txt";
 		
 		SVMTool tool = new SVMTool(trainDataPath);
-		//�Բ������ݽ���svm֧������������
+		//对测试数据进行svm支持向量机分类
 		tool.svmPredictData(testDataPath);
 	}
 

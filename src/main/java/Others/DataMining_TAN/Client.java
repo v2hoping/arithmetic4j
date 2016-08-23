@@ -1,7 +1,7 @@
-package Others.DataMining_TAN;
+package DataMining_TAN;
 
 /**
- * TAN�������ر�Ҷ˹�㷨
+ * TAN树型朴素贝叶斯算法
  * 
  * @author lyq
  * 
@@ -9,11 +9,11 @@ package Others.DataMining_TAN;
 public class Client {
 	public static void main(String[] args) {
 		String filePath = "C:\\Users\\lyq\\Desktop\\icon\\input.txt";
-		// ������ѯ���
+		// 条件查询语句
 		String queryStr;
-		// ����������1
+		// 分类结果概率1
 		double classResult1;
-		// ����������2
+		// 分类结果概率2
 		double classResult2;
 
 		TANTool tool = new TANTool(filePath);
@@ -23,14 +23,14 @@ public class Client {
 		queryStr = "OutLook=Sunny,Temperature=Hot,Humidity=High,Wind=Weak,PlayTennis=Yes";
 		classResult2 = tool.calHappenedPro(queryStr);
 
-		System.out.println(String.format("���Ϊ%s����õĸ���Ϊ%s", "PlayTennis=No",
+		System.out.println(String.format("类别为%s所求得的概率为%s", "PlayTennis=No",
 				classResult1));
-		System.out.println(String.format("���Ϊ%s����õĸ���Ϊ%s", "PlayTennis=Yes",
+		System.out.println(String.format("类别为%s所求得的概率为%s", "PlayTennis=Yes",
 				classResult2));
 		if (classResult1 > classResult2) {
-			System.out.println("�������ΪPlayTennis=No");
+			System.out.println("分类类别为PlayTennis=No");
 		} else {
-			System.out.println("�������ΪPlayTennis=Yes");
+			System.out.println("分类类别为PlayTennis=Yes");
 		}
 	}
 }

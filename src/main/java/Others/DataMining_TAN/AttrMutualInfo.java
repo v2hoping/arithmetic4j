@@ -1,14 +1,14 @@
-package Others.DataMining_TAN;
+package DataMining_TAN;
 
 /**
- * ����֮��Ļ���Ϣֵ����ʾ����֮��Ĺ����Դ�С
+ * 属性之间的互信息值，表示属性之间的关联性大小
  * @author lyq
  *
  */
 public class AttrMutualInfo implements Comparable<AttrMutualInfo>{
-	//����Ϣֵ
+	//互信息值
 	Double value;
-	//��������ֵ��
+	//关联属性值对
 	Node[] nodeArray;
 	
 	public AttrMutualInfo(double value, Node node1, Node node2){

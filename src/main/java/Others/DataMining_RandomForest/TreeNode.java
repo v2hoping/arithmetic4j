@@ -1,27 +1,27 @@
-package Others.DataMining_RandomForest;
+package DataMining_RandomForest;
 
 import java.util.ArrayList;
 
 /**
- * �ع�������ڵ�
+ * 回归分类树节点
  * 
  * @author lyq
  * 
  */
 public class TreeNode {
-	// �ڵ���������
+	// 节点属性名字
 	private String attrName;
-	// �ڵ��������
+	// 节点索引标号
 	private int nodeIndex;
-	//������Ҷ�ӽڵ���
+	//包含的叶子节点数
 	private int leafNum;
-	// �ڵ������
+	// 节点误差率
 	private double alpha;
-	// ���׷�������ֵ
+	// 父亲分类属性值
 	private String parentAttrValue;
-	// ���ӽڵ�
+	// 孩子节点
 	private TreeNode[] childAttrNode;
-	// ���ݼ�¼����
+	// 数据记录索引
 	private ArrayList<String> dataIndex;
 
 	public String getAttrName() {

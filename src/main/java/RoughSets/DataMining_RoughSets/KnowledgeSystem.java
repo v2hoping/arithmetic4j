@@ -1,16 +1,16 @@
-package RoughSets.DataMining_RoughSets;
+package DataMining_RoughSets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * ֪ʶϵͳ
+ * 知识系统
  * 
  * @author lyq
  * 
  */
 public class KnowledgeSystem {
-	// ֪ʶϵͳ�ڵļ���
+	// 知识系统内的集合
 	ArrayList<RecordCollection> ksCollections;
 
 	public KnowledgeSystem(ArrayList<RecordCollection> ksCollections) {
@@ -18,10 +18,10 @@ public class KnowledgeSystem {
 	}
 
 	/**
-	 * ��ȡ���ϵ��Ͻ��Ƽ���
+	 * 获取集合的上近似集合
 	 * 
 	 * @param rc
-	 *            ԭʼ����
+	 *            原始集合
 	 * @return
 	 */
 	public RecordCollection getUpSimilarRC(RecordCollection rc) {
@@ -32,7 +32,7 @@ public class KnowledgeSystem {
 		ArrayList<RecordCollection> deleteRcs = new ArrayList<>();
 		targetArray = rc.getRecordNames();
 
-		// ��һ�����Ͽ���
+		// 做一个集合拷贝
 		for (RecordCollection recordCollection : ksCollections) {
 			copyRcs.add(recordCollection);
 		}
@@ -47,7 +47,7 @@ public class KnowledgeSystem {
 				if (resultRc == null) {
 					resultRc = recordCollection;
 				} else {
-					// ���в�����
+					// 进行并运算
 					resultRc = resultRc.unionCal(recordCollection);
 				}
 
@@ -56,11 +56,11 @@ public class KnowledgeSystem {
 				}
 			}
 		}
-		//ȥ���Ѿ���ӹ��ļ���
+		//去除已经添加过的集合
 		copyRcs.removeAll(deleteRcs);
 
 		if (targetArray.size() > 0) {
-			// ˵���Ѿ���ȫ��δ��ȫ�Ͻ��Ƶļ���
+			// 说明已经完全还未找全上近似的集合
 			for (RecordCollection recordCollection : copyRcs) {
 				nameArray = recordCollection.getRecordNames();
 
@@ -70,7 +70,7 @@ public class KnowledgeSystem {
 					if (resultRc == null) {
 						resultRc = recordCollection;
 					} else {
-						// ���в�����
+						// 进行并运算
 						resultRc = resultRc.unionCal(recordCollection);
 					}
 
@@ -85,10 +85,10 @@ public class KnowledgeSystem {
 	}
 
 	/**
-	 * ��ȡ���ϵ��½��Ƽ���
+	 * 获取集合的下近似集合
 	 * 
 	 * @param rc
-	 *            ԭʼ����
+	 *            原始集合
 	 * @return
 	 */
 	public RecordCollection getDownSimilarRC(RecordCollection rc) {
@@ -106,7 +106,7 @@ public class KnowledgeSystem {
 				if (resultRc == null) {
 					resultRc = recordCollection;
 				} else {
-					// ���в�����
+					// 进行并运算
 					resultRc = resultRc.unionCal(recordCollection);
 				}
 
@@ -120,12 +120,12 @@ public class KnowledgeSystem {
 	}
 
 	/**
-	 * �ж�2���ַ�����֮���Ƿ��н���
+	 * 判断2个字符数组之间是否有交集
 	 * 
 	 * @param str1
-	 *            �ַ��б�1
+	 *            字符列表1
 	 * @param str2
-	 *            �ַ��б�2
+	 *            字符列表2
 	 * @return
 	 */
 	public boolean strHasOverlap(ArrayList<String> str1, ArrayList<String> str2) {
@@ -148,7 +148,7 @@ public class KnowledgeSystem {
 	}
 
 	/**
-	 * �ж��ַ���str2�Ƿ���ȫ������str1��
+	 * 判断字符集str2是否完全包含于str1中
 	 * 
 	 * @param str1
 	 * @param str2
@@ -172,7 +172,7 @@ public class KnowledgeSystem {
 	}
 
 	/**
-	 * �ַ��б��Ƴ�����Ԫ��
+	 * 字符列表移除公共元素
 	 * 
 	 * @param str1
 	 * @param str2
@@ -189,7 +189,7 @@ public class KnowledgeSystem {
 			}
 		}
 
-		// ���й���Ԫ�ص��Ƴ�
+		// 进行公共元素的移除
 		str1.removeAll(deleteStrs);
 	}
 }

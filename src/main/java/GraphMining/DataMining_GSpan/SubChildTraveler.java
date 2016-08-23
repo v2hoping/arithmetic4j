@@ -1,30 +1,30 @@
-package GraphMining.DataMining_GSpan;
+package DataMining_GSpan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * ����ͼ��Ѱ�࣬�ڵ�ǰ�ߵĻ�����Ѱ�ҿ��ܵĺ��ӱ�
+ * 孩子图搜寻类，在当前边的基础上寻找可能的孩子边
  * 
  * @author lyq
  * 
  */
 public class SubChildTraveler {
-	// ��ǰ����Ԫ���
+	// 当前的五元组边
 	ArrayList<Edge> edgeSeq;
-	// ��ǰ��ͼ
+	// 当前的图
 	Graph graph;
-	// ������ݣ����ӱ߶�������ͼid��
+	// 结果数据，孩子边对所属的图id组
 	ArrayList<Edge> childEdge;
-	// ͼ�ĵ�id����Ԫ��id��ʶ��ӳ��
+	// 图的点id对五元组id标识的映射
 	int[] g2s;
-	// ��Ԫ��id��ʶ��ͼ�ĵ�id��ӳ��
+	// 五元组id标识对图的点id的映射
 	int[] s2g;
-	// ͼ�б��Ƿ��õ����
+	// 图中边是否被用的情况
 	boolean f[][];
-	// ����·����rm[id]��ʾ���Ǵ�id�ڵ�������·���е���һ���ڵ�id
+	// 最右路径，rm[id]表示的是此id节点在最右路径中的下一个节点id
 	int[] rm;
-	// ��һ����Ԫ���id
+	// 下一个五元组的id
 	int next;
 
 	public SubChildTraveler(ArrayList<Edge> edgeSeq, Graph graph) {
@@ -34,15 +34,15 @@ public class SubChildTraveler {
 	}
 
 	/**
-	 * ��ͼ���������ܴ��ڵĺ��ӱ�
+	 * 在图中搜索可能存在的孩子边
 	 * 
 	 * @param next
-	 *            �¼���ߵĽڵ㽫���õ�id
+	 *            新加入边的节点将设置的id
 	 */
 	public void traveler() {
 		this.next = edgeSeq.size() + 1;
 		int size = graph.nodeLabels.size();
-		// ��idӳ��ĳ�ʼ������
+		// 做id映射的初始化操作
 		g2s = new int[size];
 		s2g = new int[size];
 		f = new boolean[size][size];
@@ -52,7 +52,7 @@ public class SubChildTraveler {
 			s2g[i] = -1;
 
 			for (int j = 0; j < size; j++) {
-				// �����idΪi��idΪj��˱�û�б��ù�
+				// 代表点id为i到id为j点此边没有被用过
 				f[i][j] = false;
 			}
 		}
@@ -61,7 +61,7 @@ public class SubChildTraveler {
 		for (int i = 0; i < edgeSeq.size()+1; i++) {
 			rm[i] = -1;
 		}
-		// Ѱ������·��
+		// 寻找最右路径
 		for (Edge e : edgeSeq) {
 			if (e.ix < e.iy && e.iy > rm[e.ix]) {
 				rm[e.ix] = e.iy;
@@ -69,7 +69,7 @@ public class SubChildTraveler {
 		}
 
 		for (int i = 0; i < size; i++) {
-			// Ѱ�ҵ�һ�������ȵĵ�
+			// 寻找第一个标号相等的点
 			if (edgeSeq.get(0).x != graph.nodeLabels.get(i)) {
 				continue;
 			}
@@ -84,39 +84,39 @@ public class SubChildTraveler {
 	}
 
 	/**
-	 * �ڵ�ǰͼ���������Ѱ����ȷ����ͼ
+	 * 在当前图中深度优先寻找正确的子图
 	 * 
 	 * @param currentPosition
-	 *            ��ǰ�ҵ���λ��
+	 *            当前找到的位置
 	 */
 	public void dfsSearchEdge(int currentPosition) {
 		int rmPosition = 0;
-		// ����ҵ����ˣ����ڵ�ǰ����ͼ������·����Ѱ�ҿ��ܵı�
+		// 如果找到底了，则在当前的子图的最右路径中寻找可能的边
 		if (currentPosition >= edgeSeq.size()) {
 			rmPosition = 0;
 			while (rmPosition >= 0) {
 				int gId = s2g[rmPosition];
-				// �ڴ˵㸽��Ѱ�ҿ��ܵı�
+				// 在此点附近寻找可能的边
 				for (int i = 0; i < graph.edgeNexts.get(gId).size(); i++) {
 					int gId2 = graph.edgeNexts.get(gId).get(i);
-					// ����������Ѿ����ù�
+					// 如果这条边已经被用过
 					if (f[gId][gId2] || f[gId][gId2]) {
 						continue;
 					}
 
-					// ������·������ӱ߷�Ϊ2���������һ��Ϊ�����ҽڵ�����ӣ��ڶ���Ϊ������·���� �ĵ����
-					// ����ҵ��ĵ�û�б��ù������Խ��бߵ���չ
+					// 在最右路径中添加边分为2种情况，第一种为在最右节点上添加，第二中为在最右路径上 的点添加
+					// 如果找到的点没有被用过，可以进行边的拓展
 					if (g2s[gId2] < 0) {
 						g2s[gId2] = next;
 						Edge e = new Edge(g2s[gId], g2s[gId2],
 								graph.nodeLabels.get(gId), graph.edgeLabels
 										.get(gId).get(i),
 								graph.nodeLabels.get(gId2));
-						// ���½����ӱ߼��뼯��
+						// 将新建的子边加入集合
 						childEdge.add(e);
 					} else {
 						boolean flag = true;
-						// �������Ѿ����ڣ��ж����ǲ������ҵĵ�
+						// 如果这点已经存在，判断他是不是最右的点
 						for (int j = 0; j < graph.edgeNexts.get(gId2).size(); j++) {
 							int tempId = graph.edgeNexts.get(gId2).get(j);
 							if (g2s[gId2] < g2s[tempId]) {
@@ -130,39 +130,39 @@ public class SubChildTraveler {
 									graph.nodeLabels.get(gId), graph.edgeLabels
 											.get(gId).get(i),
 									graph.nodeLabels.get(gId2));
-							// ���½����ӱ߼��뼯��
+							// 将新建的子边加入集合
 							childEdge.add(e);
 						}
 					}
 				}
-				// һ������·���ϵ����꣬������һ��
+				// 一个最右路径上点找完，继续下一个
 				rmPosition = rm[rmPosition];
 			}
 			return;
 		}
 
 		Edge e = edgeSeq.get(currentPosition);
-		// �����ӵĵ���
+		// 所连接的点标号
 		int y = e.y;
-		// �����ӵı߱��
+		// 所连接的边标号
 		int a = e.a;
 		int gId1 = s2g[e.ix];
 		int gId2 = 0;
 
 		for (int i = 0; i < graph.edgeLabels.get(gId1).size(); i++) {
-			// �ж������ӵı߶�Ӧ�ı��
+			// 判断所连接的边对应的标号
 			if (graph.edgeLabels.get(gId1).get(i) != a) {
 				continue;
 			}
 
-			// �ж������ӵĵ�ı��
+			// 判断所连接的点的标号
 			int tempId = graph.edgeNexts.get(gId1).get(i);
 			if (graph.nodeLabels.get(tempId) != y) {
 				continue;
 			}
 
 			gId2 = tempId;
-			// �����������û�����ù���
+			// 如果这两点是没有设置过的
 			if (g2s[gId2] == -1 && s2g[e.iy] == -1) {
 				g2s[gId2] = e.iy;
 				s2g[e.iy] = gId2;
@@ -191,7 +191,7 @@ public class SubChildTraveler {
 	}
 
 	/**
-	 * ��ȡ������ݶ�
+	 * 获取结果数据对
 	 * 
 	 * @return
 	 */

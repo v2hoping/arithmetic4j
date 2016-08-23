@@ -1,17 +1,17 @@
-package Clustering.DataMining_BIRCH;
+package DataMining_BIRCH;
 
 import java.util.ArrayList;
 
 /**
- * CF��Ҷ�ӽڵ�
+ * CF树叶子节点
  * 
  * @author lyq
  * 
  */
 public class LeafNode extends ClusteringFeature {
-	// ���Ӽ�Ⱥ
+	// 孩子集群
 	private ArrayList<Cluster> clusterChilds;
-	// ���׽ڵ�
+	// 父亲节点
 	private NonLeafNode parentNode;
 
 	public ArrayList<Cluster> getClusterChilds() {
@@ -23,20 +23,20 @@ public class LeafNode extends ClusteringFeature {
 	}
 
 	/**
-	 * ��Ҷ�ӽڵ㻮�ֳ�2��
+	 * 将叶子节点划分出2个
 	 * 
 	 * @return
 	 */
 	public LeafNode[] divideLeafNode() {
 		LeafNode[] leafNodeArray = new LeafNode[2];
-		// �ؼ����������2���أ�����Ĵذ��վͽ�ԭ�򻮷ּ���
+		// 簇间距离差距最大的2个簇，后面的簇按照就近原则划分即可
 		Cluster cluster1 = null;
 		Cluster cluster2 = null;
 		Cluster tempCluster = null;
 		double maxValue = 0;
 		double temp = 0;
 
-		// �ҳ����ľ���������2����
+		// 找出簇心距离差距最大的2个簇
 		for (int i = 0; i < clusterChilds.size() - 1; i++) {
 			tempCluster = clusterChilds.get(i);
 			for (int j = i + 1; j < clusterChilds.size(); j++) {
@@ -59,11 +59,11 @@ public class LeafNode extends ClusteringFeature {
 		cluster2.setParentNode(leafNodeArray[1]);
 		clusterChilds.remove(cluster1);
 		clusterChilds.remove(cluster2);
-		// �ͽ������
+		// 就近分配簇
 		for (Cluster c : clusterChilds) {
 			if (cluster1.computerClusterDistance(c) < cluster2
 					.computerClusterDistance(c)) {
-				// �ؼ��������ӽ���С�أ��ͼ�����С������Ҷ�ӽڵ�
+				// 簇间距离如果接近最小簇，就加入最小簇所属叶子节点
 				leafNodeArray[0].addingCluster(c);
 				c.setParentNode(leafNodeArray[0]);
 			} else {
@@ -85,15 +85,15 @@ public class LeafNode extends ClusteringFeature {
 
 	@Override
 	public void addingCluster(ClusteringFeature clusteringFeature) {
-		//���¾�������ֵ
+		//更新聚类特征值
 		directAddCluster(clusteringFeature);
 		
-		// Ѱ�ҵ���Ŀ�꼯Ⱥ
+		// 寻找到的目标集群
 		Cluster findedCluster = null;
 		Cluster cluster = (Cluster) clusteringFeature;
-		// ���ڶ���ƽ������
+		// 簇内对象平均距离
 		double disance = Integer.MAX_VALUE;
-		// �ؼ�����ֵ
+		// 簇间距离差值
 		double errorDistance = 0;
 		boolean needDivided = false;
 		if (clusterChilds == null) {
@@ -104,7 +104,7 @@ public class LeafNode extends ClusteringFeature {
 			for (Cluster c : clusterChilds) {
 				errorDistance = c.computerClusterDistance(cluster);
 				if (disance > errorDistance) {
-					// ѡ���ؼ���������
+					// 选出簇间距离最近的
 					disance = errorDistance;
 					findedCluster = c;
 				}
@@ -114,9 +114,9 @@ public class LeafNode extends ClusteringFeature {
 					.getData().clone();
 			ArrayList<double[]> data2 = cluster.getData();
 			data1.addAll(data2);
-			// �����Ӻ�ľ���Ĵؼ���볬��������ֵ����Ҫ�����½���
+			// 如果添加后的聚类的簇间距离超过给定阈值，需要额外新建簇
 			if (findedCluster.computerInClusterDistance(data1) > BIRCHTool.T) {
-				// Ҷ�ӽڵ�ĺ��������ܳ���ƽ������L
+				// 叶子节点的孩子数不能超过平衡因子L
 				if (clusterChilds.size() + 1 > BIRCHTool.L) {
 					needDivided = true;
 				}

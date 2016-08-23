@@ -1,4 +1,4 @@
-package Clustering.DataMining_BIRCH;
+package DataMining_BIRCH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,26 +9,26 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * BIRCH�����㷨������
+ * BIRCH聚类算法工具类
  * 
  * @author lyq
  * 
  */
 public class BIRCHTool {
-	// �ڵ���������
-	public static final String NON_LEAFNODE = "��NonLeafNode��";
-	public static final String LEAFNODE = "��LeafNode��";
-	public static final String CLUSTER = "��Cluster��";
+	// 节点类型名称
+	public static final String NON_LEAFNODE = "【NonLeafNode】";
+	public static final String LEAFNODE = "【LeafNode】";
+	public static final String CLUSTER = "【Cluster】";
 
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// �ڲ��ڵ�ƽ������B
+	// 内部节点平衡因子B
 	public static int B;
-	// Ҷ�ӽڵ�ƽ������L
+	// 叶子节点平衡因子L
 	public static int L;
-	// ��ֱ����ֵT
+	// 簇直径阈值T
 	public static double T;
-	// �ܵĲ������ݼ�¼
+	// 总的测试数据记录
 	private ArrayList<String[]> totalDataRecords;
 
 	public BIRCHTool(String filePath, int B, int L, double T) {
@@ -40,7 +40,7 @@ public class BIRCHTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	private void readDataFile() {
 		File file = new File(filePath);
@@ -66,7 +66,7 @@ public class BIRCHTool {
 	}
 
 	/**
-	 * ����CF����������
+	 * 构建CF聚类特征树
 	 * 
 	 * @return
 	 */
@@ -79,7 +79,7 @@ public class BIRCHTool {
 			cluster = new Cluster(record);
 
 			if (rootNode == null) {
-				// CF��ֻ��1���ڵ��ʱ������
+				// CF树只有1个节点的时候的情况
 				if (leafNode == null) {
 					leafNode = new LeafNode();
 				}
@@ -92,13 +92,13 @@ public class BIRCHTool {
 					rootNode = rootNode.getParentNode();
 				}
 
-				// �Ӹ��ڵ㿪ʼ����������Ѱ�ҵ���������Ŀ��Ҷ�ӽڵ�
+				// 从根节点开始，从上往下寻找到最近的添加目标叶子节点
 				LeafNode temp = rootNode.findedClosestNode(cluster);
 				temp.addingCluster(cluster);
 			}
 		}
 
-		// ���������ҳ�������Ľڵ�
+		// 从下往上找出最上面的节点
 		LeafNode node = cluster.getParentNode();
 		NonLeafNode upNode = node.getParentNode();
 		if (upNode == null) {
@@ -113,10 +113,10 @@ public class BIRCHTool {
 	}
 
 	/**
-	 * ��ʼ����CF����������
+	 * 开始构建CF聚类特征树
 	 */
 	public void startBuilding() {
-		// �����
+		// 树深度
 		int level = 1;
 		ClusteringFeature rootNode = buildCFTree();
 
@@ -125,12 +125,12 @@ public class BIRCHTool {
 	}
 
 	/**
-	 * ���ýڵ����
+	 * 设置节点深度
 	 * 
 	 * @param clusteringFeature
-	 *            ��ǰ�ڵ�
+	 *            当前节点
 	 * @param level
-	 *            ��ǰ���ֵ
+	 *            当前深度值
 	 */
 	private void setTreeLevel(ClusteringFeature clusteringFeature, int level) {
 		LeafNode leafNode = null;
@@ -145,7 +145,7 @@ public class BIRCHTool {
 		if (nonLeafNode != null) {
 			nonLeafNode.setLevel(level);
 			level++;
-			// �����ӽڵ�
+			// 设置子节点
 			if (nonLeafNode.getNonLeafChilds() != null) {
 				for (NonLeafNode n1 : nonLeafNode.getNonLeafChilds()) {
 					setTreeLevel(n1, level);
@@ -158,7 +158,7 @@ public class BIRCHTool {
 		} else {
 			leafNode.setLevel(level);
 			level++;
-			// �����Ӿ۴�
+			// 设置子聚簇
 			for (Cluster c : leafNode.getClusterChilds()) {
 				c.setLevel(level);
 			}
@@ -166,15 +166,15 @@ public class BIRCHTool {
 	}
 
 	/**
-	 * ��ʾCF����������
+	 * 显示CF聚类特征树
 	 * 
 	 * @param rootNode
-	 *            CF�����ڵ�
+	 *            CF树根节点
 	 */
 	private void showCFTree(ClusteringFeature rootNode) {
-		// �ո������������
+		// 空格数，用于输出
 		int blankNum = 5;
-		// ��ǰ�����
+		// 当前树深度
 		int currentLevel = 1;
 		LinkedList<ClusteringFeature> nodeQueue = new LinkedList<>();
 		ClusteringFeature cf;
@@ -235,10 +235,10 @@ public class BIRCHTool {
 		}
 		
 		System.out.println();
-		System.out.println("*******���շֺõľ۴�****");
-		//��ʾ�Ѿ��ֺ���ľ۴ص�
+		System.out.println("*******最终分好的聚簇****");
+		//显示已经分好类的聚簇点
 		for(int i=0; i<clusterList.size(); i++){
-			System.out.println("Cluster" + (i+1) + "��");
+			System.out.println("Cluster" + (i+1) + "：");
 			for(double[] point: clusterList.get(i).getData()){
 				System.out.print("[");
 				for (double d : point) {

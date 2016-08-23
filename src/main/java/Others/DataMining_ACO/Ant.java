@@ -1,25 +1,25 @@
-package Others.DataMining_ACO;
+package DataMining_ACO;
 
 import java.util.ArrayList;
 
 /**
- * �����࣬����·������������
+ * 蚂蚁类，进行路径搜索的载体
  * 
  * @author lyq
  * 
  */
 public class Ant implements Comparable<Ant> {
-	// ���ϵ�ǰ���ڳ���
+	// 蚂蚁当前所在城市
 	String currentPos;
-	// ���ϱ�����ص�ԭ�����õ��ܾ���
+	// 蚂蚁遍历完回到原点所用的总距离
 	Double sumDistance;
-	// ���м����Ϣ��Ũ�Ⱦ�������ʱ������������
+	// 城市间的信息素浓度矩阵，随着时间的增多而减少
 	double[][] pheromoneMatrix;
-	// �����Ѿ��߹��ĳ��м���
+	// 蚂蚁已经走过的城市集合
 	ArrayList<String> visitedCitys;
-	// ��δ�߹��ĳ��м���
+	// 还未走过的城市集合
 	ArrayList<String> nonVisitedCitys;
-	// ���ϵ�ǰ�߹���·��
+	// 蚂蚁当前走过的路径
 	ArrayList<String> currentPath;
 
 	public Ant(double[][] pheromoneMatrix, ArrayList<String> nonVisitedCitys) {
@@ -31,7 +31,7 @@ public class Ant implements Comparable<Ant> {
 	}
 
 	/**
-	 * ����·�����ܳɱ�(����)
+	 * 计算路径的总成本(距离)
 	 * 
 	 * @return
 	 */
@@ -44,7 +44,7 @@ public class Ant implements Comparable<Ant> {
 			lastCity = currentPath.get(i);
 			currentCity = currentPath.get(i + 1);
 
-			// ͨ�����������м���
+			// 通过距离矩阵进行计算
 			sumDistance += ACOTool.disMatrix[Integer.parseInt(lastCity)][Integer
 					.parseInt(currentCity)];
 		}
@@ -53,10 +53,10 @@ public class Ant implements Comparable<Ant> {
 	}
 
 	/**
-	 * ����ѡ��ǰ����һ������
+	 * 蚂蚁选择前往下一个城市
 	 * 
 	 * @param city
-	 *            ��ѡ�ĳ���
+	 *            所选的城市
 	 */
 	public void goToNextCity(String city) {
 		this.currentPath.add(city);
@@ -66,7 +66,7 @@ public class Ant implements Comparable<Ant> {
 	}
 
 	/**
-	 * �ж������Ƿ��Ѿ������»ص����
+	 * 判断蚂蚁是否已经又重新回到起点
 	 * 
 	 * @return
 	 */
@@ -89,12 +89,12 @@ public class Ant implements Comparable<Ant> {
 	}
 
 	/**
-	 * �ж������ڱ��ε��߹���·�����Ƿ�����ӳ���i������j
+	 * 判断蚂蚁在本次的走过的路径中是否包含从城市i到城市j
 	 * 
 	 * @param cityI
-	 *            ����I
+	 *            城市I
 	 * @param cityJ
-	 *            ����J
+	 *            城市J
 	 * @return
 	 */
 	public boolean pathContained(String cityI, String cityJ) {
@@ -106,7 +106,7 @@ public class Ant implements Comparable<Ant> {
 			lastCity = currentPath.get(i);
 			currentCity = currentPath.get(i + 1);
 
-			// ���ĳһ��·����ʼĩλ��һ�£�����Ϊ�о����˳���
+			// 如果某一段路径的始末位置一致，则认为有经过此城市
 			if ((lastCity.equals(cityI) && currentCity.equals(cityJ))
 					|| (lastCity.equals(cityJ) && currentCity.equals(cityI))) {
 				isContained = true;

@@ -1,4 +1,4 @@
-package Classification.DataMining_KNN;
+package DataMining_KNN;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.List;
 
 
 /**
- * k������㷨��������
+ * k最近邻算法场景类型
  * @author lyq
  *
  */

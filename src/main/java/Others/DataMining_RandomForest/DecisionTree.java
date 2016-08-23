@@ -1,23 +1,23 @@
-package Others.DataMining_RandomForest;
+package DataMining_RandomForest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * ¾ö²ßÊ÷
  * 
  * @author lyq
  * 
  */
 public class DecisionTree {
-	// ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Úµï¿½
+	// Ê÷µÄ¸ù½Úµã
 	TreeNode rootNode;
-	// ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Êý¾ÝµÄÊôÐÔÁÐÃû³Æ
 	String[] featureNames;
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Õâ¿ÃÊ÷Ëù°üº¬µÄÊý¾Ý
 	ArrayList<String[]> datas;
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ¹ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ¾ö²ßÊ÷¹¹ÔìµÄµÄ¹¤¾ßÀà
 	CARTTool tool;
 
 	public DecisionTree(ArrayList<String[]> datas) {
@@ -25,21 +25,21 @@ public class DecisionTree {
 		this.featureNames = datas.get(0);
 
 		tool = new CARTTool(datas);
-		// Í¨ï¿½ï¿½CARTï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Úµï¿½
+		// Í¨¹ýCART¹¤¾ßÀà½øÐÐ¾ö²ßÊ÷µÄ¹¹½¨£¬²¢·µ»ØÊ÷µÄ¸ù½Úµã
 		rootNode = tool.startBuildingTree();
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+	 * ¸ù¾Ý¸ø¶¨µÄÊý¾ÝÌØÕ÷ÃèÊö½øÐÐÀà±ðµÄÅÐ¶Ï
 	 * 
 	 * @param features
 	 * @return
 	 */
 	public String decideClassType(String features) {
 		String classType = "";
-		// ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ²éÑ¯ÊôÐÔ×é
 		String[] queryFeatures;
-		// ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½Ó¦ï¿½Ä²ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+		// ÔÚ±¾¾ö²ßÊ÷ÖÐ¶ÔÓ¦µÄ²éÑ¯µÄÊôÐÔÖµÃèÊö
 		ArrayList<String[]> featureStrs;
 
 		featureStrs = new ArrayList<>();
@@ -49,40 +49,40 @@ public class DecisionTree {
 		for (String name : featureNames) {
 			for (String featureValue : queryFeatures) {
 				array = featureValue.split("=");
-				// ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ëµ½ï¿½Ð±ï¿½ï¿½ï¿½
+				// ½«¶ÔÓ¦µÄÊôÐÔÖµ¼ÓÈëµ½ÁÐ±íÖÐ
 				if (array[0].equals(name)) {
 					featureStrs.add(array);
 				}
 			}
 		}
 
-		// ï¿½ï¿½Ê¼ï¿½Ó¸ï¿½ï¿½Ý½Úµï¿½ï¿½ï¿½ï¿½ÂµÝ¹ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ¿ªÊ¼´Ó¸ù¾Ý½ÚµãÍùÏÂµÝ¹éËÑË÷
 		classType = recusiveSearchClassType(rootNode, featureStrs);
 
 		return classType;
 	}
 
 	/**
-	 * ï¿½Ý¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ÔµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * µÝ¹éËÑË÷Ê÷£¬²éÑ¯ÊôÐÔµÄ·ÖÀàÀà±ð
 	 * 
 	 * @param node
-	 *            ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½Úµï¿½
+	 *            µ±Ç°ËÑË÷µ½µÄ½Úµã
 	 * @param remainFeatures
-	 *            Ê£ï¿½ï¿½Î´ï¿½Ð¶Ïµï¿½ï¿½ï¿½ï¿½ï¿½
+	 *            Ê£ÓàÎ´ÅÐ¶ÏµÄÊôÐÔ
 	 * @return
 	 */
 	private String recusiveSearchClassType(TreeNode node,
 			ArrayList<String[]> remainFeatures) {
 		String classType = null;
 
-		// ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½idï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½àµ½ï¿½ï¿½ï¿½ï¿½
+		// Èç¹û½Úµã°üº¬ÁËÊý¾ÝµÄidË÷Òý£¬ËµÃ÷ÒÑ¾­·ÖÀàµ½µ×ÁË
 		if (node.getDataIndex() != null && node.getDataIndex().size() > 0) {
 			classType = judgeClassType(node.getDataIndex());
 
 			return classType;
 		}
 
-		// È¡ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ò»ï¿½ï¿½Æ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// È¡³öÊ£ÓàÊôÐÔÖÐµÄÒ»¸öÆ¥ÅäÊôÐÔ×÷Îªµ±Ç°µÄÅÐ¶ÏÊôÐÔÃû³Æ
 		String[] currentFeature = null;
 		for (String[] featureValue : remainFeatures) {
 			if (node.getAttrName().equals(featureValue[0])) {
@@ -92,19 +92,19 @@ public class DecisionTree {
 		}
 
 		for (TreeNode childNode : node.getChildAttrNode()) {
-			// Ñ°ï¿½ï¿½ï¿½Ó½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ä·ï¿½Ö§
+			// Ñ°ÕÒ×Ó½ÚµãÖÐÊôÓÚ´ËÊôÐÔÖµµÄ·ÖÖ§
 			if (childNode.getParentAttrValue().equals(currentFeature[1])) {
 				remainFeatures.remove(currentFeature);
 				classType = recusiveSearchClassType(childNode, remainFeatures);
 
-				// ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
+				// Èç¹ûÕÒµ½ÁË·ÖÀà½á¹û£¬ÔòÖ±½ÓÌô³öÑ­»·
 				break;
 			}else{
-				//ï¿½ï¿½ï¿½ÐµÚ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï¼ï¿½ï¿½ï¿½!ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½
+				//½øÐÐµÚ¶þÖÖÇé¿öµÄÅÐ¶Ï¼ÓÉÏ!·ûºÅµÄÇé¿ö
 				String value = childNode.getParentAttrValue();
 				
 				if(value.charAt(0) == '!'){
-					//È¥ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
+					//È¥µôµÚÒ»¸ö£¡×Ö·û
 					value = value.substring(1, value.length());
 					
 					if(!value.equals(currentFeature[1])){
@@ -121,14 +121,14 @@ public class DecisionTree {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½ÝµÃµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
+	 * ¸ù¾ÝµÃµ½µÄÊý¾ÝÐÐ·ÖÀà½øÐÐÀà±ðµÄ¾ö²ß
 	 * 
 	 * @param dataIndex
-	 *            ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 *            ¸ù¾Ý·ÖÀàµÄÊý¾ÝË÷ÒýºÅ
 	 * @return
 	 */
 	public String judgeClassType(ArrayList<String> dataIndex) {
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+		// ½á¹ûÀàÐÍÖµ
 		String resultClassType = "";
 		String classType = "";
 		int count = 0;
@@ -137,11 +137,11 @@ public class DecisionTree {
 
 		for (String index : dataIndex) {
 			temp = Integer.parseInt(index);
-			// È¡ï¿½ï¿½ï¿½Ò»ï¿½ÐµÄ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// È¡×îºóÒ»ÁÐµÄ¾ö²ßÀà±ðÊý¾Ý
 			classType = datas.get(temp)[featureNames.length - 1];
 
 			if (type2Num.containsKey(classType)) {
-				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1
+				// Èç¹ûÀà±ðÒÑ¾­´æÔÚ£¬ÔòÊ¹Æä¼ÆÊý¼Ó1
 				count = type2Num.get(classType);
 				count++;
 			} else {
@@ -151,7 +151,7 @@ public class DecisionTree {
 			type2Num.put(classType, count);
 		}
 
-		// Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+		// Ñ¡³öÆäÖÐÀà±ðÖ§³Ö¼ÆÊý×î¶àµÄÒ»¸öÀà±ðÖµ
 		count = -1;
 		for (Map.Entry entry : type2Num.entrySet()) {
 			if ((int) entry.getValue() > count) {

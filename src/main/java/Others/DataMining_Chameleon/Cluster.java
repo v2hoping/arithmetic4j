@@ -1,19 +1,19 @@
-package Others.DataMining_Chameleon;
+package DataMining_Chameleon;
 
 import java.util.ArrayList;
 
 /**
- * �۴���
+ * 聚簇类
  * 
  * @author lyq
  * 
  */
 public class Cluster implements Cloneable{
-	//��Ψһid��ʶ��
+	//簇唯一id标识号
 	int id;
-	// �۴��ڵ�����㼯��
+	// 聚簇内的坐标点集合
 	ArrayList<Point> points;
-	// �۴��ڵ����бߵ�Ȩ�غ�
+	// 聚簇内的所有边的权重和
 	double weightSum = 0;
 
 	public Cluster(int id, ArrayList<Point> points) {
@@ -22,7 +22,7 @@ public class Cluster implements Cloneable{
 	}
 
 	/**
-	 * ����۴ص��ڲ��ı�Ȩ�غ�
+	 * 计算聚簇的内部的边权重和
 	 * 
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class Cluster implements Cloneable{
 				id1 = p1.id;
 				id2 = p2.id;
 
-				// Ϊ�˱����ظ����㣬ȡid1С�Ķ�Ӧ���
+				// 为了避免重复计算，取id1小的对应大的
 				if (id1 < id2 && ChameleonTool.edges[id1][id2] == 1) {
 					weightSum += ChameleonTool.weights[id1][id2];
 				}
@@ -47,12 +47,12 @@ public class Cluster implements Cloneable{
 	}
 
 	/**
-	 * ����2����֮�������n����
+	 * 计算2个簇之间最近的n条边
 	 * 
 	 * @param otherCluster
-	 *            ���ȽϵĴ�
+	 *            待比较的簇
 	 * @param n
-	 *            ����ıߵ���Ŀ
+	 *            最近的边的数目
 	 * @return
 	 */
 	public ArrayList<int[]> calNearestEdge(Cluster otherCluster, int n){
@@ -75,7 +75,7 @@ public class Cluster implements Cloneable{
 		}
 
 		int[] tempEdge;
-		// ѭ�������ÿ�ε��������
+		// 循环计算出每次的最近距离
 		while (count < n) {
 			tempEdge = new int[2];
 			minDistance = Integer.MAX_VALUE;
@@ -107,7 +107,7 @@ public class Cluster implements Cloneable{
 	protected Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		
-		//������Ҫ�ٴθ��ƣ�ʵ�����
+		//引用需要再次复制，实现深拷贝
 		ArrayList<Point> pointList = (ArrayList<Point>) this.points.clone();
 		Cluster cluster = new Cluster(id, pointList);
 		

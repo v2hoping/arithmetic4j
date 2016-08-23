@@ -1,14 +1,14 @@
-package SequentialPatterns.DataMining_PrefixSpan;
+package DataMining_PrefixSpan;
 
 /**
- * PrefixSpan����ģʽ�ھ��㷨
+ * PrefixSpan序列模式挖掘算法
  * @author lyq
  *
  */
 public class Client {
 	public static void main(String[] agrs){
 		String filePath = "C:\\Users\\lyq\\Desktop\\icon\\input.txt";
-		//��С֧�ֶ���ֵ��
+		//最小支持度阈值率
 		double minSupportRate = 0.4;
 		
 		PrefixSpanTool tool = new PrefixSpanTool(filePath, minSupportRate);

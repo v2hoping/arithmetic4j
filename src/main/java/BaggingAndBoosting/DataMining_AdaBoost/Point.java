@@ -1,19 +1,19 @@
-package BaggingAndBoosting.DataMining_AdaBoost;
+package DataMining_AdaBoost;
 
 /**
- * �������
+ * 坐标点类
  * 
  * @author lyq
  * 
  */
 public class Point {
-	// �����x����
+	// 坐标点x坐标
 	private int x;
-	// �����y����
+	// 坐标点y坐标
 	private int y;
-	// �����ķ������
+	// 坐标点的分类类别
 	private int classType;
-	//����˽ڵ㱻������������ʣ������ø���������������Ϊ��ͬ������Ȩ�ز�һ�����
+	//如果此节点被划错，他的误差率，不能用个数除以总数，因为不同坐标点的权重不一定相等
 	private double probably;
 	
 	public Point(int x, int y, int classType){

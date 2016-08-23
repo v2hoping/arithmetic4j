@@ -1,4 +1,4 @@
-package Others.DataMining_DBSCAN;
+package DataMining_DBSCAN;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,23 +8,23 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 /**
- * DBSCAN�����ܶȾ����㷨������
+ * DBSCAN基于密度聚类算法工具类
  * 
  * @author lyq
  * 
  */
 public class DBSCANTool {
-	// ���������ļ���ַ
+	// 测试数据文件地址
 	private String filePath;
-	// ��ɨ��뾶
+	// 簇扫描半径
 	private double eps;
-	// ��С����������ֵ
+	// 最小包含点数阈值
 	private int minPts;
-	// ���е����������
+	// 所有的数据坐标点
 	private ArrayList<Point> totalPoints;
-	// �۴ؽ��
+	// 聚簇结果
 	private ArrayList<ArrayList<Point>> resultClusters;
-	//��������
+	//噪声数据
 	private ArrayList<Point> noisePoint;
 
 	public DBSCANTool(String filePath, double eps, int minPts) {
@@ -35,7 +35,7 @@ public class DBSCANTool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	public void readDataFile() {
 		File file = new File(filePath);
@@ -63,18 +63,18 @@ public class DBSCANTool {
 	}
 
 	/**
-	 * �ݹ��Ѱ�Ҿ۴�
+	 * 递归的寻找聚簇
 	 * 
 	 * @param pointList
-	 *            ��ǰ�ĵ��б�
+	 *            当前的点列表
 	 * @param parentCluster
-	 *            ���۴�
+	 *            父聚簇
 	 */
 	private void recursiveCluster(Point point, ArrayList<Point> parentCluster) {
 		double distance = 0;
 		ArrayList<Point> cluster;
 
-		// ����Ѿ����ʹ��ˣ�������
+		// 如果已经访问过了，则跳过
 		if (point.isVisited) {
 			return;
 		}
@@ -82,22 +82,22 @@ public class DBSCANTool {
 		point.isVisited = true;
 		cluster = new ArrayList<>();
 		for (Point p2 : totalPoints) {
-			// ���˵�����������
+			// 过滤掉自身的坐标点
 			if (point.isTheSame(p2)) {
 				continue;
 			}
 
 			distance = point.ouDistance(p2);
 			if (distance <= eps) {
-				// �������С�ڸ����İ뾶����������
+				// 如果聚类小于给定的半径，则加入簇中
 				cluster.add(p2);
 			}
 		}
 
 		if (cluster.size() >= minPts) {
-			// ���Լ�Ҳ���뵽�۴���
+			// 将自己也加入到聚簇中
 			cluster.add(point);
-			// ��������Ľڵ������������ֵ������뵽���۴���,ͬʱȥ���ظ��ĵ�
+			// 如果附近的节点个数超过最下值，则加入到父聚簇中,同时去除重复的点
 			addCluster(parentCluster, cluster);
 
 			for (Point p : cluster) {
@@ -107,12 +107,12 @@ public class DBSCANTool {
 	}
 
 	/**
-	 * �����۴�����Ӿֲ��������
+	 * 往父聚簇中添加局部簇坐标点
 	 * 
 	 * @param parentCluster
-	 *            ԭʼ���۴������
+	 *            原始父聚簇坐标点
 	 * @param cluster
-	 *            ���ϲ��ľ۴�
+	 *            待合并的聚簇
 	 */
 	private void addCluster(ArrayList<Point> parentCluster,
 			ArrayList<Point> cluster) {
@@ -137,7 +137,7 @@ public class DBSCANTool {
 	}
 
 	/**
-	 * dbScan�㷨�����ܶȵľ���
+	 * dbScan算法基于密度的聚类
 	 */
 	public void dbScanCluster() {
 		ArrayList<Point> cluster = null;
@@ -164,13 +164,13 @@ public class DBSCANTool {
 	}
 	
 	/**
-	 * �Ƴ���������������������
+	 * 移除被错误分类的噪声点数据
 	 */
 	private void removeFalseNoise(){
 		ArrayList<Point> totalCluster = new ArrayList<>();
 		ArrayList<Point> deletePoints = new ArrayList<>();
 		
-		//���۴غϲ�
+		//将聚簇合并
 		for(ArrayList<Point> list: resultClusters){
 			totalCluster.addAll(list);
 		} 
@@ -187,12 +187,12 @@ public class DBSCANTool {
 	}
 
 	/**
-	 * ���������
+	 * 输出聚类结果
 	 */
 	private void printClusters() {
 		int i = 1;
 		for (ArrayList<Point> pList : resultClusters) {
-			System.out.print("�۴�" + (i++) + ":");
+			System.out.print("聚簇" + (i++) + ":");
 			for (Point p : pList) {
 				System.out.print(MessageFormat.format("({0},{1}) ", p.x, p.y));
 			}
@@ -200,7 +200,7 @@ public class DBSCANTool {
 		}
 		
 		System.out.println();
-		System.out.print("��������:");
+		System.out.print("噪声数据:");
 		for (Point p : noisePoint) {
 			System.out.print(MessageFormat.format("({0},{1}) ", p.x, p.y));
 		}

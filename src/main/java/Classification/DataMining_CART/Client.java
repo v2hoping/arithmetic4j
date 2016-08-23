@@ -1,4 +1,4 @@
-package Classification.DataMining_CART;
+package DataMining_CART;
 
 public class Client {
 	public static void main(String[] args){

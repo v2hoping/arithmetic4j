@@ -1,16 +1,16 @@
-package Clustering.DataMining_BIRCH;
+package DataMining_BIRCH;
 
 import java.util.ArrayList;
 
 /**
- * Ҷ�ӽڵ��е�С��Ⱥ
+ * 叶子节点中的小集群
  * @author lyq
  *
  */
 public class Cluster extends ClusteringFeature{
-	//��Ⱥ�е����ݵ�
+	//集群中的数据点
 	private ArrayList<double[]> data;
-	//���׽ڵ�
+	//父亲节点
 	private LeafNode parentNode;
 	
 	public Cluster(String[] record){
@@ -20,7 +20,7 @@ public class Cluster extends ClusteringFeature{
 			d[i] = Double.parseDouble(record[i]);
 		}
 		data.add(d);
-		//����CF��������
+		//计算CF聚类特征
 		this.setLS(data);
 		this.setSS(data);
 		this.setN(data);
@@ -36,7 +36,7 @@ public class Cluster extends ClusteringFeature{
 
 	@Override
 	protected void directAddCluster(ClusteringFeature node) {
-		//����Ǿ���������ݼ�¼������ϲ����ݼ�¼
+		//如果是聚类包括数据记录，则还需合并数据记录
 		Cluster c = (Cluster)node;
 		ArrayList<double[]> dataRecords = c.getData();
 		this.data.addAll(dataRecords);

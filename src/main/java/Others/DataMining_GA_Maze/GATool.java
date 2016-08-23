@@ -1,4 +1,4 @@
-package Others.DataMining_GA_Maze;
+package GA_Maze;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,40 +9,40 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * �Ŵ��㷨�����Թ���Ϸ��Ӧ��-�Ŵ��㷨������
+ * 遗传算法在走迷宫游戏的应用-遗传算法工具类
  * 
  * @author lyq
  * 
  */
 public class GATool {
-	// �Թ�����ڱ��
+	// 迷宫出入口标记
 	public static final int MAZE_ENTRANCE_POS = 1;
 	public static final int MAZE_EXIT_POS = 2;
-	// �����Ӧ�ı�������
+	// 方向对应的编码数组
 	public static final int[][] MAZE_DIRECTION_CODE = new int[][] { { 0, 0 },
 			{ 0, 1 }, { 1, 0 }, { 1, 1 }, };
-	// ����㷽��ı�
+	// 坐标点方向改变
 	public static final int[][] MAZE_DIRECTION_CHANGE = new int[][] {
 			{ -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 }, };
-	// �������������
-	public static final String[] MAZE_DIRECTION_LABEL = new String[] { "��",
-			"��", "��", "��" };
+	// 方向的文字描述
+	public static final String[] MAZE_DIRECTION_LABEL = new String[] { "上",
+			"下", "左", "右" };
 
-	// ��ͼ�����ļ���ַ
+	// 地图数据文件地址
 	private String filePath;
-	// ���Թ�����̲���
+	// 走迷宫的最短步数
 	private int stepNum;
-	// ��ʼ���������
+	// 初始个体的数量
 	private int initSetsNum;
-	// �Թ����λ��
+	// 迷宫入口位置
 	private int[] startPos;
-	// �Թ�����λ��
+	// 迷宫出口位置
 	private int[] endPos;
-	// �Թ���ͼ����
+	// 迷宫地图数据
 	private int[][] mazeData;
-	// ��ʼ���弯
+	// 初始个体集
 	private ArrayList<int[]> initSets;
-	// �����������
+	// 随机数产生器
 	private Random random;
 
 	public GATool(String filePath, int initSetsNum) {
@@ -53,7 +53,7 @@ public class GATool {
 	}
 
 	/**
-	 * ���ļ��ж�ȡ����
+	 * 从文件中读取数据
 	 */
 	public void readDataFile() {
 		File file = new File(filePath);
@@ -79,7 +79,7 @@ public class GATool {
 			for (int j = 0; j < data.length; j++) {
 				mazeData[i][j] = Integer.parseInt(data[j]);
 
-				// ��ֵ��ںͳ���λ��
+				// 赋值入口和出口位置
 				if (mazeData[i][j] == MAZE_ENTRANCE_POS) {
 					startPos = new int[2];
 					startPos[0] = i;
@@ -92,20 +92,20 @@ public class GATool {
 			}
 		}
 
-		// �����߳��Թ�����̲���
+		// 计算走出迷宫的最短步数
 		stepNum = Math.abs(startPos[0] - endPos[0])
 				+ Math.abs(startPos[1] - endPos[1]);
 	}
 
 	/**
-	 * ������ʼ���ݼ�
+	 * 产生初始数据集
 	 */
 	private void produceInitSet() {
-		// �������
+		// 方向编码
 		int directionCode = 0;
 		random = new Random();
 		initSets = new ArrayList<>();
-		// ÿ������Ĳ�����Ҫ��2λ���ֱ�ʾ
+		// 每个步骤的操作需要用2位数字表示
 		int[] codeNum;
 
 		for (int i = 0; i < initSetsNum; i++) {
@@ -121,10 +121,10 @@ public class GATool {
 	}
 
 	/**
-	 * ѡ�����������ֵ�ϸߵĸ��������Ŵ�����һ��
+	 * 选择操作，把适值较高的个体优先遗传到下一代
 	 * 
 	 * @param initCodes
-	 *            ��ʼ�������
+	 *            初始个体编码
 	 * @return
 	 */
 	private ArrayList<int[]> selectOperate(ArrayList<int[]> initCodes) {
@@ -138,7 +138,7 @@ public class GATool {
 			sumFitness += adaptiveValue[i];
 		}
 
-		// ת�ɸ��ʵ���ʽ������һ������
+		// 转成概率的形式，做归一化操作
 		for (int i = 0; i < initSetsNum; i++) {
 			adaptiveValue[i] = adaptiveValue[i] / sumFitness;
 		}
@@ -146,17 +146,17 @@ public class GATool {
 		for (int i = 0; i < initSetsNum; i++) {
 			randomNum = random.nextInt(100) + 1;
 			randomNum = randomNum / 100;
-			//��Ϊ1.0���޷��жϵ��ģ�,�ܺͻ����޽ӽ�1.0ȡΪ0.99���ж�
+			//因为1.0是无法判断到的，,总和会无限接近1.0取为0.99做判断
 			if(randomNum == 1){
 				randomNum = randomNum - 0.01;
 			}
 			
 			sumFitness = 0;
-			// ȷ������
+			// 确定区间
 			for (int j = 0; j < initSetsNum; j++) {
 				if (randomNum > sumFitness
 						&& randomNum <= sumFitness + adaptiveValue[j]) {
-					// ���ÿ����ķ�ʽ���������ظ�
+					// 采用拷贝的方式避免引用重复
 					resultCodes.add(initCodes.get(j).clone());
 					break;
 				} else {
@@ -169,21 +169,21 @@ public class GATool {
 	}
 
 	/**
-	 * ��������
+	 * 交叉运算
 	 * 
 	 * @param selectedCodes
-	 *            �ϲ����ѡ���ı���
+	 *            上步骤的选择后的编码
 	 * @return
 	 */
 	private ArrayList<int[]> crossOperate(ArrayList<int[]> selectedCodes) {
 		int randomNum = 0;
-		// �����
+		// 交叉点
 		int crossPoint = 0;
 		ArrayList<int[]> resultCodes = new ArrayList<>();
-		// ���������У���������������
+		// 随机编码队列，进行随机交叉配对
 		ArrayList<int[]> randomCodeSeqs = new ArrayList<>();
 
-		// �����������
+		// 进行随机排序
 		while (selectedCodes.size() > 0) {
 			randomNum = random.nextInt(selectedCodes.size());
 
@@ -194,14 +194,14 @@ public class GATool {
 		int temp = 0;
 		int[] array1;
 		int[] array2;
-		// ����������������
+		// 进行两两交叉运算
 		for (int i = 1; i < randomCodeSeqs.size(); i++) {
 			if (i % 2 == 1) {
 				array1 = randomCodeSeqs.get(i - 1);
 				array2 = randomCodeSeqs.get(i);
 				crossPoint = random.nextInt(stepNum - 1) + 1;
 
-				// ���н����λ�ú�ı������
+				// 进行交叉点位置后的编码调换
 				for (int j = 0; j < 2 * stepNum; j++) {
 					if (j >= 2 * crossPoint) {
 						temp = array1[j];
@@ -210,7 +210,7 @@ public class GATool {
 					}
 				}
 
-				// ���뵽������������
+				// 加入到交叉运算结果中
 				resultCodes.add(array1);
 				resultCodes.add(array2);
 			}
@@ -220,14 +220,14 @@ public class GATool {
 	}
 
 	/**
-	 * �������
+	 * 变异操作
 	 * 
 	 * @param crossCodes
-	 *            ���������Ľ��
+	 *            交叉运算后的结果
 	 * @return
 	 */
 	private ArrayList<int[]> variationOperate(ArrayList<int[]> crossCodes) {
-		// �����
+		// 变异点
 		int variationPoint = 0;
 		ArrayList<int[]> resultCodes = new ArrayList<>();
 
@@ -235,7 +235,7 @@ public class GATool {
 			variationPoint = random.nextInt(stepNum);
 
 			for (int i = 0; i < array.length; i += 2) {
-				// �������б���
+				// 变异点进行变异
 				if (i % 2 == 0 && i / 2 == variationPoint) {
 					array[i] = (array[i] == 0 ? 1 : 0);
 					array[i + 1] = (array[i + 1] == 0 ? 1 : 0);
@@ -250,23 +250,23 @@ public class GATool {
 	}
 
 	/**
-	 * ���ݱ��������ֵ
+	 * 根据编码计算适值
 	 * 
 	 * @param code
-	 *            ��ǰ�ı���
+	 *            当前的编码
 	 * @return
 	 */
 	public double calFitness(int[] code) {
 		double fintness = 0;
-		// �ɱ���������õ��յ������
+		// 由编码计算所得的终点横坐标
 		int endX = 0;
-		// �ɱ���������õ��յ�������
+		// 由编码计算所得的终点纵坐标
 		int endY = 0;
-		// ����Ƭ������������߷���
+		// 基于片段所代表的行走方向
 		int direction = 0;
-		// ��ʱ����������
+		// 临时坐标点横坐标
 		int tempX = 0;
-		// ��ʱ�����������
+		// 临时坐标点纵坐标
 		int tempY = 0;
 
 		endX = startPos[0];
@@ -275,14 +275,14 @@ public class GATool {
 			direction = binaryArrayToNum(new int[] { code[2 * i],
 					code[2 * i + 1] });
 
-			// ���ݷ���ı������������ĸı�
+			// 根据方向改变数组做坐标点的改变
 			tempX = endX + MAZE_DIRECTION_CHANGE[direction][0];
 			tempY = endY + MAZE_DIRECTION_CHANGE[direction][1];
 
-			// �ж�������Ƿ�Խ��
+			// 判断坐标点是否越界
 			if (tempX >= 0 && tempX < mazeData.length && tempY >= 0
 					&& tempY < mazeData[0].length) {
-				// �ж�������Ƿ��ߵ��谭��
+				// 判断坐标点是否走到阻碍块
 				if (mazeData[tempX][tempY] != -1) {
 					endX = tempX;
 					endY = tempY;
@@ -290,7 +290,7 @@ public class GATool {
 			}
 		}
 
-		// ������ֵ����������ֵ�ļ���
+		// 根据适值函数进行适值的计算
 		fintness = 1.0 / (Math.abs(endX - endPos[0])
 				+ Math.abs(endY - endPos[1]) + 1);
 
@@ -298,23 +298,23 @@ public class GATool {
 	}
 
 	/**
-	 * ���ݵ�ǰ�����ж��Ƿ��Ѿ��ҵ�����λ��
+	 * 根据当前编码判断是否已经找到出口位置
 	 * 
 	 * @param code
-	 *            �������ɴ��Ŵ��ı���
+	 *            经过若干次遗传的编码
 	 * @return
 	 */
 	private boolean ifArriveEndPos(int[] code) {
 		boolean isArrived = false;
-		// �ɱ���������õ��յ������
+		// 由编码计算所得的终点横坐标
 		int endX = 0;
-		// �ɱ���������õ��յ�������
+		// 由编码计算所得的终点纵坐标
 		int endY = 0;
-		// ����Ƭ������������߷���
+		// 基于片段所代表的行走方向
 		int direction = 0;
-		// ��ʱ����������
+		// 临时坐标点横坐标
 		int tempX = 0;
-		// ��ʱ�����������
+		// 临时坐标点纵坐标
 		int tempY = 0;
 
 		endX = startPos[0];
@@ -323,14 +323,14 @@ public class GATool {
 			direction = binaryArrayToNum(new int[] { code[2 * i],
 					code[2 * i + 1] });
 
-			// ���ݷ���ı������������ĸı�
+			// 根据方向改变数组做坐标点的改变
 			tempX = endX + MAZE_DIRECTION_CHANGE[direction][0];
 			tempY = endY + MAZE_DIRECTION_CHANGE[direction][1];
 
-			// �ж�������Ƿ�Խ��
+			// 判断坐标点是否越界
 			if (tempX >= 0 && tempX < mazeData.length && tempY >= 0
 					&& tempY < mazeData[0].length) {
-				// �ж�������Ƿ��ߵ��谭��
+				// 判断坐标点是否走到阻碍块
 				if (mazeData[tempX][tempY] != -1) {
 					endX = tempX;
 					endY = tempY;
@@ -346,10 +346,10 @@ public class GATool {
 	}
 
 	/**
-	 * ����������ת��Ϊ����
+	 * 二进制数组转化为数字
 	 * 
 	 * @param binaryArray
-	 *            ��ת������������
+	 *            待转化二进制数组
 	 */
 	private int binaryArrayToNum(int[] binaryArray) {
 		int result = 0;
@@ -364,26 +364,26 @@ public class GATool {
 	}
 
 	/**
-	 * �����Ŵ��㷨�߳��Թ�
+	 * 进行遗传算法走出迷宫
 	 */
 	public void goOutMaze() {
-		// �����Ŵ�����
+		// 迭代遗传次数
 		int loopCount = 0;
 		boolean canExit = false;
-		// ���·��
+		// 结果路径
 		int[] resultCode = null;
 		ArrayList<int[]> initCodes;
 		ArrayList<int[]> selectedCodes;
 		ArrayList<int[]> crossedCodes;
 		ArrayList<int[]> variationCodes;
 
-		// ������ʼ���ݼ�
+		// 产生初始数据集
 		produceInitSet();
 		initCodes = initSets;
 
 		while (true) {
 			for (int[] array : initCodes) {
-				// �Ŵ���������ֹ����Ϊ�Ƿ��ҵ�����λ��
+				// 遗传迭代的终止条件为是否找到出口位置
 				if (ifArriveEndPos(array)) {
 					resultCode = array;
 					canExit = true;
@@ -402,24 +402,24 @@ public class GATool {
 
 			loopCount++;
 			
-			//����Ŵ���������100�Σ����˳�
+			//如果遗传次数超过100次，则退出
 			if(loopCount >= 100){
 				break;
 			}
 		}
 
-		System.out.println("�ܹ��Ŵ�������" + loopCount + "��");
+		System.out.println("总共遗传进化了" + loopCount + "次");
 		printFindedRoute(resultCode);
 	}
 
 	/**
-	 * ����ҵ���·��
+	 * 输出找到的路径
 	 * 
 	 * @param code
 	 */
 	private void printFindedRoute(int[] code) {
 		if(code == null){
-			System.out.println("�����޵��Ŵ����������ڣ�û���ҵ�����·��");
+			System.out.println("在有限的遗传进化次数内，没有找到最优路径");
 			return;
 		}
 		
@@ -428,10 +428,10 @@ public class GATool {
 		int direction = 0;
 
 		System.out.println(MessageFormat.format(
-				"��ʼ��λ��({0},{1}), ���ڵ�λ��({2}, {3})", tempX, tempY, endPos[0],
+				"起始点位置({0},{1}), 出口点位置({2}, {3})", tempX, tempY, endPos[0],
 				endPos[1]));
 		
-		System.out.print("�������Ľ�����룺");
+		System.out.print("搜索到的结果编码：");
 		for(int value: code){
 			System.out.print("" + value);
 		}
@@ -444,7 +444,7 @@ public class GATool {
 			tempY += MAZE_DIRECTION_CHANGE[direction][1];
 
 			System.out.println(MessageFormat.format(
-					"��{0}��,����Ϊ{1}{2},��{3}�ƶ����ƶ��󵽴�({4},{5})", k, code[i], code[i+1],
+					"第{0}步,编码为{1}{2},向{3}移动，移动后到达({4},{5})", k, code[i], code[i+1],
 					MAZE_DIRECTION_LABEL[direction],  tempX, tempY));
 		}
 	}
