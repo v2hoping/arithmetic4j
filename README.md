@@ -4,9 +4,13 @@
 ##Environment
 
 * ### java8+
+
 * ### maven3.3+
+
 * ### junit4.5+
+
 * ### google tools ide
+
 # Contents
 
 ## 数据挖掘算法目录
