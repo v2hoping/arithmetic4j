@@ -2,9 +2,9 @@
 [TOC]
 #Introduce
 ##Environment
-* ###java8+
-* ###maven3.3+
-* ###junit4.5+
+* ### java8+
+* ### maven3.3+
+* ### junit4.5+
 # Contents
 
 ## 数据挖掘算法目录
