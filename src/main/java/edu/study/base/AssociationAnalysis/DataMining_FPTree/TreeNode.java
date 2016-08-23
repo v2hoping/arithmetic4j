@@ -1,4 +1,4 @@
-package DataMining_FPTree;
+package edu.study.base.AssociationAnalysis.DataMining_FPTree;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * FP树节点
  * 
  * @author lyq
- * 
+ * @modify gwd
  */
 public class TreeNode implements Comparable<TreeNode>, Cloneable{
 	// 节点类别名称

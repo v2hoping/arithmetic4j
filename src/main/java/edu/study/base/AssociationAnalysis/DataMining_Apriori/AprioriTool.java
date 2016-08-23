@@ -14,7 +14,7 @@ import java.util.Map;
  * apriori算法工具类
  *
  * @author lyq
- *
+ * @modify gwd
  */
 public class AprioriTool {
 	// 最小支持度计数

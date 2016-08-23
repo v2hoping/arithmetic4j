@@ -1,4 +1,4 @@
-package DataMining_FPTree;
+package edu.study.base.AssociationAnalysis.DataMining_FPTree;
 
 /**
  * FPTree频繁模式树算法
